@@ -56,7 +56,7 @@ table = "g_logger"
 # http监听地址
 host = "0.0.0.0"
 # http监听端口
-port = 10088
+port = 8088
 # http优雅关闭等待超时时长(单位秒)
 shutdown_timeout = 30
 
@@ -122,13 +122,13 @@ redis_db = 10
 # 跨域请求
 [cors]
 # 是否启用
-enable = false
+enable = true
 # 允许跨域请求的域名列表(*表示全部允许)
 allow_origins = ["*"]
 # 允许跨域请求的请求方式列表
 allow_methods = ["GET","POST","PUT","DELETE","PATCH"]
 # 允许客户端与跨域请求一起使用的非简单标头的列表
-allow_headers = []
+allow_headers = ["Content-Type,AccessToken,X-CSRF-Token, Authorization, Token"]
 # 请求是否可以包含cookie，HTTP身份验证或客户端SSL证书等用户凭据
 allow_credentials = true
 # 可以缓存预检请求结果的时间（以秒为单位）

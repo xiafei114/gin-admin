@@ -10,6 +10,7 @@ import (
 	"gin-admin/internal/app/ginadmin/middleware"
 	"gin-admin/internal/app/ginadmin/routers/api"
 	"gin-admin/pkg/logger"
+
 	"github.com/gin-gonic/gin"
 )
 

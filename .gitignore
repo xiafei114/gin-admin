@@ -15,4 +15,7 @@
 /cmd/ginadmin/ginadmin
 /release
 /data
+jwt_auth.db
 /internal/app/ginadmin/test/data
+
+debug

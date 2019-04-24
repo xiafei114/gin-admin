@@ -21,7 +21,9 @@
             "-m",
             "../../configs/ginadmin/model.conf",
             "-swagger",
-            "../../internal/app/ginadmin/swagger"
+            "../../internal/app/ginadmin/swagger",
+            "-www",
+            "D:/WebstormProjects/gin-admin-react/dist"
         ],
         "showLog": true
     }]

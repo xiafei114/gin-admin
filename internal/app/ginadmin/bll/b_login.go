@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"net/http"
 
+	"gin-admin/internal/app/ginadmin/model"
+	"gin-admin/internal/app/ginadmin/schema"
+	"gin-admin/pkg/auth"
+	"gin-admin/pkg/errors"
+	"gin-admin/pkg/logger"
+	"gin-admin/pkg/util"
+
 	"github.com/LyricTian/captcha"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/model"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/schema"
-	"github.com/LyricTian/gin-admin/pkg/auth"
-	"github.com/LyricTian/gin-admin/pkg/errors"
-	"github.com/LyricTian/gin-admin/pkg/logger"
-	"github.com/LyricTian/gin-admin/pkg/util"
 )
 
 // 定义错误

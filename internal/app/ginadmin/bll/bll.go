@@ -4,12 +4,12 @@ import (
 	"context"
 	"sync"
 
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/config"
-	icontext "github.com/LyricTian/gin-admin/internal/app/ginadmin/context"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/model"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/schema"
-	"github.com/LyricTian/gin-admin/pkg/auth"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	"gin-admin/internal/app/ginadmin/config"
+	icontext "gin-admin/internal/app/ginadmin/context"
+	"gin-admin/internal/app/ginadmin/model"
+	"gin-admin/internal/app/ginadmin/schema"
+	"gin-admin/pkg/auth"
+	"gin-admin/pkg/util"
 	"github.com/casbin/casbin"
 )
 

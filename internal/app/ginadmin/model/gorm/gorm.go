@@ -1,10 +1,10 @@
 package gorm
 
 import (
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/model"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/model/gorm/entity"
-	gmodel "github.com/LyricTian/gin-admin/internal/app/ginadmin/model/gorm/model"
-	"github.com/LyricTian/gin-admin/pkg/gormplus"
+	"gin-admin/internal/app/ginadmin/model"
+	"gin-admin/internal/app/ginadmin/model/gorm/entity"
+	gmodel "gin-admin/internal/app/ginadmin/model/gorm/model"
+	"gin-admin/pkg/gormplus"
 )
 
 // SetTablePrefix 设定表名前缀

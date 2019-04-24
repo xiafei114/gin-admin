@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/ginplus"
-	"github.com/LyricTian/gin-admin/pkg/logger"
+	"gin-admin/internal/app/ginadmin/ginplus"
+	"gin-admin/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 

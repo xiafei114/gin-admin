@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/config"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/middleware"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/routers/api"
-	"github.com/LyricTian/gin-admin/pkg/logger"
+	"gin-admin/internal/app/ginadmin/config"
+	"gin-admin/internal/app/ginadmin/middleware"
+	"gin-admin/internal/app/ginadmin/routers/api"
+	"gin-admin/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 

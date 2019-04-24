@@ -8,10 +8,10 @@ import (
 	"sync/atomic"
 	"syscall"
 
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/config"
-	"github.com/LyricTian/gin-admin/pkg/logger"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	"gin-admin/internal/app/ginadmin"
+	"gin-admin/internal/app/ginadmin/config"
+	"gin-admin/pkg/logger"
+	"gin-admin/pkg/util"
 )
 
 // VERSION 版本号，

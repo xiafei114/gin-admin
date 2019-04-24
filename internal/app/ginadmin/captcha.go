@@ -1,10 +1,11 @@
 package ginadmin
 
 import (
+	"gin-admin/internal/app/ginadmin/config"
+	"gin-admin/pkg/logger"
+
 	"github.com/LyricTian/captcha"
 	"github.com/LyricTian/captcha/store"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/config"
-	"github.com/LyricTian/gin-admin/pkg/logger"
 )
 
 // InitCaptcha 初始化图形验证码

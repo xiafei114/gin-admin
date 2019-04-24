@@ -3,7 +3,7 @@ package middleware
 import (
 	"time"
 
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/config"
+	"gin-admin/internal/app/ginadmin/config"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )

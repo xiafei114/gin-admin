@@ -3,10 +3,10 @@ package ginadmin
 import (
 	"context"
 
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/bll"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/config"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/schema"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	"gin-admin/internal/app/ginadmin/bll"
+	"gin-admin/internal/app/ginadmin/config"
+	"gin-admin/internal/app/ginadmin/schema"
+	"gin-admin/pkg/util"
 )
 
 // InitData 初始化应用数据

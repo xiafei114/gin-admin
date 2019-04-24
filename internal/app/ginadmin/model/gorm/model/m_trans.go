@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/LyricTian/gin-admin/pkg/errors"
-	"github.com/LyricTian/gin-admin/pkg/gormplus"
-	"github.com/LyricTian/gin-admin/pkg/logger"
+	"gin-admin/pkg/errors"
+	"gin-admin/pkg/gormplus"
+	"gin-admin/pkg/logger"
 )
 
 // NewTrans 创建事务管理实例

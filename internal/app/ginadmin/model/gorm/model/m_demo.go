@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/model/gorm/entity"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/schema"
-	"github.com/LyricTian/gin-admin/pkg/errors"
-	"github.com/LyricTian/gin-admin/pkg/gormplus"
-	"github.com/LyricTian/gin-admin/pkg/logger"
+	"gin-admin/internal/app/ginadmin/model/gorm/entity"
+	"gin-admin/internal/app/ginadmin/schema"
+	"gin-admin/pkg/errors"
+	"gin-admin/pkg/gormplus"
+	"gin-admin/pkg/logger"
 )
 
 // NewDemo 创建demo存储实例

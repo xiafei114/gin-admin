@@ -3,11 +3,11 @@ package ginadmin
 import (
 	"context"
 
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/bll"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/config"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/model"
-	"github.com/LyricTian/gin-admin/pkg/auth"
-	"github.com/LyricTian/gin-admin/pkg/logger"
+	"gin-admin/internal/app/ginadmin/bll"
+	"gin-admin/internal/app/ginadmin/config"
+	"gin-admin/internal/app/ginadmin/model"
+	"gin-admin/pkg/auth"
+	"gin-admin/pkg/logger"
 	"github.com/casbin/casbin"
 	"github.com/google/gops/agent"
 )

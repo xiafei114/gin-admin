@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/ginplus"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	"gin-admin/internal/app/ginadmin/ginplus"
+	"gin-admin/pkg/util"
 	"github.com/gin-gonic/gin"
 )
 

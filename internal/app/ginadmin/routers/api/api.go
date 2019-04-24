@@ -1,10 +1,10 @@
 package api
 
 import (
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/bll"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/middleware"
-	"github.com/LyricTian/gin-admin/internal/app/ginadmin/routers/api/ctl"
-	"github.com/LyricTian/gin-admin/pkg/auth"
+	"gin-admin/internal/app/ginadmin/bll"
+	"gin-admin/internal/app/ginadmin/middleware"
+	"gin-admin/internal/app/ginadmin/routers/api/ctl"
+	"gin-admin/pkg/auth"
 	"github.com/casbin/casbin"
 	"github.com/gin-gonic/gin"
 )

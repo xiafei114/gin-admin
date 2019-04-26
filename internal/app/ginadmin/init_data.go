@@ -42,6 +42,7 @@ func initMenuData(ctx context.Context, obj *Object) error {
 		return nil
 	}
 
+	// 初始化菜单
 	var data schema.MenuTrees
 	err = util.JSONUnmarshal([]byte(menuData), &data)
 	if err != nil {

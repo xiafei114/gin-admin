@@ -9,12 +9,12 @@ import (
 
 // GetUserDB 获取用户存储
 func GetUserDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return getDBWithModel(ctx, defDB, User{})
+	return GetDBWithModel(ctx, defDB, User{})
 }
 
 // GetUserRoleDB 获取用户角色关联存储
 func GetUserRoleDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return getDBWithModel(ctx, defDB, UserRole{})
+	return GetDBWithModel(ctx, defDB, UserRole{})
 }
 
 // SchemaUser 用户对象
@@ -61,7 +61,7 @@ type User struct {
 }
 
 func (a User) String() string {
-	return toString(a)
+	return ToString(a)
 }
 
 // TableName 表名

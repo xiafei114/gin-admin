@@ -9,7 +9,7 @@ import (
 
 // GetDemoDB 获取demo存储
 func GetDemoDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return getDBWithModel(ctx, defDB, Demo{})
+	return GetDBWithModel(ctx, defDB, Demo{})
 }
 
 // SchemaDemo demo对象
@@ -40,7 +40,7 @@ type Demo struct {
 }
 
 func (a Demo) String() string {
-	return toString(a)
+	return ToString(a)
 }
 
 // TableName 表名

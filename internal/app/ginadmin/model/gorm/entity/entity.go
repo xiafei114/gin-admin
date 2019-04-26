@@ -8,6 +8,7 @@ import (
 	icontext "gin-admin/internal/app/ginadmin/context"
 	"gin-admin/pkg/gormplus"
 	"gin-admin/pkg/util"
+	// uuid "github.com/satori/go.uuid"
 )
 
 // 表名前缀
@@ -25,7 +26,8 @@ func GetTablePrefix() string {
 
 // Model base model
 type Model struct {
-	ID        uint       `gorm:"column:id;primary_key;auto_increment;"`
+	ID uint `gorm:"column:id;primary_key;auto_increment;"`
+	// ID        uuid.UUID  `gorm:"column:id;type:char(36); primary_key"`
 	CreatedAt time.Time  `gorm:"column:created_at;"`
 	UpdatedAt time.Time  `gorm:"column:updated_at;"`
 	DeletedAt *time.Time `gorm:"column:deleted_at;index;"`
@@ -36,11 +38,11 @@ func (Model) TableName(name string) string {
 	return fmt.Sprintf("%s%s", GetTablePrefix(), name)
 }
 
-func toString(v interface{}) string {
+func ToString(v interface{}) string {
 	return util.JSONMarshalToString(v)
 }
 
-func getDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
+func GetDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
 	trans, ok := icontext.FromTrans(ctx)
 	if ok {
 		db, ok := trans.(*gormplus.DB)
@@ -51,6 +53,6 @@ func getDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
 	return defDB
 }
 
-func getDBWithModel(ctx context.Context, defDB *gormplus.DB, m interface{}) *gormplus.DB {
-	return gormplus.Wrap(getDB(ctx, defDB).Model(m))
+func GetDBWithModel(ctx context.Context, defDB *gormplus.DB, m interface{}) *gormplus.DB {
+	return gormplus.Wrap(GetDB(ctx, defDB).Model(m))
 }

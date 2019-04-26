@@ -10,12 +10,12 @@ import (
 
 // GetRoleDB 获取角色存储
 func GetRoleDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return getDBWithModel(ctx, defDB, Role{})
+	return GetDBWithModel(ctx, defDB, Role{})
 }
 
 // GetRoleMenuDB 获取角色菜单关联存储
 func GetRoleMenuDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return getDBWithModel(ctx, defDB, RoleMenu{})
+	return GetDBWithModel(ctx, defDB, RoleMenu{})
 }
 
 // SchemaRole 角色对象
@@ -58,7 +58,7 @@ type Role struct {
 }
 
 func (a Role) String() string {
-	return toString(a)
+	return ToString(a)
 }
 
 // TableName 表名

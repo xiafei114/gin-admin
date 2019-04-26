@@ -3,6 +3,7 @@ package gorm
 import (
 	"gin-admin/internal/app/ginadmin/model"
 	"gin-admin/internal/app/ginadmin/model/gorm/entity"
+	demoEntity "gin-admin/internal/app/ginadmin/model/gorm/entity/demo"
 	gmodel "gin-admin/internal/app/ginadmin/model/gorm/model"
 	"gin-admin/pkg/gormplus"
 )
@@ -23,6 +24,8 @@ func AutoMigrate(db *gormplus.DB) error {
 		new(entity.MenuAction),
 		new(entity.MenuResource),
 		new(entity.Demo),
+		new(demoEntity.Product),
+		new(demoEntity.ProductCategory),
 	).Error
 }
 

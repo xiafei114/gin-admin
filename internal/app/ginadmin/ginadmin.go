@@ -8,6 +8,7 @@ import (
 	"gin-admin/internal/app/ginadmin/model"
 	"gin-admin/pkg/auth"
 	"gin-admin/pkg/logger"
+
 	"github.com/casbin/casbin"
 	"github.com/google/gops/agent"
 )
@@ -15,9 +16,9 @@ import (
 // Object 对象集合
 type Object struct {
 	Enforcer *casbin.Enforcer
-	Auth     auth.Auther
-	Model    *model.Common
-	Bll      *bll.Common
+	Auth     auth.Auther   // 认证接口
+	Model    *model.Common // 提供统一的存储接口
+	Bll      *bll.Common   // 提供统一的业务逻辑处理
 }
 
 // Init 应用初始化

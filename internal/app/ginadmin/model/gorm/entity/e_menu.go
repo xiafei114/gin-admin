@@ -9,17 +9,17 @@ import (
 
 // GetMenuDB 获取菜单存储
 func GetMenuDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return getDBWithModel(ctx, defDB, Menu{})
+	return GetDBWithModel(ctx, defDB, Menu{})
 }
 
 // GetMenuActionDB 获取菜单动作存储
 func GetMenuActionDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return getDBWithModel(ctx, defDB, MenuAction{})
+	return GetDBWithModel(ctx, defDB, MenuAction{})
 }
 
 // GetMenuResourceDB 获取菜单资源存储
 func GetMenuResourceDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return getDBWithModel(ctx, defDB, MenuResource{})
+	return GetDBWithModel(ctx, defDB, MenuResource{})
 }
 
 // SchemaMenu 菜单对象
@@ -74,7 +74,7 @@ type Menu struct {
 }
 
 func (a Menu) String() string {
-	return toString(a)
+	return ToString(a)
 }
 
 // TableName 表名

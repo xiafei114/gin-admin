@@ -41,6 +41,7 @@ go get -v github.com/LyricTian/gin-admin/cmd/ginadmin
 
 ```bash
 ginadmin -c ./configs/ginadmin/config.toml -m ./configs/ginadmin/model.conf -swagger ./internal/app/ginadmin/swagger
+go run cmd/ginadmin/main.go -c ./configs/ginadmin/config.toml -m ./configs/ginadmin/model.conf -swagger ./internal/app/ginadmin/swagger -www D:/WebstormProjects/gin-admin-react/dist
 ```
 
 #### 温馨提醒

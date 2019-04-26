@@ -22,7 +22,7 @@ import (
 // @Schemes http,https
 // @Host 127.0.0.1:10088
 // @BasePath /
-// @Name LyricTian
-// @Contact tiannianshou@gmail.com
+// @Name Xia Fei
+// @Contact xiafei114@gmail.com
 // @Consumes json
 // @Produces json

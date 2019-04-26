@@ -4,7 +4,9 @@ import (
 	"gin-admin/internal/app/ginadmin/bll"
 	"gin-admin/internal/app/ginadmin/middleware"
 	"gin-admin/internal/app/ginadmin/routers/api/ctl"
+
 	"gin-admin/pkg/auth"
+
 	"github.com/casbin/casbin"
 	"github.com/gin-gonic/gin"
 )
@@ -37,11 +39,13 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 	// 请求频率限制中间件
 	g.Use(middleware.RateLimiterMiddleware())
 
-	demoCtl := ctl.NewDemo(b)
+	demoCCtl := ctl.NewDemo(b)
 	loginCtl := ctl.NewLogin(b)
 	menuCtl := ctl.NewMenu(b)
 	roleCtl := ctl.NewRole(b)
 	userCtl := ctl.NewUser(b)
+
+	productCtl := ctl.NewProduct(b)
 
 	v1 := g.Group("/v1")
 	{
@@ -60,13 +64,13 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.GET("/current/menutree", loginCtl.QueryUserMenuTree)
 
 		// 注册/api/v1/demos
-		v1.GET("/demos", demoCtl.Query)
-		v1.GET("/demos/:id", demoCtl.Get)
-		v1.POST("/demos", demoCtl.Create)
-		v1.PUT("/demos/:id", demoCtl.Update)
-		v1.DELETE("/demos/:id", demoCtl.Delete)
-		v1.PATCH("/demos/:id/enable", demoCtl.Enable)
-		v1.PATCH("/demos/:id/disable", demoCtl.Disable)
+		v1.GET("/demos", demoCCtl.Query)
+		v1.GET("/demos/:id", demoCCtl.Get)
+		v1.POST("/demos", demoCCtl.Create)
+		v1.PUT("/demos/:id", demoCCtl.Update)
+		v1.DELETE("/demos/:id", demoCCtl.Delete)
+		v1.PATCH("/demos/:id/enable", demoCCtl.Enable)
+		v1.PATCH("/demos/:id/disable", demoCCtl.Disable)
 
 		// 注册/api/v1/menus
 		v1.GET("/menus", menuCtl.Query)
@@ -90,5 +94,14 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.DELETE("/users/:id", userCtl.Delete)
 		v1.PATCH("/users/:id/enable", userCtl.Enable)
 		v1.PATCH("/users/:id/disable", userCtl.Disable)
+
+		// 注册/api/v1/product
+		v1.GET("/product", productCtl.Query)
+		v1.GET("/product/:id", productCtl.Get)
+		v1.POST("/products", productCtl.Create)
+		v1.PUT("/products/:id", productCtl.Update)
+		v1.DELETE("/products/:id", productCtl.Delete)
+		v1.PATCH("/products/:id/enable", productCtl.Enable)
+		v1.PATCH("/products/:id/disable", productCtl.Disable)
 	}
 }

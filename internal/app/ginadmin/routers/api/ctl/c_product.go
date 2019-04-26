@@ -4,7 +4,8 @@ import (
 	"gin-admin/internal/app/ginadmin/bll"
 	demoBll "gin-admin/internal/app/ginadmin/bll/demo"
 	"gin-admin/internal/app/ginadmin/ginplus"
-	schema "gin-admin/internal/app/ginadmin/schema/demo"
+	"gin-admin/internal/app/ginadmin/schema"
+	demoSchema "gin-admin/internal/app/ginadmin/schema/demo"
 	"gin-admin/pkg/errors"
 	"gin-admin/pkg/util"
 
@@ -43,13 +44,13 @@ func (a *Product) Query(c *gin.Context) {
 // @Param code query string false "编号"
 // @Param name query string false "名称"
 // @Param status query int false "状态(1:启用 2:停用)"
-// @Success 200 []schema.Product "查询结果：{list:列表数据,pagination:{current:页索引,pageSize:页大小,total:总数量}}"
+// @Success 200 []demoSchema.Product "查询结果：{list:列表数据,pagination:{current:页索引,pageSize:页大小,total:总数量}}"
 // @Failure 400 schema.HTTPError "{error:{code:0,message:未知的查询类型}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router GET /api/v1/Products?q=page
 func (a *Product) QueryPage(c *gin.Context) {
-	var params schema.ProductQueryParam
+	var params demoSchema.ProductQueryParam
 	params.LikeCode = c.Query("code")
 	params.LikeName = c.Query("name")
 	params.Status = util.S(c.Query("status")).Int()
@@ -67,7 +68,7 @@ func (a *Product) QueryPage(c *gin.Context) {
 // @Summary 查询指定数据
 // @Param Authorization header string false "Bearer 用户令牌"
 // @Param id path string true "记录ID"
-// @Success 200 schema.Product
+// @Success 200 demoSchema.Product
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 404 schema.HTTPError "{error:{code:0,message:资源不存在}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
@@ -84,14 +85,14 @@ func (a *Product) Get(c *gin.Context) {
 // Create 创建数据
 // @Summary 创建数据
 // @Param Authorization header string false "Bearer 用户令牌"
-// @Param body body schema.Product true
-// @Success 200 schema.Product
+// @Param body body demoSchema.Product true
+// @Success 200 demoSchema.Product
 // @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router POST /api/v1/Products
 func (a *Product) Create(c *gin.Context) {
-	var item schema.Product
+	var item demoSchema.Product
 	if err := ginplus.ParseJSON(c, &item); err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -109,14 +110,14 @@ func (a *Product) Create(c *gin.Context) {
 // @Summary 更新数据
 // @Param Authorization header string false "Bearer 用户令牌"
 // @Param id path string true "记录ID"
-// @Param body body schema.Product true
-// @Success 200 schema.Product
+// @Param body body demoSchema.Product true
+// @Success 200 demoSchema.Product
 // @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router PUT /api/v1/Products/{id}
 func (a *Product) Update(c *gin.Context) {
-	var item schema.Product
+	var item demoSchema.Product
 	if err := ginplus.ParseJSON(c, &item); err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -179,4 +180,8 @@ func (a *Product) Disable(c *gin.Context) {
 		return
 	}
 	ginplus.ResOK(c)
+}
+
+func t() {
+	schema.Init()
 }

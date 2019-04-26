@@ -39,3 +39,7 @@ type PaginationParam struct {
 type PaginationResult struct {
 	Total int // 总数据条数
 }
+
+// Init 初始化
+func Init() {
+}

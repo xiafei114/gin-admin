@@ -61,6 +61,7 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		// 注册/api/v1/current
 		v1.PUT("/current/password", loginCtl.UpdatePassword)
 		v1.GET("/current/user", loginCtl.GetUserInfo)
+		v1.GET("/current/user2", loginCtl.GetCurrentUser)
 		v1.GET("/current/menutree", loginCtl.QueryUserMenuTree)
 
 		// 注册/api/v1/demos

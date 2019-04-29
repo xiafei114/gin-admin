@@ -10,9 +10,33 @@ type LoginParam struct {
 
 // UserLoginInfo 用户登录信息
 type UserLoginInfo struct {
-	UserName  string   `json:"user_name" swaggo:"true,用户名"`
-	RealName  string   `json:"real_name" swaggo:"true,真实姓名"`
-	RoleNames []string `json:"role_names" swaggo:"true,角色名列表"`
+	ID        string          `json:"id" swaggo:"true,id"`
+	Name      string          `json:"name" swaggo:"true,姓名"`
+	UserName  string          `json:"user_name" swaggo:"true,用户名"`
+	RealName  string          `json:"real_name" swaggo:"true,真实姓名"`
+	RoleNames []string        `json:"role_names" swaggo:"true,角色名列表"`
+	Role      []UserLoginRole `json:"role" swaggo:"true,用户角色"`
+}
+
+// UserLoginRole 获得登录用户信息
+type UserLoginRole struct {
+	ID          string                `json:"id" swaggo:"true,id"`
+	Name        string                `json:"name" swaggo:"true,名称"`
+	Describe    string                `json:"describe" swaggo:"true,描述"`
+	Permissions []UserLoginPermission `json:"permissions,omitempty" swaggo:"true,许可"`
+}
+
+// UserLoginPermission 获得登录用户信息
+type UserLoginPermission struct {
+	PermissionID    string      `json:"permissionID" swaggo:"true,id"`
+	PermissionName  string      `json:"permissionName" swaggo:"true,名称"`
+	ActionEntitySet MenuActions `json:"actionEntitySets" swaggo:"false,动作列表"`
+}
+
+// UserLoginedInfo 获得登录用户信息
+type UserLoginedInfo struct {
+	Message string        `json:"message" swaggo:"true,消息"`
+	Result  UserLoginInfo `json:"result" swaggo:"true,返回结果"`
 }
 
 // UpdatePasswordParam 更新密码请求参数

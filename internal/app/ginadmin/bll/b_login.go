@@ -165,6 +165,46 @@ func (a *Login) GetUserInfo(ctx context.Context) (*schema.UserLoginInfo, error) 
 	return loginInfo, nil
 }
 
+// GetCurrentUserInfo 获取当前用户登录信息
+func (a *Login) GetCurrentUserInfo(ctx context.Context) (*schema.UserLoginedInfo, error) {
+	userID := GetUserID(ctx)
+	if isRoot := CheckIsRootUser(ctx, userID); isRoot {
+		// root := GetRootUser()
+		loginInfo := &schema.UserLoginedInfo{
+			// UserName: root.UserName,
+			// RealName: root.RealName,
+		}
+		return loginInfo, nil
+	}
+
+	user, err := a.UserModel.Get(ctx, userID, schema.UserQueryOptions{
+		IncludeRoles: true,
+	})
+	if err != nil {
+		return nil, err
+	} else if user == nil {
+		return nil, ErrInvalidUser
+	} else if user.Status != 1 {
+		return nil, ErrUserDisable
+	}
+
+	loginInfo := &schema.UserLoginedInfo{
+		// UserName: user.UserName,
+		// RealName: user.RealName,
+	}
+
+	if roleIDs := user.Roles.ToRoleIDs(); len(roleIDs) > 0 {
+		// roles, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{
+		// 	RecordIDs: roleIDs,
+		// })
+		if err != nil {
+			return nil, err
+		}
+		// loginInfo.RoleNames = roles.Data.ToNames()
+	}
+	return loginInfo, nil
+}
+
 // QueryUserMenuTree 查询当前用户的权限菜单树
 func (a *Login) QueryUserMenuTree(ctx context.Context) ([]*schema.MenuTree, error) {
 	userID := GetUserID(ctx)

@@ -20,7 +20,7 @@ import (
 // @Title GinAdmin
 // @Description RBAC scaffolding based on GIN + GORM + CASBIN.
 // @Schemes http,https
-// @Host 127.0.0.1:10088
+// @Host 127.0.0.1:8088
 // @BasePath /
 // @Name Xia Fei
 // @Contact xiafei114@gmail.com

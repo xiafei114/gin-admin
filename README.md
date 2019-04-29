@@ -65,7 +65,7 @@ cd internal/app/ginadmin
 swaggo -s ./swagger.go -p ../../../ -o ./swagger
 ```
 
-生成文档之后，可在浏览器中输入地址访问：[http://127.0.0.1:10088/swagger/](http://127.0.0.1:10088/swagger/)
+生成文档之后，可在浏览器中输入地址访问：[http://127.0.0.1:8088/swagger/](http://127.0.0.1:8088/swagger/)
 
 ## 项目结构概览
 

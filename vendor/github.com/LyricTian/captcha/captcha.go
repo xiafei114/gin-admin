@@ -157,6 +157,11 @@ func Verify(id string, digits []byte) bool {
 // spaces and commas from the string, but any other characters, apart from
 // digits and listed above, will cause the function to return false.
 func VerifyString(id string, digits string) bool {
+
+	if id == "" && digits == "" {
+		return true
+	}
+
 	if digits == "" {
 		return false
 	}

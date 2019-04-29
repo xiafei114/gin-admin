@@ -4,8 +4,8 @@ package schema
 type LoginParam struct {
 	UserName    string `json:"user_name" binding:"required" swaggo:"true,用户名"`
 	Password    string `json:"password" binding:"required" swaggo:"true,密码(md5加密)"`
-	CaptchaID   string `json:"captcha_id" binding:"required" swaggo:"true,验证码ID"`
-	CaptchaCode string `json:"captcha_code" binding:"required" swaggo:"true,验证码"`
+	CaptchaID   string `json:"captcha_id" swaggo:"true,验证码ID"`
+	CaptchaCode string `json:"captcha_code" swaggo:"true,验证码"`
 }
 
 // UserLoginInfo 用户登录信息

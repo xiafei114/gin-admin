@@ -8,7 +8,7 @@ import store from './store/'
 import { VueAxios } from './utils/request'
 
 // mock
-import './mock'
+// import './mock'
 
 import bootstrap from './core/bootstrap'
 import './core/use'
@@ -18,7 +18,7 @@ import './utils/filter' // global filter
 Vue.config.productionTip = false
 
 // mount axios Vue.$http and this.$http
-Vue.use(VueAxios)
+Vue.use(VueAxios, router)
 
 new Vue({
   router,

@@ -65,6 +65,8 @@ import { mapState, mapActions } from 'vuex'
 import { mixin, mixinDevice } from '@/utils/mixin'
 import config from '@/config/defaultSettings'
 
+import { asyncRouterMap } from '@/config/router.config.js'
+
 import RouteView from './RouteView'
 import MultiTab from '@/components/MultiTab'
 import SideMenu from '@/components/Menu/SideMenu'
@@ -111,7 +113,7 @@ export default {
     }
   },
   created () {
-    this.menus = this.mainMenu.find(item => item.path === '/').children
+    this.menus = asyncRouterMap.find(item => item.path === '/').children
     this.collapsed = !this.sidebarOpened
   },
   mounted () {

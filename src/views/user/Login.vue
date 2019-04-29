@@ -134,6 +134,7 @@ export default {
       requiredTwoStepCaptcha: false,
       stepCaptchaVisible: false,
       form: this.$form.createForm(this),
+      username: 'root',
       state: {
         time: 60,
         loginBtn: false,
@@ -146,7 +147,7 @@ export default {
   created () {
     get2step({ })
       .then(res => {
-        this.requiredTwoStepCaptcha = res.result.stepCode
+        this.requiredTwoStepCaptcha = res.captcha_id
       })
       .catch(() => {
         this.requiredTwoStepCaptcha = false
@@ -188,10 +189,13 @@ export default {
           console.log('login form', values)
           const loginParams = { ...values }
           delete loginParams.username
-          loginParams[!state.loginType ? 'email' : 'username'] = values.username
+          loginParams[!state.loginType ? 'email' : 'user_name'] = values.username
           loginParams.password = md5(values.password)
           Login(loginParams)
-            .then((res) => this.loginSuccess(res))
+            .then((res) => {
+              console.log('dp loginSuccess', res)
+              this.loginSuccess(res)
+            })
             .catch(err => this.requestFailed(err))
             .finally(() => {
               state.loginBtn = false
@@ -258,6 +262,7 @@ export default {
       }, 1000)
     },
     requestFailed (err) {
+      console.log(err)
       this.$notification['error']({
         message: '错误',
         description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',

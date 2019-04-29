@@ -29,5 +29,13 @@ export default {
     namespace: 'pro__', // key prefix
     name: 'ls', // name variable Vue.[ls] or this.[$ls],
     storage: 'local' // storage name session, local, memory
+  },
+  /**
+   * @description api请求基础路径
+   */
+  baseUrl: {
+    // dev: 'https://www.easy-mock.com/mock/5add9213ce4d0e69998a6f51/iview-admin/',
+    dev: 'http://localhost:8088',
+    pro: ''
   }
 }

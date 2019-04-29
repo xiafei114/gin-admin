@@ -1,9 +1,12 @@
 const api = {
-  Login: '/auth/login',
-  Logout: '/auth/logout',
+  Login: '/v1/login',
+  Logout: '/v1/login/exit',
+  // 根据验证码id获得图像
+  LoginCaptcha: '/v1/login/captcha',
   ForgePassword: '/auth/forge-password',
   Register: '/auth/register',
-  twoStepCode: '/auth/2step-code',
+  // 获得验证码id
+  twoStepCode: '/v1/login/captchaid',
   SendSms: '/account/sms',
   SendSmsErr: '/account/sms_err',
   // get my info

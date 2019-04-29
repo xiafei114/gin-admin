@@ -9,16 +9,24 @@ import {
   ACCESS_TOKEN
 } from '@/store/mutation-types'
 
+import config from '@/config/defaultSettings'
+
+// 获得baseUrl
+const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
+
 // 创建 axios 实例
 const service = axios.create({
-  baseURL: '/api', // api base_url
+  baseURL: `${baseUrl}/api`, // api base_url
   timeout: 6000 // 请求超时时间
 })
 
 const err = (error) => {
   if (error.response) {
+    console.log(error)
     const data = error.response.data
     const token = Vue.ls.get(ACCESS_TOKEN)
+
+    console.log(error.response.data)
     if (error.response.status === 403) {
       notification.error({
         message: 'Forbidden',

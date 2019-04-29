@@ -14,7 +14,7 @@ import { axios } from '@/utils/request'
  */
 export function login (parameter) {
   return axios({
-    url: '/auth/login',
+    url: api.Login,
     method: 'post',
     data: parameter
   })
@@ -40,7 +40,7 @@ export function getInfo () {
 
 export function logout () {
   return axios({
-    url: '/auth/logout',
+    url: api.Logout,
     method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
@@ -55,7 +55,7 @@ export function logout () {
 export function get2step (parameter) {
   return axios({
     url: api.twoStepCode,
-    method: 'post',
+    method: 'get',
     data: parameter
   })
 }

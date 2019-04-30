@@ -167,6 +167,23 @@ func (a *Login) GetUserInfo(ctx context.Context) (*schema.UserLoginInfo, error) 
 
 // GetCurrentUserInfo 获取当前用户登录信息
 func (a *Login) GetCurrentUserInfo(ctx context.Context) (*schema.UserLoginedInfo, error) {
+
+	// js := make(map[string]interface{})
+	// arrList := make([]interface{}, 0)
+
+	// arr1 := make([]interface{}, 0)
+	// arr1 = append(arr1, "data1")
+	// arr1 = append(arr1, 14)
+
+	// arr2 := make([]interface{}, 0)
+	// arr2 = append(arr2, "data2")
+	// arr2 = append(arr2, "red")
+
+	// arrList = append(arrList, arr1)
+	// arrList = append(arrList, arr2)
+
+	// js["params"] = arrList
+
 	userID := GetUserID(ctx)
 	if isRoot := CheckIsRootUser(ctx, userID); isRoot {
 		// root := GetRootUser()

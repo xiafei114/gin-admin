@@ -55,13 +55,16 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.POST("/login", loginCtl.Login)
 		v1.POST("/login/exit", loginCtl.Logout)
 
+		//伪造的api
+		v1.POST("/mock/login", loginCtl.MockLogin)
+		v1.GET("/mock/current/user", loginCtl.MockGetUserInfo)
+
 		// 注册/api/v1/refresh_token
 		v1.POST("/refresh_token", loginCtl.RefreshToken)
 
 		// 注册/api/v1/current
 		v1.PUT("/current/password", loginCtl.UpdatePassword)
 		v1.GET("/current/user", loginCtl.GetUserInfo)
-		v1.GET("/current/user2", loginCtl.GetCurrentUser)
 		v1.GET("/current/menutree", loginCtl.QueryUserMenuTree)
 
 		// 注册/api/v1/demos

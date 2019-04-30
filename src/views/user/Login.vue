@@ -134,7 +134,6 @@ export default {
       requiredTwoStepCaptcha: false,
       stepCaptchaVisible: false,
       form: this.$form.createForm(this),
-      username: 'root',
       state: {
         time: 60,
         loginBtn: false,

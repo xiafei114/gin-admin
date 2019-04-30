@@ -36,13 +36,13 @@ const user = {
     // 登录
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
+        console.log('userInfo ...', userInfo)
         login(userInfo).then(response => {
-          console.log(response)
-          const token = response.access_token
-          // const expires_at = response.expires_at
-          Vue.ls.set(ACCESS_TOKEN, token, 7 * 24 * 60 * 60 * 1000)
-          commit('SET_TOKEN', token)
-          resolve()
+          console.log('Login...', response)
+          const result = response.result
+          Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
+          commit('SET_TOKEN', result.token)
+          resolve(response)
         }).catch(error => {
           reject(error)
         })

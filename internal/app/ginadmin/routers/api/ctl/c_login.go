@@ -291,7 +291,28 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"roleId":         "admin",
 					"permissionId":   "dashboard",
 					"permissionName": "仪表盘",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"query\",\"defaultCheck\":false,\"describe\":\"查询\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"},{\"action\":\"delete\",\"defaultCheck\":false,\"describe\":\"删除\"}]",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "update",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
 					"actionEntitySet": []map[string]interface{}{
 						map[string]interface{}{
 							"action":       "add",
@@ -326,7 +347,28 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"roleId":         "admin",
 					"permissionId":   "exception",
 					"permissionName": "异常页面权限",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"query\",\"defaultCheck\":false,\"describe\":\"查询\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"},{\"action\":\"delete\",\"defaultCheck\":false,\"describe\":\"删除\"}]",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "update",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
 					"actionEntitySet": []map[string]interface{}{
 						map[string]interface{}{
 							"action":       "add",
@@ -361,7 +403,28 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"roleId":         "admin",
 					"permissionId":   "result",
 					"permissionName": "结果权限",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"query\",\"defaultCheck\":false,\"describe\":\"查询\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"},{\"action\":\"delete\",\"defaultCheck\":false,\"describe\":\"删除\"}]",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "update",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
 					"actionEntitySet": []map[string]interface{}{
 						map[string]interface{}{
 							"action":       "add",
@@ -396,7 +459,28 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"roleId":         "admin",
 					"permissionId":   "profile",
 					"permissionName": "详细页权限",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"query\",\"defaultCheck\":false,\"describe\":\"查询\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"},{\"action\":\"delete\",\"defaultCheck\":false,\"describe\":\"删除\"}]",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "update",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
 					"actionEntitySet": []map[string]interface{}{
 						map[string]interface{}{
 							"action":       "add",
@@ -431,38 +515,24 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"roleId":         "admin",
 					"permissionId":   "table",
 					"permissionName": "表格权限",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"import\",\"defaultCheck\":false,\"describe\":\"导入\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"}]",
-					"actionEntitySet": []map[string]interface{}{
+					"actions": []map[string]interface{}{
 						map[string]interface{}{
-							"action":       "add",
-							"describe":     "新增",
-							"defaultCheck": false,
+							"role":  "add",
+							"title": "添加",
 						},
 						map[string]interface{}{
-							"action":       "import",
-							"describe":     "导入",
-							"defaultCheck": false,
+							"role":  "delete",
+							"title": "删除",
 						},
 						map[string]interface{}{
-							"action":       "get",
-							"describe":     "详情",
-							"defaultCheck": false,
+							"role":  "import",
+							"title": "导入",
 						},
 						map[string]interface{}{
-							"action":       "delete",
-							"describe":     "删除",
-							"defaultCheck": false,
+							"role":  "get",
+							"title": "详情",
 						},
 					},
-					"actionList": "",
-					"dataAccess": "",
-				},
-
-				map[string]interface{}{
-					"roleId":         "admin",
-					"permissionId":   "table",
-					"permissionName": "表格权限",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"import\",\"defaultCheck\":false,\"describe\":\"导入\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"}]",
 					"actionEntitySet": []map[string]interface{}{
 						map[string]interface{}{
 							"action":       "add",
@@ -493,7 +563,28 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"roleId":         "admin",
 					"permissionId":   "form",
 					"permissionName": "表单权限",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"import\",\"defaultCheck\":false,\"describe\":\"导入\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"}]",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "update",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
 					"actionEntitySet": []map[string]interface{}{
 						map[string]interface{}{
 							"action":       "add",
@@ -501,13 +592,18 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "import",
-							"describe":     "导入",
+							"action":       "query",
+							"describe":     "查询",
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
 							"action":       "get",
 							"describe":     "详情",
+							"defaultCheck": false,
+						},
+						map[string]interface{}{
+							"action":       "update",
+							"describe":     "更新",
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
@@ -523,7 +619,28 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"roleId":         "admin",
 					"permissionId":   "user",
 					"permissionName": "权限管理",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"import\",\"defaultCheck\":false,\"describe\":\"导入\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"}]",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "update",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
 					"actionEntitySet": []map[string]interface{}{
 						map[string]interface{}{
 							"action":       "add",
@@ -531,13 +648,18 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "import",
-							"describe":     "导入",
+							"action":       "query",
+							"describe":     "查询",
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
 							"action":       "get",
 							"describe":     "详情",
+							"defaultCheck": false,
+						},
+						map[string]interface{}{
+							"action":       "update",
+							"describe":     "更新",
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
@@ -553,7 +675,28 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"roleId":         "admin",
 					"permissionId":   "support",
 					"permissionName": "权限管理",
-					"actions":        "[{\"action\":\"add\",\"defaultCheck\":false,\"describe\":\"新增\"},{\"action\":\"import\",\"defaultCheck\":false,\"describe\":\"导入\"},{\"action\":\"get\",\"defaultCheck\":false,\"describe\":\"详情\"},{\"action\":\"update\",\"defaultCheck\":false,\"describe\":\"修改\"}]",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "update",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
 					"actionEntitySet": []map[string]interface{}{
 						map[string]interface{}{
 							"action":       "add",
@@ -561,13 +704,18 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "import",
-							"describe":     "导入",
+							"action":       "query",
+							"describe":     "查询",
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
 							"action":       "get",
 							"describe":     "详情",
+							"defaultCheck": false,
+						},
+						map[string]interface{}{
+							"action":       "update",
+							"describe":     "更新",
 							"defaultCheck": false,
 						},
 						map[string]interface{}{

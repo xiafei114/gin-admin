@@ -154,7 +154,7 @@ export default {
     // this.requiredTwoStepCaptcha = true
   },
   methods: {
-    ...mapActions(['Login', 'Logout']),
+    ...mapActions(['Login', 'GetInfo', 'Logout']),
     // handler
     handleUsernameOrEmail (rule, value, callback) {
       const { state } = this
@@ -250,7 +250,15 @@ export default {
       })
     },
     loginSuccess (res) {
-      console.log(res)
+      // const {
+      //   GetInfo
+      // } = this
+      // console.log(res)
+      // console.log(GetInfo)
+      // // GetInfo.then(() => {
+      // //   this.loginBtn = false
+      // //   this.stepCaptchaVisible = false
+      // // })
       this.$router.push({ name: 'dashboard' })
       // 延迟 1 秒显示欢迎信息
       setTimeout(() => {

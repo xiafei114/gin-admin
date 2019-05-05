@@ -317,6 +317,21 @@ export const asyncRouterMap = [
             ]
           }
         ]
+      },
+      {
+        path: '/auth',
+        name: 'auth',
+        component: PageView,
+        meta: { title: '权限管理', icon: 'slack', permission: [ 'rule', 'role', 'account' ] },
+        redirect: '/auth/menu',
+        children: [
+          {
+            path: '/auth/menu',
+            name: 'rule',
+            component: () => import('@/views/auth/menu/MenuList'),
+            meta: { title: '菜单管理', icon: 'tool', keepAlive: true, permission: [ 'rule' ] }
+          }
+        ]
       }
     ]
   },

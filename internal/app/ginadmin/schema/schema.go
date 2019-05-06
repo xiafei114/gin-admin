@@ -34,7 +34,7 @@ type HTTPPage struct {
 }
 
 // HTTPList HTTP响应列表数据
-type HTTPList struct {
+type HTTPData struct {
 	Data interface{} `json:"data"`
 	// TotalCount int         `json:"totalCount"`
 }

@@ -1064,7 +1064,7 @@ func (a *Login) QueryUserMenuTree(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResList(c, menus)
+	ginplus.ResData(c, menus)
 }
 
 // UpdatePassword 更新个人密码

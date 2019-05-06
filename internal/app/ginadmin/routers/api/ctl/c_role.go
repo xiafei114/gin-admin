@@ -5,6 +5,7 @@ import (
 	"gin-admin/internal/app/ginadmin/ginplus"
 	"gin-admin/internal/app/ginadmin/schema"
 	"gin-admin/pkg/errors"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -72,7 +73,7 @@ func (a *Role) QuerySelect(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResList(c, items)
+	ginplus.ResData(c, items)
 }
 
 // Get 查询指定数据

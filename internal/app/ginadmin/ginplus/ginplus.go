@@ -184,12 +184,12 @@ func ResPage(c *gin.Context, v interface{}, pr *schema.PaginationResult) {
 	ResSuccess(c, response)
 }
 
-// ResList 响应列表数据
-func ResList(c *gin.Context, v interface{}) {
+// ResData 响应列表数据
+func ResData(c *gin.Context, v interface{}) {
 	timeUnix := time.Now().Unix()
 	response := schema.HTTPResponse{
 		Message: "",
-		Result: &schema.HTTPList{
+		Result: &schema.HTTPData{
 			Data: v,
 		},
 		Status:    200,

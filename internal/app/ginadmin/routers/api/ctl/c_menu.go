@@ -89,7 +89,7 @@ func (a *Menu) QueryTree(c *gin.Context) {
 		return
 	}
 
-	ginplus.ResList(c, treeData)
+	ginplus.ResData(c, treeData)
 }
 
 // Get 查询指定数据
@@ -107,7 +107,7 @@ func (a *Menu) Get(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, item)
+	ginplus.ResData(c, item)
 }
 
 // Create 创建数据

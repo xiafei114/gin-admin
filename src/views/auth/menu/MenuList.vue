@@ -64,7 +64,7 @@
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="$refs.createModal.add()">新建</a-button>
       <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
-      <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
+      <a-dropdown v-action:update v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1"><a-icon type="delete" />删除</a-menu-item>
           <!-- lock | unlock -->
@@ -94,7 +94,9 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record)">配置</a>
+          <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleDelete(record)">删除</a>
         </template>
       </span>
     </s-table>
@@ -106,7 +108,7 @@
 import moment from 'moment'
 import { STable } from '@/components'
 import entityForm from './MenuForm'
-import { menuList } from '@/api/auth'
+import { menuList, deleteMenu } from '@/api/auth'
 
 const statusMap = {
   0: {
@@ -218,12 +220,25 @@ export default {
     handleEdit (record) {
       this.$refs.createModal.edit(record)
     },
-    handleSub (record) {
-      if (record.status !== 0) {
-        this.$message.info(`${record.no} 订阅成功`)
-      } else {
-        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-      }
+    handleDelete (record) {
+      this.$confirm({
+        title: '确定删除此菜单吗?',
+        content: '',
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          deleteMenu({ id: record.record_id }).then(res => {
+            this.$message.info(`${record.name} 删除成功`)
+            this.handleOk()
+          })
+        }
+      })
+      // if (record.status !== 0) {
+      //   this.$message.info(`${record.no} 订阅成功`)
+      // } else {
+      //   this.$message.error(`${record.no} 订阅失败，规则已关闭`)
+      // }
     },
     handleOk () {
       this.$refs.table.refresh()

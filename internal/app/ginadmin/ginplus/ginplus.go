@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	icontext "gin-admin/internal/app/ginadmin/context"
 	"gin-admin/internal/app/ginadmin/schema"
@@ -58,9 +59,9 @@ func GetToken(c *gin.Context) string {
 	return token
 }
 
-// GetPageIndex 获取分页的页索引
+// GetPageIndex 获取分页的页索引 current
 func GetPageIndex(c *gin.Context) int {
-	if v := c.Query("current"); v != "" {
+	if v := c.Query("pageNo"); v != "" {
 		if iv := util.S(v).Int(); iv > 0 {
 			return iv
 		}
@@ -165,23 +166,37 @@ func ResErrorWithStatus(c *gin.Context, err error, status int, code ...int) {
 
 // ResPage 响应分页数据
 func ResPage(c *gin.Context, v interface{}, pr *schema.PaginationResult) {
-	list := schema.HTTPList{
-		List: v,
-		Pagination: &schema.HTTPPagination{
-			Current:  GetPageIndex(c),
-			PageSize: GetPageSize(c),
+	timeUnix := time.Now().Unix()
+	pageSize := GetPageSize(c)
+	response := schema.HTTPResponse{
+		Message: "",
+		Result: &schema.HTTPPage{
+			Data:       v,
+			PageNo:     GetPageIndex(c),
+			PageSize:   GetPageSize(c),
+			TotalPage:  pr.Total / pageSize,
+			TotalCount: pr.Total,
 		},
-	}
-	if pr != nil {
-		list.Pagination.Total = pr.Total
+		Status:    200,
+		Timestamp: timeUnix,
 	}
 
-	ResSuccess(c, list)
+	ResSuccess(c, response)
 }
 
 // ResList 响应列表数据
 func ResList(c *gin.Context, v interface{}) {
-	ResSuccess(c, schema.HTTPList{List: v})
+	timeUnix := time.Now().Unix()
+	response := schema.HTTPResponse{
+		Message: "",
+		Result: &schema.HTTPList{
+			Data: v,
+		},
+		Status:    200,
+		Timestamp: timeUnix,
+	}
+
+	ResSuccess(c, response)
 }
 
 // ResOK 响应OK

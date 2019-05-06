@@ -727,6 +727,62 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 					"actionList": "",
 					"dataAccess": "",
 				},
+				map[string]interface{}{
+					"roleId":         "admin",
+					"permissionId":   "rule",
+					"permissionName": "规则管理",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "update",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
+					"actionEntitySet": []map[string]interface{}{
+						map[string]interface{}{
+							"action":       "add",
+							"describe":     "新增",
+							"defaultCheck": false,
+						},
+						map[string]interface{}{
+							"action":       "query",
+							"describe":     "查询",
+							"defaultCheck": false,
+						},
+						map[string]interface{}{
+							"action":       "get",
+							"describe":     "详情",
+							"defaultCheck": false,
+						},
+						map[string]interface{}{
+							"action":       "update",
+							"describe":     "更新",
+							"defaultCheck": false,
+						},
+						map[string]interface{}{
+							"action":       "delete",
+							"describe":     "删除",
+							"defaultCheck": false,
+						},
+					},
+					"actionList": "",
+					"dataAccess": "",
+				},
 			},
 		},
 	}

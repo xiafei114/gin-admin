@@ -16,17 +16,27 @@ type HTTPStatus struct {
 	Status string `json:"status" swaggo:"true,状态(OK)"`
 }
 
-// HTTPList HTTP响应列表数据
-type HTTPList struct {
-	List       interface{}     `json:"list"`
-	Pagination *HTTPPagination `json:"pagination,omitempty"`
+// HTTPResponse HTTP响应列表数据
+type HTTPResponse struct {
+	Message   string      `json:"message" swaggo:"true,返回消息"`
+	Result    interface{} `json:"result" swaggo:"true,返回结果"`
+	Status    int         `json:"status" swaggo:"true,返回状态码"`
+	Timestamp int64       `json:"timestamp" swaggo:"true,返回时间戳"`
 }
 
-// HTTPPagination HTTP分页数据
-type HTTPPagination struct {
-	Total    int `json:"total"`
-	Current  int `json:"current"`
-	PageSize int `json:"pageSize"`
+// HTTPList HTTP响应列表数据
+type HTTPPage struct {
+	Data       interface{} `json:"data"`
+	PageNo     int         `json:"pageNo"`
+	PageSize   int         `json:"pageSize"`
+	TotalPage  int         `json:"totalPage"`
+	TotalCount int         `json:"totalCount"`
+}
+
+// HTTPList HTTP响应列表数据
+type HTTPList struct {
+	Data interface{} `json:"data"`
+	// TotalCount int         `json:"totalCount"`
 }
 
 // PaginationParam 分页查询条件

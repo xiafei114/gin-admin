@@ -1,10 +1,12 @@
 import { axios } from '@/utils/request'
 
+
 // 菜单查询
-export function menuList () {
+export function menuList (parameter) {
   return axios({
     url: '/v1/menus?q=page',
-    method: 'get'
+    method: 'get',
+    params: parameter
   })
 }
 

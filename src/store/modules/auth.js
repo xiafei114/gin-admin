@@ -1,5 +1,5 @@
 import {
-  fetchRule, addRule, fetchTree, updateRule, deleteRule,
+  addMenu, updateMenu, deleteRule,
   fetchRole, addRole, updateRole, deleteRole,
   fetchAccount, addAccount, updateAccount, deleteAccount
 } from '@/api/auth'
@@ -12,10 +12,11 @@ const auth = {
   },
 
   actions: {
-    // 规则列表
-    fetchRule () {
+
+    // 添加菜单
+    addMenu (state, data) {
       return new Promise((resolve, reject) => {
-        fetchRule().then(response => {
+        addMenu(data).then(response => {
           const result = response.data
           resolve(result)
         }).catch(error => {
@@ -24,36 +25,12 @@ const auth = {
       })
     },
 
-    // 获取树型结构
-    fetchTree (state) {
+    // 更新菜单
+    updateMenu (state, data) {
+      const id = data.record_id
+      delete data.record_id
       return new Promise((resolve, reject) => {
-        fetchTree().then(response => {
-          const result = response.data
-          resolve(result)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    // 添加规则
-    addRule (state, data) {
-      return new Promise((resolve, reject) => {
-        addRule(data).then(response => {
-          const result = response.data
-          resolve(result)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    // 更新规则
-    updateRule (state, data) {
-      const id = data.selectId
-      delete data.selectId
-      return new Promise((resolve, reject) => {
-        updateRule(id, data).then(_ => {
+        updateMenu(id, data).then(_ => {
           resolve()
         }).catch(error => {
           reject(error)

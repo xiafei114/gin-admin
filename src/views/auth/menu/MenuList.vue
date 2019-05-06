@@ -113,11 +113,11 @@ import { menuList } from '@/api/auth'
 const statusMap = {
   0: {
     status: 'processing',
-    text: '运行中'
+    text: '显示'
   },
   1: {
     status: 'default',
-    text: '关闭'
+    text: '隐藏'
   }
 }
 

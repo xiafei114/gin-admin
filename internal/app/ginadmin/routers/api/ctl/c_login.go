@@ -297,7 +297,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "添加",
 						},
 						map[string]interface{}{
-							"role":  "update",
+							"role":  "edit",
 							"title": "修改",
 						},
 						map[string]interface{}{
@@ -330,7 +330,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "update",
+							"action":       "edit",
 							"describe":     "更新",
 							"defaultCheck": false,
 						},
@@ -353,7 +353,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "添加",
 						},
 						map[string]interface{}{
-							"role":  "update",
+							"role":  "edit",
 							"title": "修改",
 						},
 						map[string]interface{}{
@@ -386,7 +386,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "update",
+							"action":       "edit",
 							"describe":     "更新",
 							"defaultCheck": false,
 						},
@@ -409,7 +409,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "添加",
 						},
 						map[string]interface{}{
-							"role":  "update",
+							"role":  "edit",
 							"title": "修改",
 						},
 						map[string]interface{}{
@@ -442,7 +442,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "update",
+							"action":       "edit",
 							"describe":     "更新",
 							"defaultCheck": false,
 						},
@@ -465,7 +465,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "添加",
 						},
 						map[string]interface{}{
-							"role":  "update",
+							"role":  "edit",
 							"title": "修改",
 						},
 						map[string]interface{}{
@@ -498,7 +498,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "update",
+							"action":       "edit",
 							"describe":     "更新",
 							"defaultCheck": false,
 						},
@@ -569,7 +569,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "添加",
 						},
 						map[string]interface{}{
-							"role":  "update",
+							"role":  "edit",
 							"title": "修改",
 						},
 						map[string]interface{}{
@@ -602,7 +602,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "update",
+							"action":       "edit",
 							"describe":     "更新",
 							"defaultCheck": false,
 						},
@@ -625,7 +625,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "添加",
 						},
 						map[string]interface{}{
-							"role":  "update",
+							"role":  "edit",
 							"title": "修改",
 						},
 						map[string]interface{}{
@@ -658,7 +658,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "update",
+							"action":       "edit",
 							"describe":     "更新",
 							"defaultCheck": false,
 						},
@@ -681,7 +681,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "添加",
 						},
 						map[string]interface{}{
-							"role":  "update",
+							"role":  "edit",
 							"title": "修改",
 						},
 						map[string]interface{}{
@@ -714,7 +714,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "update",
+							"action":       "edit",
 							"describe":     "更新",
 							"defaultCheck": false,
 						},
@@ -737,7 +737,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "添加",
 						},
 						map[string]interface{}{
-							"role":  "update",
+							"role":  "edit",
 							"title": "修改",
 						},
 						map[string]interface{}{
@@ -770,7 +770,7 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"defaultCheck": false,
 						},
 						map[string]interface{}{
-							"action":       "update",
+							"action":       "edit",
 							"describe":     "更新",
 							"defaultCheck": false,
 						},

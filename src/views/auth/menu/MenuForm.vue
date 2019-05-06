@@ -61,6 +61,11 @@
 </template>
 
 <script>
+
+import { getMenu } from '@/api/auth'
+import moment from 'moment'
+import pick from 'lodash.pick'
+
 export default {
   data () {
     return {
@@ -80,6 +85,16 @@ export default {
     add () {
       this.visible = true
       this.form.setFieldsValue(this.entity)
+    },
+    edit (record) {
+      this.visible = true
+      this.$nextTick(() => {
+        this.loadEditInfo(record)
+      })
+      // const { form: { setFieldsValue } } = this
+      // this.$nextTick(() => {
+      //   setFieldsValue(pick(record, []))
+      // })
     },
     handleSubmit () {
       const { form: { validateFields } } = this
@@ -109,6 +124,18 @@ export default {
     },
     handleCancel () {
       this.visible = false
+    },
+    loadEditInfo (data) {
+      const { form } = this
+      console.log(data)
+      getMenu(Object.assign(data.record_id))
+        .then(res => {
+          const formData = pick(res.result.data, ['name', 'sequence', 'hidden', 'icon', 'record_id'])
+          this.entityId = formData.record_id
+          // formData.updatedAt = moment(data.updatedAt)
+          console.log('formData', formData)
+          form.setFieldsValue(formData)
+        })
     }
   }
 }

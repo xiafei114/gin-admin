@@ -9,6 +9,14 @@ export function menuList (parameter) {
   })
 }
 
+// 获得单一菜单
+export function getMenu (id) {
+  return axios({
+    url: '/v1/menus/' + id,
+    method: 'get'
+  })
+}
+
 // 添加菜单
 export function addMenu (data) {
   return axios({

@@ -95,8 +95,6 @@
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">配置</a>
-          <a-divider type="vertical" />
-          <a @click="handleSub(record)">订阅报警</a>
         </template>
       </span>
     </s-table>
@@ -218,8 +216,7 @@ export default {
     },
 
     handleEdit (record) {
-      console.log(record)
-      this.$refs.modal.edit(record)
+      this.$refs.createModal.edit(record)
     },
     handleSub (record) {
       if (record.status !== 0) {

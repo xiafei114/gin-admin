@@ -55,6 +55,36 @@
             </a-form-item>
           </a-col>
         </a-row>
+
+        <a-row class="form-row" :gutter="16">
+          <a-col :lg="18" :md="12" :sm="24">
+            <a-form-item label="菜单动作管理">
+              <a-button style="" type="dashed" icon="plus" @click="newSubData">新增动作</a-button>
+              <a-table
+                :columns="subColumns"
+                :dataSource="subData"
+                :pagination="false"
+                :loading="subDataLoading"
+              >
+                <template v-for="(col, i) in ['code', 'name']" :slot="col" slot-scope="text, record">
+                  <a-input
+                    :key="col"
+                    style="margin: -5px 0"
+                    :value="text"
+                    :placeholder="subColumns[i].title"
+                    @change="e => handleChange(e.target.value, record.key, col)"
+                  />
+                </template>
+                <template slot="action" slot-scope="text, record">
+                  <a-divider type="vertical" />
+                  <a-popconfirm title="是否要删除此行？" @confirm="subDataRemove(record.key)">
+                    <a>删除</a>
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </a-form-item>
+          </a-col>
+        </a-row>
       </a-form>
     </a-spin>
   </a-modal>
@@ -62,7 +92,7 @@
 
 <script>
 
-import { getMenu } from '@/api/auth'
+import { getMenu } from '@/api/menu'
 import pick from 'lodash.pick'
 
 export default {
@@ -77,13 +107,37 @@ export default {
         sequence: 100000,
         hidden: 0,
         icon: ''
-      }
+      },
+      subDataLoading: false,
+      subColumns: [
+        {
+          title: '动作',
+          key: 'code',
+          dataIndex: 'code',
+          scopedSlots: { customRender: 'code' }
+        },
+        {
+          title: '名称',
+          key: 'name',
+          dataIndex: 'name',
+          scopedSlots: { customRender: 'name' }
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          width: '150px',
+          scopedSlots: { customRender: 'action' }
+        }
+      ],
+      // 子数据
+      subData: []
     }
   },
   methods: {
     add () {
       this.visible = true
       this.form.setFieldsValue(this.entity)
+      this.subData = []
     },
     edit (record) {
       this.visible = true
@@ -128,7 +182,30 @@ export default {
           this.entityId = formData.record_id
           console.log('formData', formData)
           form.setFieldsValue(formData)
+          this.subData = []
         })
+    },
+    newSubData () {
+      const length = this.subData.length
+      this.subData.push({
+        key: length === 0 ? '1' : (parseInt(this.subData[length - 1].key) + 1).toString(),
+        code: '',
+        name: '',
+        isNew: true
+      })
+    },
+    subDataRemove (key) {
+      const newData = this.subData.filter(item => item.key !== key)
+      this.subData = newData
+    },
+    // 子数据保存
+    handleChange (value, key, column) {
+      const newData = [...this.subData]
+      const target = newData.filter(item => key === item.key)[0]
+      if (target) {
+        target[column] = value
+        this.subData = newData
+      }
     }
   }
 }

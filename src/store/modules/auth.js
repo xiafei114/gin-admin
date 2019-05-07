@@ -1,8 +1,11 @@
 import {
-  addMenu, updateMenu, deleteRule,
   fetchRole, addRole, updateRole, deleteRole,
   fetchAccount, addAccount, updateAccount, deleteAccount
 } from '@/api/auth'
+
+import {
+  addMenu, updateMenu
+} from '@/api/menu'
 
 const auth = {
   state: {
@@ -31,17 +34,6 @@ const auth = {
       delete data.record_id
       return new Promise((resolve, reject) => {
         updateMenu(id, data).then(_ => {
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    // 删除规则
-    deleteRule (state, params) {
-      return new Promise((resolve, reject) => {
-        deleteRule(params).then(_ => {
           resolve()
         }).catch(error => {
           reject(error)

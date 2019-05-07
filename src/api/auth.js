@@ -1,47 +1,5 @@
 import { axios } from '@/utils/request'
 
-// 菜单查询
-export function menuList (parameter) {
-  return axios({
-    url: '/v1/menus?q=page',
-    method: 'get',
-    params: parameter
-  })
-}
-
-// 获得单一菜单
-export function getMenu (id) {
-  return axios({
-    url: '/v1/menus/' + id,
-    method: 'get'
-  })
-}
-
-// 添加菜单
-export function addMenu (data) {
-  return axios({
-    url: '/v1/menus',
-    method: 'post',
-    data
-  })
-}
-// 修改菜单
-export function updateMenu (id, data) {
-  return axios({
-    url: '/v1/menus/' + id,
-    method: 'put',
-    data
-  })
-}
-
-// 删除菜单
-export function deleteMenu (params) {
-  return axios({
-    url: '/v1/menus/' + params.id,
-    method: 'delete'
-  })
-}
-
 export function fetchRule () {
   return axios({
     url: '/auth/rule',
@@ -55,8 +13,6 @@ export function fetchTree () {
     method: 'get'
   })
 }
-
-
 
 export function fetchRole () {
   return axios({

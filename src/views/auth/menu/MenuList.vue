@@ -5,7 +5,7 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="规则编号">
-              <a-input v-model="queryParam.id" placeholder=""/>
+              <a-input v-model="queryParam.name" placeholder=""/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
@@ -66,7 +66,7 @@
       <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
       <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1"><a-icon type="delete" />删除</a-menu-item>
+          <a-menu-item key="1" @click="handleBatchDelete()"><a-icon type="delete" />删除</a-menu-item>
           <!-- lock | unlock -->
           <a-menu-item key="2"><a-icon type="lock" />锁定</a-menu-item>
         </a-menu>
@@ -108,7 +108,7 @@
 import moment from 'moment'
 import { STable } from '@/components'
 import entityForm from './MenuForm'
-import { menuList, deleteMenu } from '@/api/auth'
+import { menuList, deleteMenu } from '@/api/menu'
 
 const statusMap = {
   0: {
@@ -234,11 +234,6 @@ export default {
           })
         }
       })
-      // if (record.status !== 0) {
-      //   this.$message.info(`${record.no} 订阅成功`)
-      // } else {
-      //   this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-      // }
     },
     handleOk () {
       this.$refs.table.refresh()
@@ -254,6 +249,10 @@ export default {
       this.queryParam = {
         date: moment(new Date())
       }
+    },
+    // 批量删除
+    handleBatchDelete () {
+      this.$message.error(`${this.selectedRowKeys.length} 条数据待删除`)
     }
   }
 }

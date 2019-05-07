@@ -191,7 +191,7 @@ func (a *Menu) compareUpdateAction(oldList, newList entity.MenuActions) (clist, 
 			dlist = append(dlist, oitem)
 		}
 	}
-	return
+	return clist, dlist, ulist
 }
 
 // 更新动作数据
@@ -203,6 +203,7 @@ func (a *Menu) updateActions(ctx context.Context, span *logger.Entry, menuID str
 
 	clist, dlist, ulist := a.compareUpdateAction(list, items)
 	for _, item := range clist {
+		item.MenuID = menuID
 		result := entity.GetMenuActionDB(ctx, a.db).Create(item)
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())

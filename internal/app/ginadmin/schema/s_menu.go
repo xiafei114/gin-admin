@@ -24,6 +24,7 @@ type Menu struct {
 
 // MenuAction 菜单动作对象
 type MenuAction struct {
+	ID   string `json:"key" swaggo:"true,序号"`
 	Code string `json:"code" swaggo:"true,动作编号"`
 	Name string `json:"name" swaggo:"true,动作名称"`
 }

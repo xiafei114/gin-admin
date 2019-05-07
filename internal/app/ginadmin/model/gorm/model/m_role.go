@@ -168,7 +168,7 @@ func (a *Role) compareUpdateMenu(oldList, newList entity.RoleMenus) (clist, dlis
 			dlist = append(dlist, oitem)
 		}
 	}
-	return
+	return clist, dlist, ulist
 }
 
 // 更新菜单数据

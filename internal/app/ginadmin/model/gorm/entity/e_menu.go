@@ -2,6 +2,7 @@ package entity
 
 import (
 	"context"
+	"strconv"
 
 	"gin-admin/internal/app/ginadmin/schema"
 	"gin-admin/pkg/gormplus"
@@ -140,6 +141,7 @@ func (a MenuAction) TableName() string {
 // ToSchemaMenuAction 转换为菜单动作对象
 func (a MenuAction) ToSchemaMenuAction() *schema.MenuAction {
 	return &schema.MenuAction{
+		ID:   strconv.Itoa(int(a.ID)),
 		Code: a.Code,
 		Name: a.Name,
 	}

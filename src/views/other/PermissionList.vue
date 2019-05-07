@@ -106,7 +106,7 @@
           label="描述"
           hasFeedback
         >
-          <a-textarea :rows="5" v-model="mdl.describe" placeholder="..." id="describe"/>
+         <a-textarea :rows="5" v-model="mdl.describe" placeholder="..." id="describe"></a-textarea>
         </a-form-item>
 
         <a-divider />

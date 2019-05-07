@@ -323,13 +323,13 @@ export const asyncRouterMap = [
         name: 'auth',
         component: PageView,
         meta: { title: '权限管理', icon: 'slack', permission: [ 'rule', 'role', 'account' ] },
-        redirect: '/auth/menu',
+        redirect: '/auth/permission',
         children: [
           {
-            path: '/auth/menu',
+            path: '/auth/permission',
             name: 'rule',
-            component: () => import('@/views/auth/menu/MenuList'),
-            meta: { title: '菜单管理', icon: 'tool', keepAlive: true, permission: [ 'rule' ] }
+            component: () => import('@/views/auth/permission/PermissionList'),
+            meta: { title: '权力管理', icon: 'tool', keepAlive: true, permission: [ 'rule' ] }
           }
         ]
       }

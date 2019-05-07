@@ -91,7 +91,9 @@
       <span slot="status" slot-scope="text">
         <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
       </span>
-
+      <span slot="actions" slot-scope="text, record">
+        <a-tag v-for="(action, index) in record.actions" :key="index">{{ action.name }}</a-tag>
+      </span>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">编辑</a>
@@ -107,8 +109,8 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import entityForm from './MenuForm'
-import { menuList, deleteMenu } from '@/api/menu'
+import entityForm from './PermissionForm'
+import { permissionList, deletePermission } from '@/api/permission'
 
 const statusMap = {
   0: {
@@ -122,7 +124,7 @@ const statusMap = {
 }
 
 export default {
-  name: 'MenuList',
+  name: 'PermissionList',
   components: {
     STable,
     entityForm
@@ -141,21 +143,22 @@ export default {
           scopedSlots: { customRender: 'serial' }
         },
         {
-          title: '菜单名称',
+          title: '唯一标识号',
+          dataIndex: 'index_code'
+        },
+        {
+          title: '名称',
           dataIndex: 'name'
         },
         {
-          title: '排序值',
-          dataIndex: 'sequence'
+          title: '可操作权限',
+          dataIndex: 'actions',
+          scopedSlots: { customRender: 'actions' }
         },
         {
-          title: '隐藏状态',
-          dataIndex: 'hidden',
+          title: '状态',
+          dataIndex: 'status',
           scopedSlots: { customRender: 'status' }
-        },
-        {
-          title: '菜单图标',
-          dataIndex: 'icon'
         },
         {
           title: '操作',
@@ -167,7 +170,7 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
-        return menuList(Object.assign(parameter, this.queryParam))
+        return permissionList(Object.assign(parameter, this.queryParam))
           .then(res => {
             return res.result
           })
@@ -228,7 +231,7 @@ export default {
         okType: 'danger',
         cancelText: '取消',
         onOk: () => {
-          deleteMenu({ id: record.record_id }).then(res => {
+          deletePermission({ id: record.record_id }).then(res => {
             this.$message.info(`${record.name} 删除成功`)
             this.handleOk()
           })

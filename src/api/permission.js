@@ -1,9 +1,9 @@
 import { axios } from '@/utils/request'
 
-const router = 'menus'
+const router = 'permission'
 
 // 菜单查询
-export function menuList (parameter) {
+export function permissionList (parameter) {
   return axios({
     url: `/v1/${router}?q=page`,
     method: 'get',
@@ -12,7 +12,7 @@ export function menuList (parameter) {
 }
 
 // 获得单一菜单
-export function getMenu (id) {
+export function getPermission (id) {
   return axios({
     url: `/v1/${router}/${id}`,
     method: 'get'
@@ -20,7 +20,7 @@ export function getMenu (id) {
 }
 
 // 添加菜单
-export function addMenu (data) {
+export function addPermission (data) {
   return axios({
     url: `/v1/${router}`,
     method: 'post',
@@ -28,7 +28,7 @@ export function addMenu (data) {
   })
 }
 // 修改菜单
-export function updateMenu (id, data) {
+export function updatePermission (id, data) {
   return axios({
     url: `/v1/${router}/${id}`,
     method: 'put',
@@ -37,7 +37,7 @@ export function updateMenu (id, data) {
 }
 
 // 删除菜单
-export function deleteMenu (params) {
+export function deletePermission (params) {
   return axios({
     url: `/v1/${router}/${params.id}`,
     method: 'delete'

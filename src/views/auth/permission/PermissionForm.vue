@@ -11,8 +11,15 @@
       <a-form :form="form">
         <a-row class="form-row" :gutter="16">
           <a-col :lg="12" :md="12" :sm="24">
+            <a-form-item label="唯一标识号">
+              <a-input v-decorator="['index_code', {rules: [{required: true, min: 2, message: '请输入至少两个字符的唯一标识号！'}]}]" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row class="form-row" :gutter="16">
+          <a-col :lg="12" :md="12" :sm="24">
             <a-form-item label="名称">
-              <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少两个字符的规则描述！'}]}]" />
+              <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少两个字符的规则名称！'}]}]" />
             </a-form-item>
           </a-col>
           <a-col :lg="12" :md="12" :sm="24">
@@ -31,7 +38,7 @@
           <a-col :lg="12" :md="12" :sm="24">
             <a-form-item label="显示状态">
               <a-select
-                v-decorator="['hidden', {
+                v-decorator="['status', {
                   initialValue: 0,
                   rules: [{ required: true, message: '请选择状态!' }]
                 }]"
@@ -49,17 +56,11 @@
         </a-row>
 
         <a-row class="form-row" :gutter="16">
-          <a-col :lg="12" :md="12" :sm="24">
-            <a-form-item label="图标">
-              <a-input v-decorator="['icon', {rules: [{required: true, min: 2, message: '请输入图标！'}]}]" />
-            </a-form-item>
-          </a-col>
-        </a-row>
-
-        <a-row class="form-row" :gutter="16">
           <a-col :lg="18" :md="12" :sm="24">
             <a-form-item label="菜单动作管理">
               <a-button style="" type="dashed" icon="plus" @click="newSubData">新增动作</a-button>
+              <a-divider type="vertical" />
+              <a-button style="" type="primary" icon="plus" @click="batchAddition">批量添加</a-button>
               <a-table
                 :columns="subColumns"
                 :dataSource="subData"
@@ -92,10 +93,10 @@
 
 <script>
 
-import { getMenu } from '@/api/menu'
-import pick from 'lodash.pick'
+  import { getPermission } from '@/api/permission'
+  import pick from 'lodash.pick'
 
-export default {
+  export default {
   data () {
     return {
       visible: false,
@@ -138,6 +139,7 @@ export default {
       this.visible = true
       this.form.setFieldsValue(this.entity)
       this.subData = []
+      this.entityId = ''
     },
     edit (record) {
       this.visible = true
@@ -153,6 +155,7 @@ export default {
           console.log('values', values)
           const action = this.entityId === '' ? 'addMenu' : 'updateMenu'
           values.record_id = this.entityId
+          values.actions = this.subData
           this.$store.dispatch(action, values).then(res => {
             console.log(res)
             this.$notification['success']({
@@ -176,13 +179,17 @@ export default {
     },
     loadEditInfo (data) {
       const { form } = this
-      getMenu(Object.assign(data.record_id))
+      getPermission(Object.assign(data.record_id))
         .then(res => {
-          const formData = pick(res.result.data, ['name', 'sequence', 'hidden', 'icon', 'record_id'])
+          const formData = pick(res.result.data, ['name', 'sequence', 'hidden', 'icon', 'record_id', 'actions'])
           this.entityId = formData.record_id
           console.log('formData', formData)
           form.setFieldsValue(formData)
-          this.subData = []
+          if (formData.actions === null) {
+            this.subData = []
+          } else {
+            this.subData = formData.actions
+          }
         })
     },
     newSubData () {
@@ -190,13 +197,11 @@ export default {
       this.subData.push({
         key: length === 0 ? '1' : (parseInt(this.subData[length - 1].key) + 1).toString(),
         code: '',
-        name: '',
-        isNew: true
+        name: ''
       })
     },
     subDataRemove (key) {
-      const newData = this.subData.filter(item => item.key !== key)
-      this.subData = newData
+      this.subData = this.subData.filter(item => item.key !== key)
     },
     // 子数据保存
     handleChange (value, key, column) {
@@ -206,6 +211,35 @@ export default {
         target[column] = value
         this.subData = newData
       }
+    },
+    batchAddition () {
+      const data = [{
+        key: '1',
+        code: 'add',
+        name: '添加'
+      },
+      {
+        key: '2',
+        code: 'edit',
+        name: '修改'
+      },
+      {
+        key: '3',
+        code: 'delete',
+        name: '删除'
+      },
+      {
+        key: '4',
+        code: 'list',
+        name: '查看'
+      },
+      {
+        key: '5',
+        code: 'get',
+        name: '详情'
+      }]
+
+      this.subData = data
     }
   }
 }

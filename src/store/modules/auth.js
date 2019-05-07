@@ -4,8 +4,8 @@ import {
 } from '@/api/auth'
 
 import {
-  addMenu, updateMenu
-} from '@/api/menu'
+  addPermission, updatePermission
+} from '@/api/permission'
 
 const auth = {
   state: {
@@ -19,7 +19,7 @@ const auth = {
     // 添加菜单
     addMenu (state, data) {
       return new Promise((resolve, reject) => {
-        addMenu(data).then(response => {
+        addPermission(data).then(response => {
           const result = response.data
           resolve(result)
         }).catch(error => {
@@ -33,7 +33,7 @@ const auth = {
       const id = data.record_id
       delete data.record_id
       return new Promise((resolve, reject) => {
-        updateMenu(id, data).then(_ => {
+        updatePermission(id, data).then(_ => {
           resolve()
         }).catch(error => {
           reject(error)

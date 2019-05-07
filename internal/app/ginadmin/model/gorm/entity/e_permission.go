@@ -29,15 +29,13 @@ type SchemaPermission schema.Permission
 // ToPermission 转换为权力实体
 func (a SchemaPermission) ToPermission() *Permission {
 	item := &Permission{
-		RecordID:   a.RecordID,
-		Name:       a.Name,
-		Sequence:   a.Sequence,
-		Icon:       a.Icon,
-		Router:     a.Router,
-		Hidden:     &a.Hidden,
-		ParentID:   a.ParentID,
-		ParentPath: a.ParentPath,
-		Creator:    a.Creator,
+		RecordID:  a.RecordID,
+		IndexCode: a.IndexCode,
+		Name:      a.Name,
+		Sequence:  a.Sequence,
+		Icon:      a.Icon,
+		Status:    &a.Status,
+		Creator:   a.Creator,
 	}
 	return item
 }
@@ -63,15 +61,13 @@ func (a SchemaPermission) ToPermissionResources() []*PermissionResource {
 // Permission 权力实体
 type Permission struct {
 	Model
-	RecordID   string `gorm:"column:record_id;size:36;index;"`    // 记录内码
-	Name       string `gorm:"column:name;size:50;index;"`         // 权力名称
-	Sequence   int    `gorm:"column:sequence;index;"`             // 排序值
-	Icon       string `gorm:"column:icon;size:255;"`              // 权力图标
-	Router     string `gorm:"column:router;size:255;"`            // 访问路由
-	Hidden     *int   `gorm:"column:hidden;index;"`               // 隐藏权力(0:不隐藏 1:隐藏)
-	ParentID   string `gorm:"column:parent_id;size:36;index;"`    // 父级内码
-	ParentPath string `gorm:"column:parent_path;size:518;index;"` // 父级路径
-	Creator    string `gorm:"column:creator;size:36;"`            // 创建人
+	RecordID  string `gorm:"column:record_id;size:36;index;"`  // 记录内码
+	IndexCode string `gorm:"column:index_code;size:50;index;"` // 权力名称
+	Name      string `gorm:"column:name;size:50;index;"`       // 权力名称
+	Sequence  int    `gorm:"column:sequence;index;"`           // 排序值
+	Icon      string `gorm:"column:icon;size:255;"`            // 权力图标
+	Status    *int   `gorm:"column:status;index;"`             // 状态(0:不隐藏 1:隐藏)
+	Creator   string `gorm:"column:creator;size:36;"`          // 创建人
 }
 
 func (a Permission) String() string {
@@ -86,17 +82,15 @@ func (a Permission) TableName() string {
 // ToSchemaPermission 转换为权力对象
 func (a Permission) ToSchemaPermission() *schema.Permission {
 	item := &schema.Permission{
-		RecordID:   a.RecordID,
-		Name:       a.Name,
-		Sequence:   a.Sequence,
-		Icon:       a.Icon,
-		Router:     a.Router,
-		Hidden:     *a.Hidden,
-		ParentID:   a.ParentID,
-		ParentPath: a.ParentPath,
-		Creator:    a.Creator,
-		CreatedAt:  &a.CreatedAt,
-		UpdatedAt:  &a.UpdatedAt,
+		RecordID:  a.RecordID,
+		IndexCode: a.IndexCode,
+		Name:      a.Name,
+		Sequence:  a.Sequence,
+		Icon:      a.Icon,
+		Status:    *a.Status,
+		Creator:   a.Creator,
+		CreatedAt: &a.CreatedAt,
+		UpdatedAt: &a.UpdatedAt,
 	}
 	return item
 }

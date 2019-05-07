@@ -1,25 +1,22 @@
 package schema
 
 import (
-	"strings"
 	"time"
 )
 
 // Permission 权力对象
 type Permission struct {
-	RecordID   string        `json:"record_id" swaggo:"false,记录ID"`
-	Name       string        `json:"name" binding:"required" swaggo:"true,权力名称"`
-	Sequence   int           `json:"sequence" swaggo:"false,排序值"`
-	Icon       string        `json:"icon" swaggo:"false,权力图标"`
-	Router     string        `json:"router" swaggo:"false,访问路由"`
-	Hidden     int           `json:"hidden" swaggo:"false,隐藏权力(0:不隐藏 1:隐藏)"`
-	ParentID   string        `json:"parent_id" swaggo:"false,父级ID"`
-	ParentPath string        `json:"parent_path" swaggo:"false,父级路径"`
-	Creator    string        `json:"creator" swaggo:"false,创建者"`
-	CreatedAt  *time.Time    `json:"created_at" swaggo:"false,创建时间"`
-	UpdatedAt  *time.Time    `json:"updated_at" swaggo:"false,更新时间"`
-	Actions    PermissionActions   `json:"actions" swaggo:"false,动作列表"`
-	Resources  PermissionResources `json:"resources" swaggo:"false,资源列表"`
+	RecordID  string              `json:"record_id" swaggo:"false,记录ID"`
+	IndexCode string              `json:"index_code" binding:"required" swaggo:"true,唯一标识码"`
+	Name      string              `json:"name" binding:"required" swaggo:"true,权力名称"`
+	Sequence  int                 `json:"sequence" swaggo:"false,排序值"`
+	Icon      string              `json:"icon" swaggo:"false,权力图标"`
+	Status    int                 `json:"status" swaggo:"false,隐藏权力(0:不隐藏 1:隐藏)"`
+	Creator   string              `json:"creator" swaggo:"false,创建者"`
+	CreatedAt *time.Time          `json:"created_at" swaggo:"false,创建时间"`
+	UpdatedAt *time.Time          `json:"updated_at" swaggo:"false,更新时间"`
+	Actions   PermissionActions   `json:"actions" swaggo:"false,动作列表"`
+	Resources PermissionResources `json:"resources" swaggo:"false,资源列表"`
 }
 
 // PermissionAction 权力动作对象
@@ -43,7 +40,7 @@ type PermissionQueryParam struct {
 	LikeName         string   // 权力名称(模糊查询)
 	ParentID         *string  // 父级内码
 	PrefixParentPath string   // 父级路径(前缀模糊查询)
-	Hidden           *int     // 隐藏权力
+	Status           *int     // 隐藏权力
 }
 
 // PermissionQueryOptions 查询可选参数项
@@ -71,51 +68,22 @@ func (a Permissions) ToMap() map[string]*Permission {
 	return m
 }
 
-// SplitAndGetAllRecordIDs 拆分父级路径并获取所有记录ID
-func (a Permissions) SplitAndGetAllRecordIDs() []string {
-	var recordIDs []string
-	for _, item := range a {
-		recordIDs = append(recordIDs, item.RecordID)
-		if item.ParentPath == "" {
-			continue
-		}
-
-		pps := strings.Split(item.ParentPath, "/")
-		for _, pp := range pps {
-			var exists bool
-			for _, recordID := range recordIDs {
-				if pp == recordID {
-					exists = true
-					break
-				}
-			}
-			if !exists {
-				recordIDs = append(recordIDs, pp)
-			}
-		}
-	}
-	return recordIDs
-}
-
-// ToTrees 转换为权力列表
-func (a Permissions) ToTrees() PermissionTrees {
-	list := make(PermissionTrees, len(a))
-	for i, item := range a {
-		list[i] = &PermissionTree{
-			RecordID:   item.RecordID,
-			Name:       item.Name,
-			Sequence:   item.Sequence,
-			Icon:       item.Icon,
-			Router:     item.Router,
-			Hidden:     item.Hidden,
-			ParentID:   item.ParentID,
-			ParentPath: item.ParentPath,
-			Actions:    item.Actions,
-			Resources:  item.Resources,
-		}
-	}
-	return list
-}
+// // ToTrees 转换为权力列表
+// func (a Permissions) ToTrees() PermissionTrees {
+// 	list := make(PermissionTrees, len(a))
+// 	for i, item := range a {
+// 		list[i] = &PermissionTree{
+// 			RecordID:  item.RecordID,
+// 			Name:      item.Name,
+// 			Sequence:  item.Sequence,
+// 			Icon:      item.Icon,
+// 			Status:    item.Status,
+// 			Actions:   item.Actions,
+// 			Resources: item.Resources,
+// 		}
+// 	}
+// 	return list
+// }
 
 func (a Permissions) fillLeafNodeID(tree *[]*PermissionTree, leafNodeIDs *[]string) {
 	for _, node := range *tree {
@@ -127,13 +95,13 @@ func (a Permissions) fillLeafNodeID(tree *[]*PermissionTree, leafNodeIDs *[]stri
 	}
 }
 
-// ToLeafRecordIDs 转换为叶子节点记录ID列表
-func (a Permissions) ToLeafRecordIDs() []string {
-	var leafNodeIDs []string
-	tree := a.ToTrees().ToTree()
-	a.fillLeafNodeID(&tree, &leafNodeIDs)
-	return leafNodeIDs
-}
+// // ToLeafRecordIDs 转换为叶子节点记录ID列表
+// func (a Permissions) ToLeafRecordIDs() []string {
+// 	var leafNodeIDs []string
+// 	tree := a.ToTrees().ToTree()
+// 	a.fillLeafNodeID(&tree, &leafNodeIDs)
+// 	return leafNodeIDs
+// }
 
 // PermissionResources 权力资源列表
 type PermissionResources []*PermissionResource
@@ -160,14 +128,14 @@ type PermissionActions []*PermissionAction
 
 // PermissionTree 权力树
 type PermissionTree struct {
-	RecordID   string        `json:"record_id" swaggo:"false,记录ID"`
-	Name       string        `json:"name" binding:"required" swaggo:"true,权力名称"`
-	Sequence   int           `json:"sequence" swaggo:"false,排序值"`
-	Icon       string        `json:"icon" swaggo:"false,权力图标"`
-	Router     string        `json:"router" swaggo:"false,访问路由"`
-	Hidden     int           `json:"hidden" swaggo:"false,隐藏权力(0:不隐藏 1:隐藏)"`
-	ParentID   string        `json:"parent_id" swaggo:"false,父级ID"`
-	ParentPath string        `json:"parent_path" swaggo:"false,父级路径"`
+	RecordID   string              `json:"record_id" swaggo:"false,记录ID"`
+	Name       string              `json:"name" binding:"required" swaggo:"true,权力名称"`
+	Sequence   int                 `json:"sequence" swaggo:"false,排序值"`
+	Icon       string              `json:"icon" swaggo:"false,权力图标"`
+	Router     string              `json:"router" swaggo:"false,访问路由"`
+	Status     int                 `json:"status" swaggo:"false,隐藏权力(0:不隐藏 1:隐藏)"`
+	ParentID   string              `json:"parent_id" swaggo:"false,父级ID"`
+	ParentPath string              `json:"parent_path" swaggo:"false,父级路径"`
 	Resources  PermissionResources `json:"resources" swaggo:"false,资源列表"`
 	Actions    PermissionActions   `json:"actions" swaggo:"false,动作列表"`
 	Children   *[]*PermissionTree  `json:"children,omitempty" swaggo:"false,子级树"`

@@ -29,8 +29,6 @@ func (a *Permission) Query(c *gin.Context) {
 	switch c.Query("q") {
 	case "page":
 		a.QueryPage(c)
-	case "tree":
-		a.QueryTree(c)
 	default:
 		ginplus.ResError(c, errors.NewBadRequestError("未知的查询类型"))
 	}
@@ -58,9 +56,9 @@ func (a *Permission) QueryPage(c *gin.Context) {
 		params.ParentID = &v
 	}
 
-	if v := c.Query("hidden"); v != "" {
-		if hidden := util.S(v).Int(); hidden > -1 {
-			params.Hidden = &hidden
+	if v := c.Query("status"); v != "" {
+		if status := util.S(v).Int(); status > -1 {
+			params.Status = &status
 		}
 	}
 
@@ -70,26 +68,6 @@ func (a *Permission) QueryPage(c *gin.Context) {
 		return
 	}
 	ginplus.ResPage(c, items, pr)
-}
-
-// QueryTree 查询权限树
-// @Summary 查询权限树
-// @Param Authorization header string false "Bearer 用户令牌"
-// @Param include_actions query int false "是否包含动作数据(1是)"
-// @Param include_resources query int false "是否包含资源数据(1是)"
-// @Success 200 option.Interface "查询结果：{list:权限树}"
-// @Failure 400 schema.HTTPError "{error:{code:0,message:未知的查询类型}}"
-// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
-// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/permission?q=tree
-func (a *Permission) QueryTree(c *gin.Context) {
-	treeData, err := a.PermissionBll.QueryTree(ginplus.NewContext(c), c.Query("include_actions") == "1", c.Query("include_resources") == "1")
-	if err != nil {
-		ginplus.ResError(c, err)
-		return
-	}
-
-	ginplus.ResData(c, treeData)
 }
 
 // Get 查询指定数据

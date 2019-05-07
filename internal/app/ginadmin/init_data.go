@@ -59,9 +59,7 @@ func createPermissions(ctx context.Context, obj *Object, parentID string, list s
 				Name:      item.Name,
 				Sequence:  item.Sequence,
 				Icon:      item.Icon,
-				Router:    item.Router,
-				Hidden:    item.Hidden,
-				ParentID:  parentID,
+				Status:    item.Status,
 				Actions:   item.Actions,
 				Resources: item.Resources,
 			}

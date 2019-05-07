@@ -51,8 +51,8 @@ func (a *Permission) Query(ctx context.Context, params schema.PermissionQueryPar
 	if v := params.PrefixParentPath; v != "" {
 		db = db.Where("parent_path LIKE ?", v+"%")
 	}
-	if v := params.Hidden; v != nil {
-		db = db.Where("hidden=?", *v)
+	if v := params.Status; v != nil {
+		db = db.Where("status=?", *v)
 	}
 	db = db.Order("sequence DESC,id DESC")
 
@@ -82,15 +82,15 @@ func (a *Permission) fillSchemaPermissions(ctx context.Context, items []*schema.
 
 	if opt.IncludeActions || opt.IncludeResources {
 
-		PermissionIDs := make([]string, len(items))
+		permissionIDs := make([]string, len(items))
 		for i, item := range items {
-			PermissionIDs[i] = item.RecordID
+			permissionIDs[i] = item.RecordID
 		}
 
 		var actionList entity.PermissionActions
 		var resourceList entity.PermissionResources
 		if opt.IncludeActions {
-			items, err := a.queryActions(ctx, PermissionIDs...)
+			items, err := a.queryActions(ctx, permissionIDs...)
 			if err != nil {
 				return err
 			}
@@ -98,7 +98,7 @@ func (a *Permission) fillSchemaPermissions(ctx context.Context, items []*schema.
 		}
 
 		if opt.IncludeResources {
-			items, err := a.queryResources(ctx, PermissionIDs...)
+			items, err := a.queryResources(ctx, permissionIDs...)
 			if err != nil {
 				return err
 			}

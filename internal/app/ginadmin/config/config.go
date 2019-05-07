@@ -47,7 +47,7 @@ type Config struct {
 	WWW             string      `toml:"www"`
 	Swagger         string      `toml:"swagger"`
 	Store           string      `toml:"store"`
-	AllowInitMenu   bool        `toml:"allow_init_menu"`
+	AllowInitPermission   bool        `toml:"allow_init_Permission"`
 	EnableCasbin    bool        `toml:"enable_casbin"`
 	Log             Log         `toml:"log"`
 	LogGormHook     LogGormHook `toml:"log_gorm_hook"`

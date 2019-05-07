@@ -5,66 +5,66 @@ import (
 	"time"
 )
 
-// Menu 菜单对象
-type Menu struct {
+// Permission 权力对象
+type Permission struct {
 	RecordID   string        `json:"record_id" swaggo:"false,记录ID"`
-	Name       string        `json:"name" binding:"required" swaggo:"true,菜单名称"`
+	Name       string        `json:"name" binding:"required" swaggo:"true,权力名称"`
 	Sequence   int           `json:"sequence" swaggo:"false,排序值"`
-	Icon       string        `json:"icon" swaggo:"false,菜单图标"`
+	Icon       string        `json:"icon" swaggo:"false,权力图标"`
 	Router     string        `json:"router" swaggo:"false,访问路由"`
-	Hidden     int           `json:"hidden" swaggo:"false,隐藏菜单(0:不隐藏 1:隐藏)"`
+	Hidden     int           `json:"hidden" swaggo:"false,隐藏权力(0:不隐藏 1:隐藏)"`
 	ParentID   string        `json:"parent_id" swaggo:"false,父级ID"`
 	ParentPath string        `json:"parent_path" swaggo:"false,父级路径"`
 	Creator    string        `json:"creator" swaggo:"false,创建者"`
 	CreatedAt  *time.Time    `json:"created_at" swaggo:"false,创建时间"`
 	UpdatedAt  *time.Time    `json:"updated_at" swaggo:"false,更新时间"`
-	Actions    MenuActions   `json:"actions" swaggo:"false,动作列表"`
-	Resources  MenuResources `json:"resources" swaggo:"false,资源列表"`
+	Actions    PermissionActions   `json:"actions" swaggo:"false,动作列表"`
+	Resources  PermissionResources `json:"resources" swaggo:"false,资源列表"`
 }
 
-// MenuAction 菜单动作对象
-type MenuAction struct {
+// PermissionAction 权力动作对象
+type PermissionAction struct {
 	ID   string `json:"key" swaggo:"true,序号"`
 	Code string `json:"code" swaggo:"true,动作编号"`
 	Name string `json:"name" swaggo:"true,动作名称"`
 }
 
-// MenuResource 菜单资源对象
-type MenuResource struct {
+// PermissionResource 权力资源对象
+type PermissionResource struct {
 	Code   string `json:"code" swaggo:"true,资源编号"`
 	Name   string `json:"name" swaggo:"true,资源名称"`
 	Method string `json:"method" swaggo:"true,请求方式"`
 	Path   string `json:"path" swaggo:"true,请求路径"`
 }
 
-// MenuQueryParam 查询条件
-type MenuQueryParam struct {
+// PermissionQueryParam 查询条件
+type PermissionQueryParam struct {
 	RecordIDs        []string // 记录ID列表
-	LikeName         string   // 菜单名称(模糊查询)
+	LikeName         string   // 权力名称(模糊查询)
 	ParentID         *string  // 父级内码
 	PrefixParentPath string   // 父级路径(前缀模糊查询)
-	Hidden           *int     // 隐藏菜单
+	Hidden           *int     // 隐藏权力
 }
 
-// MenuQueryOptions 查询可选参数项
-type MenuQueryOptions struct {
+// PermissionQueryOptions 查询可选参数项
+type PermissionQueryOptions struct {
 	PageParam        *PaginationParam // 分页参数
 	IncludeActions   bool             // 包含动作列表
 	IncludeResources bool             // 包含资源列表
 }
 
-// MenuQueryResult 查询结果
-type MenuQueryResult struct {
-	Data       Menus
+// PermissionQueryResult 查询结果
+type PermissionQueryResult struct {
+	Data       Permissions
 	PageResult *PaginationResult
 }
 
-// Menus 菜单列表
-type Menus []*Menu
+// Permissions 权力列表
+type Permissions []*Permission
 
 // ToMap 转换为键值映射
-func (a Menus) ToMap() map[string]*Menu {
-	m := make(map[string]*Menu)
+func (a Permissions) ToMap() map[string]*Permission {
+	m := make(map[string]*Permission)
 	for _, item := range a {
 		m[item.RecordID] = item
 	}
@@ -72,7 +72,7 @@ func (a Menus) ToMap() map[string]*Menu {
 }
 
 // SplitAndGetAllRecordIDs 拆分父级路径并获取所有记录ID
-func (a Menus) SplitAndGetAllRecordIDs() []string {
+func (a Permissions) SplitAndGetAllRecordIDs() []string {
 	var recordIDs []string
 	for _, item := range a {
 		recordIDs = append(recordIDs, item.RecordID)
@@ -97,11 +97,11 @@ func (a Menus) SplitAndGetAllRecordIDs() []string {
 	return recordIDs
 }
 
-// ToTrees 转换为菜单列表
-func (a Menus) ToTrees() MenuTrees {
-	list := make(MenuTrees, len(a))
+// ToTrees 转换为权力列表
+func (a Permissions) ToTrees() PermissionTrees {
+	list := make(PermissionTrees, len(a))
 	for i, item := range a {
-		list[i] = &MenuTree{
+		list[i] = &PermissionTree{
 			RecordID:   item.RecordID,
 			Name:       item.Name,
 			Sequence:   item.Sequence,
@@ -117,7 +117,7 @@ func (a Menus) ToTrees() MenuTrees {
 	return list
 }
 
-func (a Menus) fillLeafNodeID(tree *[]*MenuTree, leafNodeIDs *[]string) {
+func (a Permissions) fillLeafNodeID(tree *[]*PermissionTree, leafNodeIDs *[]string) {
 	for _, node := range *tree {
 		if node.Children == nil || len(*node.Children) == 0 {
 			*leafNodeIDs = append(*leafNodeIDs, node.RecordID)
@@ -128,18 +128,18 @@ func (a Menus) fillLeafNodeID(tree *[]*MenuTree, leafNodeIDs *[]string) {
 }
 
 // ToLeafRecordIDs 转换为叶子节点记录ID列表
-func (a Menus) ToLeafRecordIDs() []string {
+func (a Permissions) ToLeafRecordIDs() []string {
 	var leafNodeIDs []string
 	tree := a.ToTrees().ToTree()
 	a.fillLeafNodeID(&tree, &leafNodeIDs)
 	return leafNodeIDs
 }
 
-// MenuResources 菜单资源列表
-type MenuResources []*MenuResource
+// PermissionResources 权力资源列表
+type PermissionResources []*PermissionResource
 
 // ForEach 遍历资源数据
-func (a MenuResources) ForEach(fn func(*MenuResource, int)) MenuResources {
+func (a PermissionResources) ForEach(fn func(*PermissionResource, int)) PermissionResources {
 	for i, item := range a {
 		fn(item, i)
 	}
@@ -147,37 +147,37 @@ func (a MenuResources) ForEach(fn func(*MenuResource, int)) MenuResources {
 }
 
 // ToMap 转换为键值映射
-func (a MenuResources) ToMap() map[string]*MenuResource {
-	m := make(map[string]*MenuResource)
+func (a PermissionResources) ToMap() map[string]*PermissionResource {
+	m := make(map[string]*PermissionResource)
 	for _, item := range a {
 		m[item.Code] = item
 	}
 	return m
 }
 
-// MenuActions 菜单动作列表
-type MenuActions []*MenuAction
+// PermissionActions 权力动作列表
+type PermissionActions []*PermissionAction
 
-// MenuTree 菜单树
-type MenuTree struct {
+// PermissionTree 权力树
+type PermissionTree struct {
 	RecordID   string        `json:"record_id" swaggo:"false,记录ID"`
-	Name       string        `json:"name" binding:"required" swaggo:"true,菜单名称"`
+	Name       string        `json:"name" binding:"required" swaggo:"true,权力名称"`
 	Sequence   int           `json:"sequence" swaggo:"false,排序值"`
-	Icon       string        `json:"icon" swaggo:"false,菜单图标"`
+	Icon       string        `json:"icon" swaggo:"false,权力图标"`
 	Router     string        `json:"router" swaggo:"false,访问路由"`
-	Hidden     int           `json:"hidden" swaggo:"false,隐藏菜单(0:不隐藏 1:隐藏)"`
+	Hidden     int           `json:"hidden" swaggo:"false,隐藏权力(0:不隐藏 1:隐藏)"`
 	ParentID   string        `json:"parent_id" swaggo:"false,父级ID"`
 	ParentPath string        `json:"parent_path" swaggo:"false,父级路径"`
-	Resources  MenuResources `json:"resources" swaggo:"false,资源列表"`
-	Actions    MenuActions   `json:"actions" swaggo:"false,动作列表"`
-	Children   *[]*MenuTree  `json:"children,omitempty" swaggo:"false,子级树"`
+	Resources  PermissionResources `json:"resources" swaggo:"false,资源列表"`
+	Actions    PermissionActions   `json:"actions" swaggo:"false,动作列表"`
+	Children   *[]*PermissionTree  `json:"children,omitempty" swaggo:"false,子级树"`
 }
 
-// MenuTrees 菜单树列表
-type MenuTrees []*MenuTree
+// PermissionTrees 权力树列表
+type PermissionTrees []*PermissionTree
 
 // ForEach 遍历数据项
-func (a MenuTrees) ForEach(fn func(*MenuTree, int)) MenuTrees {
+func (a PermissionTrees) ForEach(fn func(*PermissionTree, int)) PermissionTrees {
 	for i, item := range a {
 		fn(item, i)
 	}
@@ -185,13 +185,13 @@ func (a MenuTrees) ForEach(fn func(*MenuTree, int)) MenuTrees {
 }
 
 // ToTree 转换为树形结构
-func (a MenuTrees) ToTree() []*MenuTree {
-	mi := make(map[string]*MenuTree)
+func (a PermissionTrees) ToTree() []*PermissionTree {
+	mi := make(map[string]*PermissionTree)
 	for _, item := range a {
 		mi[item.RecordID] = item
 	}
 
-	var list []*MenuTree
+	var list []*PermissionTree
 	for _, item := range a {
 		if item.ParentID == "" {
 			list = append(list, item)
@@ -199,7 +199,7 @@ func (a MenuTrees) ToTree() []*MenuTree {
 		}
 		if pitem, ok := mi[item.ParentID]; ok {
 			if pitem.Children == nil {
-				var children []*MenuTree
+				var children []*PermissionTree
 				children = append(children, item)
 				pitem.Children = &children
 				continue

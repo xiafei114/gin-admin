@@ -13,9 +13,9 @@ func GetRoleDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
 	return GetDBWithModel(ctx, defDB, Role{})
 }
 
-// GetRoleMenuDB 获取角色菜单关联存储
-func GetRoleMenuDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
-	return GetDBWithModel(ctx, defDB, RoleMenu{})
+// GetRolePermissionDB 获取角色权力关联存储
+func GetRolePermissionDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
+	return GetDBWithModel(ctx, defDB, RolePermission{})
 }
 
 // SchemaRole 角色对象
@@ -33,15 +33,15 @@ func (a SchemaRole) ToRole() *Role {
 	return item
 }
 
-// ToRoleMenus 转换为角色菜单实体列表
-func (a SchemaRole) ToRoleMenus() []*RoleMenu {
-	list := make([]*RoleMenu, len(a.Menus))
-	for i, item := range a.Menus {
-		list[i] = &RoleMenu{
-			RoleID:   a.RecordID,
-			MenuID:   item.MenuID,
-			Action:   strings.Join(item.Actions, ","),
-			Resource: strings.Join(item.Resources, ","),
+// ToRolePermissions 转换为角色权力实体列表
+func (a SchemaRole) ToRolePermissions() []*RolePermission {
+	list := make([]*RolePermission, len(a.Permissions))
+	for i, item := range a.Permissions {
+		list[i] = &RolePermission{
+			RoleID:       a.RecordID,
+			PermissionID: item.PermissionID,
+			Action:       strings.Join(item.Actions, ","),
+			Resource:     strings.Join(item.Resources, ","),
 		}
 	}
 	return list
@@ -92,70 +92,70 @@ func (a Roles) ToSchemaRoles() []*schema.Role {
 	return list
 }
 
-// SchemaRoleMenu 角色菜单对象
-type SchemaRoleMenu schema.RoleMenu
+// SchemaRolePermission 角色权力对象
+type SchemaRolePermission schema.RolePermission
 
-// ToRoleMenu 转换为角色菜单实体
-func (a SchemaRoleMenu) ToRoleMenu(roleID string) *RoleMenu {
-	return &RoleMenu{
-		RoleID:   roleID,
-		MenuID:   a.MenuID,
-		Action:   strings.Join(a.Actions, ","),
-		Resource: strings.Join(a.Resources, ","),
+// ToRolePermission 转换为角色权力实体
+func (a SchemaRolePermission) ToRolePermission(roleID string) *RolePermission {
+	return &RolePermission{
+		RoleID:       roleID,
+		PermissionID: a.PermissionID,
+		Action:       strings.Join(a.Actions, ","),
+		Resource:     strings.Join(a.Resources, ","),
 	}
 }
 
-// RoleMenu 角色菜单关联实体
-type RoleMenu struct {
+// RolePermission 角色权力关联实体
+type RolePermission struct {
 	Model
-	RoleID   string `gorm:"column:role_id;size:36;index;"` // 角色内码
-	MenuID   string `gorm:"column:menu_id;size:36;index;"` // 菜单内码
-	Action   string `gorm:"column:action;size:2048;"`      // 动作权限(多个以英文逗号分隔)
-	Resource string `gorm:"column:resource;size:2048;"`    // 资源权限(多个以英文逗号分隔)
+	RoleID       string `gorm:"column:role_id;size:36;index;"`       // 角色内码
+	PermissionID string `gorm:"column:permission_id;size:36;index;"` // 权力内码
+	Action       string `gorm:"column:action;size:2048;"`            // 动作权限(多个以英文逗号分隔)
+	Resource     string `gorm:"column:resource;size:2048;"`          // 资源权限(多个以英文逗号分隔)
 }
 
 // TableName 表名
-func (a RoleMenu) TableName() string {
-	return a.Model.TableName("role_menu")
+func (a RolePermission) TableName() string {
+	return a.Model.TableName("role_Permission")
 }
 
-// ToSchemaRoleMenu 转换为角色菜单对象
-func (a RoleMenu) ToSchemaRoleMenu() *schema.RoleMenu {
-	return &schema.RoleMenu{
-		MenuID:    a.MenuID,
-		Actions:   strings.Split(a.Action, ","),
-		Resources: strings.Split(a.Resource, ","),
+// ToSchemaRolePermission 转换为角色权力对象
+func (a RolePermission) ToSchemaRolePermission() *schema.RolePermission {
+	return &schema.RolePermission{
+		PermissionID: a.PermissionID,
+		Actions:      strings.Split(a.Action, ","),
+		Resources:    strings.Split(a.Resource, ","),
 	}
 }
 
-// RoleMenus 角色菜单关联实体列表
-type RoleMenus []*RoleMenu
+// RolePermissions 角色权力关联实体列表
+type RolePermissions []*RolePermission
 
-// GetByRoleID 根据角色ID获取角色菜单对象列表
-func (a RoleMenus) GetByRoleID(roleID string) []*schema.RoleMenu {
-	var list []*schema.RoleMenu
+// GetByRoleID 根据角色ID获取角色权力对象列表
+func (a RolePermissions) GetByRoleID(roleID string) []*schema.RolePermission {
+	var list []*schema.RolePermission
 	for _, item := range a {
 		if item.RoleID == roleID {
-			list = append(list, item.ToSchemaRoleMenu())
+			list = append(list, item.ToSchemaRolePermission())
 		}
 	}
 	return list
 }
 
-// ToSchemaRoleMenus 转换为角色菜单对象列表
-func (a RoleMenus) ToSchemaRoleMenus() []*schema.RoleMenu {
-	list := make([]*schema.RoleMenu, len(a))
+// ToSchemaRolePermissions 转换为角色权力对象列表
+func (a RolePermissions) ToSchemaRolePermissions() []*schema.RolePermission {
+	list := make([]*schema.RolePermission, len(a))
 	for i, item := range a {
-		list[i] = item.ToSchemaRoleMenu()
+		list[i] = item.ToSchemaRolePermission()
 	}
 	return list
 }
 
 // ToMap 转换为键值映射
-func (a RoleMenus) ToMap() map[string]*RoleMenu {
-	m := make(map[string]*RoleMenu)
+func (a RolePermissions) ToMap() map[string]*RolePermission {
+	m := make(map[string]*RolePermission)
 	for _, item := range a {
-		m[item.MenuID] = item
+		m[item.PermissionID] = item
 	}
 	return m
 }

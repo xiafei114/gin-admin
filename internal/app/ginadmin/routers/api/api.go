@@ -32,7 +32,7 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 			middleware.JoinRouter("POST", "/api/v1/refresh_token"),
 			middleware.JoinRouter("PUT", "/api/v1/current/password"),
 			middleware.JoinRouter("GET", "/api/v1/current/user"),
-			middleware.JoinRouter("GET", "/api/v1/current/menutree"),
+			// middleware.JoinRouter("GET", "/api/v1/current/permissiontree"),
 		),
 	))
 
@@ -41,7 +41,7 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 
 	demoCCtl := ctl.NewDemo(b)
 	loginCtl := ctl.NewLogin(b)
-	menuCtl := ctl.NewMenu(b)
+	PermissionCtl := ctl.NewPermission(b)
 	roleCtl := ctl.NewRole(b)
 	userCtl := ctl.NewUser(b)
 
@@ -65,7 +65,7 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		// 注册/api/v1/current
 		v1.PUT("/current/password", loginCtl.UpdatePassword)
 		v1.GET("/current/user", loginCtl.GetUserInfo)
-		v1.GET("/current/menutree", loginCtl.QueryUserMenuTree)
+		// v1.GET("/current/Permissiontree", loginCtl.QueryUserPermissionTree)
 
 		// 注册/api/v1/demos
 		v1.GET("/demos", demoCCtl.Query)
@@ -76,12 +76,12 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.PATCH("/demos/:id/enable", demoCCtl.Enable)
 		v1.PATCH("/demos/:id/disable", demoCCtl.Disable)
 
-		// 注册/api/v1/menus
-		v1.GET("/menus", menuCtl.Query)
-		v1.GET("/menus/:id", menuCtl.Get)
-		v1.POST("/menus", menuCtl.Create)
-		v1.PUT("/menus/:id", menuCtl.Update)
-		v1.DELETE("/menus/:id", menuCtl.Delete)
+		// 注册/api/v1/permission
+		v1.GET("/permission", PermissionCtl.Query)
+		v1.GET("/permission/:id", PermissionCtl.Get)
+		v1.POST("/permission", PermissionCtl.Create)
+		v1.PUT("/permission/:id", PermissionCtl.Update)
+		v1.DELETE("/permission/:id", PermissionCtl.Delete)
 
 		// 注册/api/v1/roles
 		v1.GET("/roles", roleCtl.Query)

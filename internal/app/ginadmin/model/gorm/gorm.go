@@ -19,10 +19,10 @@ func AutoMigrate(db *gormplus.DB) error {
 		new(entity.User),
 		new(entity.UserRole),
 		new(entity.Role),
-		new(entity.RoleMenu),
-		new(entity.Menu),
-		new(entity.MenuAction),
-		new(entity.MenuResource),
+		new(entity.RolePermission),
+		new(entity.Permission),
+		new(entity.PermissionAction),
+		new(entity.PermissionResource),
 		new(entity.Demo),
 		new(demoEntity.Product),
 		new(demoEntity.ProductCategory),
@@ -34,7 +34,7 @@ func NewModel(db *gormplus.DB) *model.Common {
 	return &model.Common{
 		Trans: gmodel.NewTrans(db),
 		Demo:  gmodel.NewDemo(db),
-		Menu:  gmodel.NewMenu(db),
+		Permission:  gmodel.NewPermission(db),
 		Role:  gmodel.NewRole(db),
 		User:  gmodel.NewUser(db),
 	}

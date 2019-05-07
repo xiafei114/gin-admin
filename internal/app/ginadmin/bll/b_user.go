@@ -10,7 +10,7 @@ import (
 	"github.com/casbin/casbin"
 )
 
-// NewUser 创建菜单管理实例
+// NewUser 创建权力管理实例
 func NewUser(m *model.Common, e *casbin.Enforcer) *User {
 	return &User{
 		UserModel: m.User,

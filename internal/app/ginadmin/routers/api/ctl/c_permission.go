@@ -10,22 +10,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// NewMenu 创建菜单管理控制器
-func NewMenu(b *bll.Common) *Menu {
-	return &Menu{
-		MenuBll: b.Menu,
+// NewPermission 创建权限管理控制器
+func NewPermission(b *bll.Common) *Permission {
+	return &Permission{
+		PermissionBll: b.Permission,
 	}
 }
 
-// Menu 菜单管理
-// @Name Menu
-// @Description 菜单管理接口
-type Menu struct {
-	MenuBll *bll.Menu
+// Permission 权力管理
+// @Name Permission
+// @Description 权力管理接口
+type Permission struct {
+	PermissionBll *bll.Permission
 }
 
 // Query 查询数据
-func (a *Menu) Query(c *gin.Context) {
+func (a *Permission) Query(c *gin.Context) {
 	switch c.Query("q") {
 	case "page":
 		a.QueryPage(c)
@@ -42,15 +42,15 @@ func (a *Menu) Query(c *gin.Context) {
 // @Param current query int true "分页索引" 1
 // @Param pageSize query int true "分页大小" 10
 // @Param name query string false "名称"
-// @Param hidden query int false "隐藏菜单(0:不隐藏 1:隐藏)"
+// @Param hidden query int false "隐藏权限(0:不隐藏 1:隐藏)"
 // @Param parent_id query string false "父级ID"
-// @Success 200 []schema.Menu "分页查询结果：{list:列表数据,pagination:{current:页索引,pageSize:页大小,total:总数量}}"
+// @Success 200 []schema.Permission "分页查询结果：{list:列表数据,pagination:{current:页索引,pageSize:页大小,total:总数量}}"
 // @Failure 400 schema.HTTPError "{error:{code:0,message:未知的查询类型}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/menus?q=page
-func (a *Menu) QueryPage(c *gin.Context) {
-	params := schema.MenuQueryParam{
+// @Router GET /api/v1/permission?q=page
+func (a *Permission) QueryPage(c *gin.Context) {
+	params := schema.PermissionQueryParam{
 		LikeName: c.Query("name"),
 	}
 
@@ -64,7 +64,7 @@ func (a *Menu) QueryPage(c *gin.Context) {
 		}
 	}
 
-	items, pr, err := a.MenuBll.QueryPage(ginplus.NewContext(c), params, ginplus.GetPaginationParam(c))
+	items, pr, err := a.PermissionBll.QueryPage(ginplus.NewContext(c), params, ginplus.GetPaginationParam(c))
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -72,18 +72,18 @@ func (a *Menu) QueryPage(c *gin.Context) {
 	ginplus.ResPage(c, items, pr)
 }
 
-// QueryTree 查询菜单树
-// @Summary 查询菜单树
+// QueryTree 查询权限树
+// @Summary 查询权限树
 // @Param Authorization header string false "Bearer 用户令牌"
 // @Param include_actions query int false "是否包含动作数据(1是)"
 // @Param include_resources query int false "是否包含资源数据(1是)"
-// @Success 200 option.Interface "查询结果：{list:菜单树}"
+// @Success 200 option.Interface "查询结果：{list:权限树}"
 // @Failure 400 schema.HTTPError "{error:{code:0,message:未知的查询类型}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/menus?q=tree
-func (a *Menu) QueryTree(c *gin.Context) {
-	treeData, err := a.MenuBll.QueryTree(ginplus.NewContext(c), c.Query("include_actions") == "1", c.Query("include_resources") == "1")
+// @Router GET /api/v1/permission?q=tree
+func (a *Permission) QueryTree(c *gin.Context) {
+	treeData, err := a.PermissionBll.QueryTree(ginplus.NewContext(c), c.Query("include_actions") == "1", c.Query("include_resources") == "1")
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -96,13 +96,13 @@ func (a *Menu) QueryTree(c *gin.Context) {
 // @Summary 查询指定数据
 // @Param Authorization header string false "Bearer 用户令牌"
 // @Param id path string true "记录ID"
-// @Success 200 schema.Menu
+// @Success 200 schema.Permission
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 404 schema.HTTPError "{error:{code:0,message:资源不存在}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/menus/{id}
-func (a *Menu) Get(c *gin.Context) {
-	item, err := a.MenuBll.Get(ginplus.NewContext(c), c.Param("id"))
+// @Router GET /api/v1/permission/{id}
+func (a *Permission) Get(c *gin.Context) {
+	item, err := a.PermissionBll.Get(ginplus.NewContext(c), c.Param("id"))
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -113,20 +113,20 @@ func (a *Menu) Get(c *gin.Context) {
 // Create 创建数据
 // @Summary 创建数据
 // @Param Authorization header string false "Bearer 用户令牌"
-// @Param body body schema.Menu true
-// @Success 200 schema.Menu
+// @Param body body schema.Permission true
+// @Success 200 schema.Permission
 // @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router POST /api/v1/menus
-func (a *Menu) Create(c *gin.Context) {
-	var item schema.Menu
+// @Router POST /api/v1/permission
+func (a *Permission) Create(c *gin.Context) {
+	var item schema.Permission
 	if err := ginplus.ParseJSON(c, &item); err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
 
-	nitem, err := a.MenuBll.Create(ginplus.NewContext(c), item)
+	nitem, err := a.PermissionBll.Create(ginplus.NewContext(c), item)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -138,20 +138,20 @@ func (a *Menu) Create(c *gin.Context) {
 // @Summary 更新数据
 // @Param Authorization header string false "Bearer 用户令牌"
 // @Param id path string true "记录ID"
-// @Param body body schema.Menu true
-// @Success 200 schema.Menu
+// @Param body body schema.Permission true
+// @Success 200 schema.Permission
 // @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router PUT /api/v1/menus/{id}
-func (a *Menu) Update(c *gin.Context) {
-	var item schema.Menu
+// @Router PUT /api/v1/permission/{id}
+func (a *Permission) Update(c *gin.Context) {
+	var item schema.Permission
 	if err := ginplus.ParseJSON(c, &item); err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
 
-	nitem, err := a.MenuBll.Update(ginplus.NewContext(c), c.Param("id"), item)
+	nitem, err := a.PermissionBll.Update(ginplus.NewContext(c), c.Param("id"), item)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -166,9 +166,9 @@ func (a *Menu) Update(c *gin.Context) {
 // @Success 200 schema.HTTPStatus "{status:OK}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router DELETE /api/v1/menus/{id}
-func (a *Menu) Delete(c *gin.Context) {
-	err := a.MenuBll.Delete(ginplus.NewContext(c), c.Param("id"))
+// @Router DELETE /api/v1/permission/{id}
+func (a *Permission) Delete(c *gin.Context) {
+	err := a.PermissionBll.Delete(ginplus.NewContext(c), c.Param("id"))
 	if err != nil {
 		ginplus.ResError(c, err)
 		return

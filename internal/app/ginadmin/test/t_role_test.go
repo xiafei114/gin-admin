@@ -15,30 +15,30 @@ func TestRole(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	// post /menus
-	addMenuItem := &schema.Menu{
+	// post /Permissions
+	addPermissionItem := &schema.Permission{
 		Name:     util.MustUUID(),
 		Sequence: 9999999,
-		Actions: []*schema.MenuAction{
+		Actions: []*schema.PermissionAction{
 			{Code: "query", Name: "query"},
 		},
-		Resources: []*schema.MenuResource{
-			{Code: "query", Name: "query", Method: "GET", Path: "/test/v1/menus"},
+		Resources: []*schema.PermissionResource{
+			{Code: "query", Name: "query", Method: "GET", Path: "/test/v1/Permissions"},
 		},
 	}
-	engine.ServeHTTP(w, newPostRequest("v1/menus", addMenuItem))
+	engine.ServeHTTP(w, newPostRequest("v1/Permissions", addPermissionItem))
 	assert.Equal(t, 200, w.Code)
-	var addNewMenuItem schema.Menu
-	err = parseReader(w.Body, &addNewMenuItem)
+	var addNewPermissionItem schema.Permission
+	err = parseReader(w.Body, &addNewPermissionItem)
 	assert.Nil(t, err)
 
 	// post /roles
 	addItem := &schema.Role{
 		Name:     util.MustUUID(),
 		Sequence: 9999999,
-		Menus: []*schema.RoleMenu{
+		Permissions: []*schema.RolePermission{
 			{
-				MenuID:    addNewMenuItem.RecordID,
+				PermissionID:    addNewPermissionItem.RecordID,
 				Actions:   []string{"query"},
 				Resources: []string{"query"},
 			},
@@ -51,7 +51,7 @@ func TestRole(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, addItem.Name, addNewItem.Name)
 	assert.Equal(t, addItem.Sequence, addNewItem.Sequence)
-	assert.Equal(t, len(addItem.Menus), len(addNewItem.Menus))
+	assert.Equal(t, len(addItem.Permissions), len(addNewItem.Permissions))
 	assert.NotEmpty(t, addNewItem.RecordID)
 
 	// query /roles?q=page
@@ -79,10 +79,10 @@ func TestRole(t *testing.T) {
 	err = parseReader(w.Body, &putNewItem)
 	assert.Nil(t, err)
 	assert.Equal(t, putItem.Name, putNewItem.Name)
-	assert.Equal(t, len(putItem.Menus), len(putNewItem.Menus))
+	assert.Equal(t, len(putItem.Permissions), len(putNewItem.Permissions))
 
-	// delete /menus/:id
-	engine.ServeHTTP(w, newDeleteRequest("%s/%s", "v1/menus", addNewMenuItem.RecordID))
+	// delete /Permissions/:id
+	engine.ServeHTTP(w, newDeleteRequest("%s/%s", "v1/Permissions", addNewPermissionItem.RecordID))
 	assert.Equal(t, 200, w.Code)
 	err = parseOK(w.Body)
 	assert.Nil(t, err)

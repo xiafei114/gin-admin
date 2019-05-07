@@ -11,22 +11,22 @@ import (
 	"gin-admin/pkg/logger"
 )
 
-// NewMenu 创建菜单存储实例
-func NewMenu(db *gormplus.DB) *Menu {
-	return &Menu{db}
+// NewPermission 创建菜单存储实例
+func NewPermission(db *gormplus.DB) *Permission {
+	return &Permission{db}
 }
 
-// Menu 菜单存储
-type Menu struct {
+// Permission 菜单存储
+type Permission struct {
 	db *gormplus.DB
 }
 
-func (a *Menu) getFuncName(name string) string {
-	return fmt.Sprintf("gorm.model.Menu.%s", name)
+func (a *Permission) getFuncName(name string) string {
+	return fmt.Sprintf("gorm.model.Permission.%s", name)
 }
 
-func (a *Menu) getQueryOption(opts ...schema.MenuQueryOptions) schema.MenuQueryOptions {
-	var opt schema.MenuQueryOptions
+func (a *Permission) getQueryOption(opts ...schema.PermissionQueryOptions) schema.PermissionQueryOptions {
+	var opt schema.PermissionQueryOptions
 	if len(opts) > 0 {
 		opt = opts[0]
 	}
@@ -34,11 +34,11 @@ func (a *Menu) getQueryOption(opts ...schema.MenuQueryOptions) schema.MenuQueryO
 }
 
 // Query 查询数据
-func (a *Menu) Query(ctx context.Context, params schema.MenuQueryParam, opts ...schema.MenuQueryOptions) (*schema.MenuQueryResult, error) {
+func (a *Permission) Query(ctx context.Context, params schema.PermissionQueryParam, opts ...schema.PermissionQueryOptions) (*schema.PermissionQueryResult, error) {
 	span := logger.StartSpan(ctx, "查询数据", a.getFuncName("Query"))
 	defer span.Finish()
 
-	db := entity.GetMenuDB(ctx, a.db).DB
+	db := entity.GetPermissionDB(ctx, a.db).DB
 	if v := params.RecordIDs; len(v) > 0 {
 		db = db.Where("record_id IN(?)", v)
 	}
@@ -57,18 +57,18 @@ func (a *Menu) Query(ctx context.Context, params schema.MenuQueryParam, opts ...
 	db = db.Order("sequence DESC,id DESC")
 
 	opt := a.getQueryOption(opts...)
-	var list entity.Menus
+	var list entity.Permissions
 	pr, err := WrapPageQuery(db, opt.PageParam, &list)
 	if err != nil {
 		span.Errorf(err.Error())
 		return nil, errors.New("查询数据发生错误")
 	}
-	qr := &schema.MenuQueryResult{
+	qr := &schema.PermissionQueryResult{
 		PageResult: pr,
-		Data:       list.ToSchemaMenus(),
+		Data:       list.ToSchemaPermissions(),
 	}
 
-	err = a.fillSchemaMenus(ctx, qr.Data, opts...)
+	err = a.fillSchemaPermissions(ctx, qr.Data, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,20 +77,20 @@ func (a *Menu) Query(ctx context.Context, params schema.MenuQueryParam, opts ...
 }
 
 // 填充菜单对象数据
-func (a *Menu) fillSchemaMenus(ctx context.Context, items []*schema.Menu, opts ...schema.MenuQueryOptions) error {
+func (a *Permission) fillSchemaPermissions(ctx context.Context, items []*schema.Permission, opts ...schema.PermissionQueryOptions) error {
 	opt := a.getQueryOption(opts...)
 
 	if opt.IncludeActions || opt.IncludeResources {
 
-		menuIDs := make([]string, len(items))
+		PermissionIDs := make([]string, len(items))
 		for i, item := range items {
-			menuIDs[i] = item.RecordID
+			PermissionIDs[i] = item.RecordID
 		}
 
-		var actionList entity.MenuActions
-		var resourceList entity.MenuResources
+		var actionList entity.PermissionActions
+		var resourceList entity.PermissionResources
 		if opt.IncludeActions {
-			items, err := a.queryActions(ctx, menuIDs...)
+			items, err := a.queryActions(ctx, PermissionIDs...)
 			if err != nil {
 				return err
 			}
@@ -98,7 +98,7 @@ func (a *Menu) fillSchemaMenus(ctx context.Context, items []*schema.Menu, opts .
 		}
 
 		if opt.IncludeResources {
-			items, err := a.queryResources(ctx, menuIDs...)
+			items, err := a.queryResources(ctx, PermissionIDs...)
 			if err != nil {
 				return err
 			}
@@ -107,10 +107,10 @@ func (a *Menu) fillSchemaMenus(ctx context.Context, items []*schema.Menu, opts .
 
 		for i, item := range items {
 			if len(actionList) > 0 {
-				items[i].Actions = actionList.GetByMenuID(item.RecordID)
+				items[i].Actions = actionList.GetByPermissionID(item.RecordID)
 			}
 			if len(resourceList) > 0 {
-				items[i].Resources = resourceList.GetByMenuID(item.RecordID)
+				items[i].Resources = resourceList.GetByPermissionID(item.RecordID)
 			}
 		}
 	}
@@ -119,12 +119,12 @@ func (a *Menu) fillSchemaMenus(ctx context.Context, items []*schema.Menu, opts .
 }
 
 // Get 查询指定数据
-func (a *Menu) Get(ctx context.Context, recordID string, opts ...schema.MenuQueryOptions) (*schema.Menu, error) {
+func (a *Permission) Get(ctx context.Context, recordID string, opts ...schema.PermissionQueryOptions) (*schema.Permission, error) {
 	span := logger.StartSpan(ctx, "查询指定数据", a.getFuncName("Get"))
 	defer span.Finish()
 
-	var item entity.Menu
-	ok, err := a.db.FindOne(entity.GetMenuDB(ctx, a.db).Where("record_id=?", recordID), &item)
+	var item entity.Permission
+	ok, err := a.db.FindOne(entity.GetPermissionDB(ctx, a.db).Where("record_id=?", recordID), &item)
 	if err != nil {
 		span.Errorf(err.Error())
 		return nil, errors.New("查询指定数据发生错误")
@@ -132,8 +132,8 @@ func (a *Menu) Get(ctx context.Context, recordID string, opts ...schema.MenuQuer
 		return nil, nil
 	}
 
-	sitem := item.ToSchemaMenu()
-	err = a.fillSchemaMenus(ctx, []*schema.Menu{sitem}, opts...)
+	sitem := item.ToSchemaPermission()
+	err = a.fillSchemaPermissions(ctx, []*schema.Permission{sitem}, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -142,28 +142,28 @@ func (a *Menu) Get(ctx context.Context, recordID string, opts ...schema.MenuQuer
 }
 
 // Create 创建数据
-func (a *Menu) Create(ctx context.Context, item schema.Menu) error {
+func (a *Permission) Create(ctx context.Context, item schema.Permission) error {
 	span := logger.StartSpan(ctx, "创建数据", a.getFuncName("Create"))
 	defer span.Finish()
 
 	return ExecTrans(ctx, a.db, func(ctx context.Context) error {
-		sitem := entity.SchemaMenu(item)
-		result := entity.GetMenuDB(ctx, a.db).Create(sitem.ToMenu())
+		sitem := entity.SchemaPermission(item)
+		result := entity.GetPermissionDB(ctx, a.db).Create(sitem.ToPermission())
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("创建菜单数据发生错误")
 		}
 
-		for _, item := range sitem.ToMenuActions() {
-			result := entity.GetMenuActionDB(ctx, a.db).Create(item)
+		for _, item := range sitem.ToPermissionActions() {
+			result := entity.GetPermissionActionDB(ctx, a.db).Create(item)
 			if err := result.Error; err != nil {
 				span.Errorf(err.Error())
 				return errors.New("创建菜单动作数据发生错误")
 			}
 		}
 
-		for _, item := range sitem.ToMenuResources() {
-			result := entity.GetMenuResourceDB(ctx, a.db).Create(item)
+		for _, item := range sitem.ToPermissionResources() {
+			result := entity.GetPermissionResourceDB(ctx, a.db).Create(item)
 			if err := result.Error; err != nil {
 				span.Errorf(err.Error())
 				return errors.New("创建菜单资源数据发生错误")
@@ -175,7 +175,7 @@ func (a *Menu) Create(ctx context.Context, item schema.Menu) error {
 }
 
 // 对比并获取需要新增，修改，删除的动作项
-func (a *Menu) compareUpdateAction(oldList, newList entity.MenuActions) (clist, dlist, ulist []*entity.MenuAction) {
+func (a *Permission) compareUpdateAction(oldList, newList entity.PermissionActions) (clist, dlist, ulist []*entity.PermissionAction) {
 	oldMap, newMap := oldList.ToMap(), newList.ToMap()
 
 	for _, nitem := range newList {
@@ -195,16 +195,16 @@ func (a *Menu) compareUpdateAction(oldList, newList entity.MenuActions) (clist, 
 }
 
 // 更新动作数据
-func (a *Menu) updateActions(ctx context.Context, span *logger.Entry, menuID string, items entity.MenuActions) error {
-	list, err := a.queryActions(ctx, menuID)
+func (a *Permission) updateActions(ctx context.Context, span *logger.Entry, PermissionID string, items entity.PermissionActions) error {
+	list, err := a.queryActions(ctx, PermissionID)
 	if err != nil {
 		return err
 	}
 
 	clist, dlist, ulist := a.compareUpdateAction(list, items)
 	for _, item := range clist {
-		item.MenuID = menuID
-		result := entity.GetMenuActionDB(ctx, a.db).Create(item)
+		item.PermissionID = PermissionID
+		result := entity.GetPermissionActionDB(ctx, a.db).Create(item)
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("创建菜单动作数据发生错误")
@@ -212,7 +212,7 @@ func (a *Menu) updateActions(ctx context.Context, span *logger.Entry, menuID str
 	}
 
 	for _, item := range dlist {
-		result := entity.GetMenuActionDB(ctx, a.db).Where("menu_id=? AND code=?", menuID, item.Code).Delete(entity.MenuAction{})
+		result := entity.GetPermissionActionDB(ctx, a.db).Where("permission_id=? AND code=?", PermissionID, item.Code).Delete(entity.PermissionAction{})
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("删除菜单动作数据发生错误")
@@ -220,7 +220,7 @@ func (a *Menu) updateActions(ctx context.Context, span *logger.Entry, menuID str
 	}
 
 	for _, item := range ulist {
-		result := entity.GetMenuActionDB(ctx, a.db).Where("menu_id=? AND code=?", menuID, item.Code).Omit("menu_id", "code").Updates(item)
+		result := entity.GetPermissionActionDB(ctx, a.db).Where("permission_id=? AND code=?", PermissionID, item.Code).Omit("permission_id", "code").Updates(item)
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("更新菜单动作数据发生错误")
@@ -230,7 +230,7 @@ func (a *Menu) updateActions(ctx context.Context, span *logger.Entry, menuID str
 }
 
 // 对比并获取需要新增，修改，删除的资源项
-func (a *Menu) compareUpdateResource(oldList, newList entity.MenuResources) (clist, dlist, ulist []*entity.MenuResource) {
+func (a *Permission) compareUpdateResource(oldList, newList entity.PermissionResources) (clist, dlist, ulist []*entity.PermissionResource) {
 	oldMap, newMap := oldList.ToMap(), newList.ToMap()
 
 	for _, nitem := range newList {
@@ -250,15 +250,15 @@ func (a *Menu) compareUpdateResource(oldList, newList entity.MenuResources) (cli
 }
 
 // 更新资源数据
-func (a *Menu) updateResources(ctx context.Context, span *logger.Entry, menuID string, items entity.MenuResources) error {
-	list, err := a.queryResources(ctx, menuID)
+func (a *Permission) updateResources(ctx context.Context, span *logger.Entry, PermissionID string, items entity.PermissionResources) error {
+	list, err := a.queryResources(ctx, PermissionID)
 	if err != nil {
 		return err
 	}
 
 	clist, dlist, ulist := a.compareUpdateResource(list, items)
 	for _, item := range clist {
-		result := entity.GetMenuResourceDB(ctx, a.db).Create(item)
+		result := entity.GetPermissionResourceDB(ctx, a.db).Create(item)
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("创建菜单资源数据发生错误")
@@ -266,7 +266,7 @@ func (a *Menu) updateResources(ctx context.Context, span *logger.Entry, menuID s
 	}
 
 	for _, item := range dlist {
-		result := entity.GetMenuResourceDB(ctx, a.db).Where("menu_id=? AND code=?", menuID, item.Code).Delete(entity.MenuResource{})
+		result := entity.GetPermissionResourceDB(ctx, a.db).Where("permission_id=? AND code=?", PermissionID, item.Code).Delete(entity.PermissionResource{})
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("删除菜单资源数据发生错误")
@@ -274,7 +274,7 @@ func (a *Menu) updateResources(ctx context.Context, span *logger.Entry, menuID s
 	}
 
 	for _, item := range ulist {
-		result := entity.GetMenuResourceDB(ctx, a.db).Where("menu_id=? AND code=?", menuID, item.Code).Omit("menu_id", "code").Updates(item)
+		result := entity.GetPermissionResourceDB(ctx, a.db).Where("permission_id=? AND code=?", PermissionID, item.Code).Omit("permission_id", "code").Updates(item)
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("更新菜单资源数据发生错误")
@@ -284,24 +284,24 @@ func (a *Menu) updateResources(ctx context.Context, span *logger.Entry, menuID s
 }
 
 // Update 更新数据
-func (a *Menu) Update(ctx context.Context, recordID string, item schema.Menu) error {
+func (a *Permission) Update(ctx context.Context, recordID string, item schema.Permission) error {
 	span := logger.StartSpan(ctx, "更新数据", a.getFuncName("Update"))
 	defer span.Finish()
 
 	return ExecTrans(ctx, a.db, func(ctx context.Context) error {
-		sitem := entity.SchemaMenu(item)
-		result := entity.GetMenuDB(ctx, a.db).Where("record_id=?", recordID).Omit("record_id", "creator").Updates(sitem.ToMenu())
+		sitem := entity.SchemaPermission(item)
+		result := entity.GetPermissionDB(ctx, a.db).Where("record_id=?", recordID).Omit("record_id", "creator").Updates(sitem.ToPermission())
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("更新数据发生错误")
 		}
 
-		err := a.updateActions(ctx, span, recordID, sitem.ToMenuActions())
+		err := a.updateActions(ctx, span, recordID, sitem.ToPermissionActions())
 		if err != nil {
 			return err
 		}
 
-		err = a.updateResources(ctx, span, recordID, sitem.ToMenuResources())
+		err = a.updateResources(ctx, span, recordID, sitem.ToPermissionResources())
 		if err != nil {
 			return err
 		}
@@ -311,11 +311,11 @@ func (a *Menu) Update(ctx context.Context, recordID string, item schema.Menu) er
 }
 
 // UpdateParentPath 更新父级路径
-func (a *Menu) UpdateParentPath(ctx context.Context, recordID, parentPath string) error {
+func (a *Permission) UpdateParentPath(ctx context.Context, recordID, parentPath string) error {
 	span := logger.StartSpan(ctx, "更新父级路径", a.getFuncName("UpdateParentPath"))
 	defer span.Finish()
 
-	result := entity.GetMenuDB(ctx, a.db).Where("record_id=?", recordID).Update("parent_path", parentPath)
+	result := entity.GetPermissionDB(ctx, a.db).Where("record_id=?", recordID).Update("parent_path", parentPath)
 	if err := result.Error; err != nil {
 		span.Errorf(err.Error())
 		return errors.New("更新父级路径发生错误")
@@ -324,24 +324,24 @@ func (a *Menu) UpdateParentPath(ctx context.Context, recordID, parentPath string
 }
 
 // Delete 删除数据
-func (a *Menu) Delete(ctx context.Context, recordID string) error {
+func (a *Permission) Delete(ctx context.Context, recordID string) error {
 	span := logger.StartSpan(ctx, "删除数据", a.getFuncName("Delete"))
 	defer span.Finish()
 
 	return ExecTrans(ctx, a.db, func(ctx context.Context) error {
-		result := entity.GetMenuDB(ctx, a.db).Where("record_id=?", recordID).Delete(entity.Menu{})
+		result := entity.GetPermissionDB(ctx, a.db).Where("record_id=?", recordID).Delete(entity.Permission{})
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("删除数据发生错误")
 		}
 
-		result = entity.GetMenuActionDB(ctx, a.db).Where("menu_id=?", recordID).Delete(entity.MenuAction{})
+		result = entity.GetPermissionActionDB(ctx, a.db).Where("permission_id=?", recordID).Delete(entity.PermissionAction{})
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("删除菜单动作数据发生错误")
 		}
 
-		result = entity.GetMenuResourceDB(ctx, a.db).Where("menu_id=?", recordID).Delete(entity.MenuResource{})
+		result = entity.GetPermissionResourceDB(ctx, a.db).Where("permission_id=?", recordID).Delete(entity.PermissionResource{})
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
 			return errors.New("删除菜单资源数据发生错误")
@@ -350,12 +350,12 @@ func (a *Menu) Delete(ctx context.Context, recordID string) error {
 	})
 }
 
-func (a *Menu) queryActions(ctx context.Context, menuIDs ...string) (entity.MenuActions, error) {
+func (a *Permission) queryActions(ctx context.Context, PermissionIDs ...string) (entity.PermissionActions, error) {
 	span := logger.StartSpan(ctx, "查询菜单动作数据", a.getFuncName("queryActions"))
 	defer span.Finish()
 
-	var list entity.MenuActions
-	result := entity.GetMenuActionDB(ctx, a.db).Where("menu_id IN(?)", menuIDs).Find(&list)
+	var list entity.PermissionActions
+	result := entity.GetPermissionActionDB(ctx, a.db).Where("permission_id IN(?)", PermissionIDs).Find(&list)
 	if err := result.Error; err != nil {
 		span.Errorf(err.Error())
 		return nil, errors.New("查询菜单动作数据发生错误")
@@ -364,12 +364,12 @@ func (a *Menu) queryActions(ctx context.Context, menuIDs ...string) (entity.Menu
 	return list, nil
 }
 
-func (a *Menu) queryResources(ctx context.Context, menuIDs ...string) (entity.MenuResources, error) {
+func (a *Permission) queryResources(ctx context.Context, PermissionIDs ...string) (entity.PermissionResources, error) {
 	span := logger.StartSpan(ctx, "查询菜单资源数据", a.getFuncName("queryResources"))
 	defer span.Finish()
 
-	var list entity.MenuResources
-	result := entity.GetMenuResourceDB(ctx, a.db).Where("menu_id IN(?)", menuIDs).Find(&list)
+	var list entity.PermissionResources
+	result := entity.GetPermissionResourceDB(ctx, a.db).Where("permission_id IN(?)", PermissionIDs).Find(&list)
 	if err := result.Error; err != nil {
 		span.Errorf(err.Error())
 		return nil, errors.New("查询菜单资源数据发生错误")

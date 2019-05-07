@@ -30,7 +30,7 @@ type UserLoginRole struct {
 type UserLoginPermission struct {
 	PermissionID    string      `json:"permissionID" swaggo:"true,id"`
 	PermissionName  string      `json:"permissionName" swaggo:"true,名称"`
-	ActionEntitySet MenuActions `json:"actionEntitySets" swaggo:"false,动作列表"`
+	ActionEntitySet PermissionActions `json:"actionEntitySets" swaggo:"false,动作列表"`
 }
 
 // UserLoginedInfo 获得登录用户信息

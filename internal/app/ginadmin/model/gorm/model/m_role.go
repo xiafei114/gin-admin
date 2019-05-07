@@ -78,25 +78,25 @@ func (a *Role) Query(ctx context.Context, params schema.RoleQueryParam, opts ...
 func (a *Role) fillSchameRoles(ctx context.Context, items []*schema.Role, opts ...schema.RoleQueryOptions) error {
 	opt := a.getQueryOption(opts...)
 
-	if opt.IncludeMenus {
+	if opt.IncludePermissions {
 
 		roleIDs := make([]string, len(items))
 		for i, item := range items {
 			roleIDs[i] = item.RecordID
 		}
 
-		var menuList entity.RoleMenus
-		if opt.IncludeMenus {
-			items, err := a.queryMenus(ctx, roleIDs...)
+		var PermissionList entity.RolePermissions
+		if opt.IncludePermissions {
+			items, err := a.queryPermissions(ctx, roleIDs...)
 			if err != nil {
 				return err
 			}
-			menuList = items
+			PermissionList = items
 		}
 
 		for i, item := range items {
-			if len(menuList) > 0 {
-				items[i].Menus = menuList.GetByRoleID(item.RecordID)
+			if len(PermissionList) > 0 {
+				items[i].Permissions = PermissionList.GetByRoleID(item.RecordID)
 			}
 		}
 	}
@@ -139,11 +139,11 @@ func (a *Role) Create(ctx context.Context, item schema.Role) error {
 			return errors.New("创建角色数据发生错误")
 		}
 
-		for _, item := range sitem.ToRoleMenus() {
-			result := entity.GetRoleMenuDB(ctx, a.db).Create(item)
+		for _, item := range sitem.ToRolePermissions() {
+			result := entity.GetRolePermissionDB(ctx, a.db).Create(item)
 			if err := result.Error; err != nil {
 				span.Errorf(err.Error())
-				return errors.New("创建角色菜单数据发生错误")
+				return errors.New("创建角色权力数据发生错误")
 			}
 		}
 
@@ -151,12 +151,12 @@ func (a *Role) Create(ctx context.Context, item schema.Role) error {
 	})
 }
 
-// 对比并获取需要新增，修改，删除的菜单项
-func (a *Role) compareUpdateMenu(oldList, newList entity.RoleMenus) (clist, dlist, ulist entity.RoleMenus) {
+// 对比并获取需要新增，修改，删除的权力项
+func (a *Role) compareUpdatePermission(oldList, newList entity.RolePermissions) (clist, dlist, ulist entity.RolePermissions) {
 	oldMap, newMap := oldList.ToMap(), newList.ToMap()
 
 	for _, nitem := range newList {
-		if _, ok := oldMap[nitem.MenuID]; ok {
+		if _, ok := oldMap[nitem.PermissionID]; ok {
 			ulist = append(ulist, nitem)
 			continue
 		}
@@ -164,42 +164,42 @@ func (a *Role) compareUpdateMenu(oldList, newList entity.RoleMenus) (clist, dlis
 	}
 
 	for _, oitem := range oldList {
-		if _, ok := newMap[oitem.MenuID]; !ok {
+		if _, ok := newMap[oitem.PermissionID]; !ok {
 			dlist = append(dlist, oitem)
 		}
 	}
 	return clist, dlist, ulist
 }
 
-// 更新菜单数据
-func (a *Role) updateMenus(ctx context.Context, span *logger.Entry, roleID string, items entity.RoleMenus) error {
-	list, err := a.queryMenus(ctx, roleID)
+// 更新权力数据
+func (a *Role) updatePermissions(ctx context.Context, span *logger.Entry, roleID string, items entity.RolePermissions) error {
+	list, err := a.queryPermissions(ctx, roleID)
 	if err != nil {
 		return err
 	}
 
-	clist, dlist, ulist := a.compareUpdateMenu(list, items)
+	clist, dlist, ulist := a.compareUpdatePermission(list, items)
 	for _, item := range clist {
-		result := entity.GetRoleMenuDB(ctx, a.db).Create(item)
+		result := entity.GetRolePermissionDB(ctx, a.db).Create(item)
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
-			return errors.New("创建角色菜单数据发生错误")
+			return errors.New("创建角色权力数据发生错误")
 		}
 	}
 
 	for _, item := range dlist {
-		result := entity.GetRoleMenuDB(ctx, a.db).Where("role_id=? AND menu_id=?", roleID, item.MenuID).Delete(entity.RoleMenu{})
+		result := entity.GetRolePermissionDB(ctx, a.db).Where("role_id=? AND permission_id=?", roleID, item.PermissionID).Delete(entity.RolePermission{})
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
-			return errors.New("删除角色菜单数据发生错误")
+			return errors.New("删除角色权力数据发生错误")
 		}
 	}
 
 	for _, item := range ulist {
-		result := entity.GetRoleMenuDB(ctx, a.db).Where("role_id=? AND menu_id=?", roleID, item.MenuID).Omit("role_id", "menu_id").Updates(item)
+		result := entity.GetRolePermissionDB(ctx, a.db).Where("role_id=? AND permission_id=?", roleID, item.PermissionID).Omit("role_id", "permission_id").Updates(item)
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
-			return errors.New("更新角色菜单数据发生错误")
+			return errors.New("更新角色权力数据发生错误")
 		}
 	}
 	return nil
@@ -218,7 +218,7 @@ func (a *Role) Update(ctx context.Context, recordID string, item schema.Role) er
 			return errors.New("更新角色数据发生错误")
 		}
 
-		err := a.updateMenus(ctx, span, recordID, sitem.ToRoleMenus())
+		err := a.updatePermissions(ctx, span, recordID, sitem.ToRolePermissions())
 		if err != nil {
 			return err
 		}
@@ -239,25 +239,25 @@ func (a *Role) Delete(ctx context.Context, recordID string) error {
 			return errors.New("删除角色数据发生错误")
 		}
 
-		result = entity.GetRoleMenuDB(ctx, a.db).Where("role_id=?", recordID).Delete(entity.RoleMenu{})
+		result = entity.GetRolePermissionDB(ctx, a.db).Where("role_id=?", recordID).Delete(entity.RolePermission{})
 		if err := result.Error; err != nil {
 			span.Errorf(err.Error())
-			return errors.New("删除角色菜单数据发生错误")
+			return errors.New("删除角色权力数据发生错误")
 		}
 
 		return nil
 	})
 }
 
-func (a *Role) queryMenus(ctx context.Context, roleIDs ...string) (entity.RoleMenus, error) {
-	span := logger.StartSpan(ctx, "查询角色菜单数据", a.getFuncName("queryMenus"))
+func (a *Role) queryPermissions(ctx context.Context, roleIDs ...string) (entity.RolePermissions, error) {
+	span := logger.StartSpan(ctx, "查询角色权力数据", a.getFuncName("queryPermissions"))
 	defer span.Finish()
 
-	var list entity.RoleMenus
-	result := entity.GetRoleMenuDB(ctx, a.db).Where("role_id IN(?)", roleIDs).Find(&list)
+	var list entity.RolePermissions
+	result := entity.GetRolePermissionDB(ctx, a.db).Where("role_id IN(?)", roleIDs).Find(&list)
 	if err := result.Error; err != nil {
 		span.Errorf(err.Error())
-		return nil, errors.New("查询角色菜单数据发生错误")
+		return nil, errors.New("查询角色权力数据发生错误")
 	}
 
 	return list, nil

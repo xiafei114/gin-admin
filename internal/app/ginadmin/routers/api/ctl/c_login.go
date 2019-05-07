@@ -545,20 +545,20 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 	ginplus.ResSuccess(c, json)
 }
 
-// QueryUserMenuTree 查询当前用户菜单树
-// @Summary 查询当前用户菜单树
+// QueryUserPermissionTree 查询当前用户权力树
+// @Summary 查询当前用户权力树
 // @Param Authorization header string false "Bearer 用户令牌"
-// @Success 200 schema.Menu "查询结果：{list:菜单树}"
+// @Success 200 schema.Permission "查询结果：{list:权力树}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/current/menutree
-func (a *Login) QueryUserMenuTree(c *gin.Context) {
-	menus, err := a.LoginBll.QueryUserMenuTree(ginplus.NewContext(c))
+// @Router GET /api/v1/current/Permissiontree
+func (a *Login) QueryUserPermissionTree(c *gin.Context) {
+	Permissions, err := a.LoginBll.QueryUserPermissionTree(ginplus.NewContext(c))
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResData(c, menus)
+	ginplus.ResData(c, Permissions)
 }
 
 // UpdatePassword 更新个人密码

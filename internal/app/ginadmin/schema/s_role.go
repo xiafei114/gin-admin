@@ -4,21 +4,21 @@ import "time"
 
 // Role 角色对象
 type Role struct {
-	RecordID  string     `json:"record_id" swaggo:"false,记录ID"`
-	Name      string     `json:"name" binding:"required" swaggo:"true,角色名称"`
-	Sequence  int        `json:"sequence" swaggo:"false,排序值"`
-	Memo      string     `json:"memo" swaggo:"false,备注"`
-	Creator   string     `json:"creator" swaggo:"false,创建者"`
-	CreatedAt *time.Time `json:"created_at" swaggo:"false,创建时间"`
-	UpdatedAt *time.Time `json:"updated_at" swaggo:"false,更新时间"`
-	Menus     RoleMenus  `json:"menus" binding:"required,gt=0" swaggo:"false,菜单权限"`
+	RecordID    string          `json:"record_id" swaggo:"false,记录ID"`
+	Name        string          `json:"name" binding:"required" swaggo:"true,角色名称"`
+	Sequence    int             `json:"sequence" swaggo:"false,排序值"`
+	Memo        string          `json:"memo" swaggo:"false,备注"`
+	Creator     string          `json:"creator" swaggo:"false,创建者"`
+	CreatedAt   *time.Time      `json:"created_at" swaggo:"false,创建时间"`
+	UpdatedAt   *time.Time      `json:"updated_at" swaggo:"false,更新时间"`
+	Permissions RolePermissions `json:"Permissions" binding:"required,gt=0" swaggo:"false,权力权限"`
 }
 
-// RoleMenu 角色菜单对象
-type RoleMenu struct {
-	MenuID    string   `json:"menu_id" swaggo:"false,菜单ID"`
-	Actions   []string `json:"actions" swaggo:"false,动作权限列表"`
-	Resources []string `json:"resources" swaggo:"false,资源权限列表"`
+// RolePermission 角色权力对象
+type RolePermission struct {
+	PermissionID string   `json:"permission_id" swaggo:"false,权力ID"`
+	Actions      []string `json:"actions" swaggo:"false,动作权限列表"`
+	Resources    []string `json:"resources" swaggo:"false,资源权限列表"`
 }
 
 // RoleQueryParam 查询条件
@@ -31,8 +31,8 @@ type RoleQueryParam struct {
 
 // RoleQueryOptions 查询可选参数项
 type RoleQueryOptions struct {
-	PageParam    *PaginationParam // 分页参数
-	IncludeMenus bool             // 包含菜单权限
+	PageParam          *PaginationParam // 分页参数
+	IncludePermissions bool             // 包含权力权限
 }
 
 // RoleQueryResult 查询结果
@@ -52,11 +52,11 @@ func (a Roles) ForEach(fn func(*Role, int)) Roles {
 	return a
 }
 
-// ToMenuIDs 获取所有的菜单ID（不去重）
-func (a Roles) ToMenuIDs() []string {
+// ToPermissionIDs 获取所有的权力ID（不去重）
+func (a Roles) ToPermissionIDs() []string {
 	var idList []string
 	for _, item := range a {
-		idList = append(idList, item.Menus.ToMenuIDs()...)
+		idList = append(idList, item.Permissions.ToPermissionIDs()...)
 	}
 	return idList
 }
@@ -77,17 +77,17 @@ func (a Roles) mergeStrings(olds, news []string) []string {
 	return olds
 }
 
-// ToMenuIDActionsMap 转换为菜单ID的动作权限列表映射
-func (a Roles) ToMenuIDActionsMap() map[string][]string {
+// ToPermissionIDActionsMap 转换为权力ID的动作权限列表映射
+func (a Roles) ToPermissionIDActionsMap() map[string][]string {
 	m := make(map[string][]string)
 	for _, item := range a {
-		for _, menu := range item.Menus {
-			v, ok := m[menu.MenuID]
+		for _, Permission := range item.Permissions {
+			v, ok := m[Permission.PermissionID]
 			if ok {
-				m[menu.MenuID] = a.mergeStrings(v, menu.Actions)
+				m[Permission.PermissionID] = a.mergeStrings(v, Permission.Actions)
 				continue
 			}
-			m[menu.MenuID] = menu.Actions
+			m[Permission.PermissionID] = Permission.Actions
 		}
 	}
 	return m
@@ -111,14 +111,14 @@ func (a Roles) ToMap() map[string]*Role {
 	return m
 }
 
-// RoleMenus 角色菜单列表
-type RoleMenus []*RoleMenu
+// RolePermissions 角色权力列表
+type RolePermissions []*RolePermission
 
-// ToMenuIDs 转换为菜单ID列表
-func (a RoleMenus) ToMenuIDs() []string {
+// ToPermissionIDs 转换为权力ID列表
+func (a RolePermissions) ToPermissionIDs() []string {
 	list := make([]string, len(a))
 	for i, item := range a {
-		list[i] = item.MenuID
+		list[i] = item.PermissionID
 	}
 	return list
 }

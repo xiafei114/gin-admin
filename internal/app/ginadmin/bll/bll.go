@@ -74,7 +74,7 @@ func CheckIsRootUser(ctx context.Context, recordID string) bool {
 type Common struct {
 	Demo    *Demo
 	Login   *Login
-	Menu    *Menu
+	Permission    *Permission
 	Role    *Role
 	User    *User
 	Product *demoBll.Product
@@ -86,7 +86,7 @@ func NewCommon(m *model.Common, a auth.Auther, e *casbin.Enforcer) *Common {
 	return &Common{
 		Demo:    NewDemo(m),
 		Login:   NewLogin(m, a),
-		Menu:    NewMenu(m),
+		Permission:    NewPermission(m),
 		Role:    NewRole(m, e),
 		User:    NewUser(m, e),
 		Product: demo.NewProduct(m),

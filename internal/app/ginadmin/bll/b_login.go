@@ -29,7 +29,7 @@ func NewLogin(m *model.Common, a auth.Auther) *Login {
 	return &Login{
 		UserModel: m.User,
 		RoleModel: m.Role,
-		MenuModel: m.Menu,
+		PermissionModel: m.Permission,
 		Auth:      a,
 	}
 }
@@ -38,7 +38,7 @@ func NewLogin(m *model.Common, a auth.Auther) *Login {
 type Login struct {
 	UserModel model.IUser
 	RoleModel model.IRole
-	MenuModel model.IMenu
+	PermissionModel model.IPermission
 	Auth      auth.Auther
 }
 
@@ -222,17 +222,17 @@ func (a *Login) GetCurrentUserInfo(ctx context.Context) (*schema.UserLoginedInfo
 	return loginInfo, nil
 }
 
-// QueryUserMenuTree 查询当前用户的权限菜单树
-func (a *Login) QueryUserMenuTree(ctx context.Context) ([]*schema.MenuTree, error) {
+// QueryUserPermissionTree 查询当前用户的权限菜单树
+func (a *Login) QueryUserPermissionTree(ctx context.Context) ([]*schema.PermissionTree, error) {
 	userID := GetUserID(ctx)
 	isRoot := CheckIsRootUser(ctx, userID)
 
 	// 如果是root用户，则查询所有显示的菜单树
 	if isRoot {
 		hidden := 0
-		result, err := a.MenuModel.Query(ctx, schema.MenuQueryParam{
+		result, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{
 			Hidden: &hidden,
-		}, schema.MenuQueryOptions{
+		}, schema.PermissionQueryOptions{
 			IncludeActions: true,
 		})
 		if err != nil {
@@ -244,7 +244,7 @@ func (a *Login) QueryUserMenuTree(ctx context.Context) ([]*schema.MenuTree, erro
 	roleResult, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{
 		UserID: userID,
 	}, schema.RoleQueryOptions{
-		IncludeMenus: true,
+		IncludePermissions: true,
 	})
 	if err != nil {
 		return nil, err
@@ -253,32 +253,32 @@ func (a *Login) QueryUserMenuTree(ctx context.Context) ([]*schema.MenuTree, erro
 	}
 
 	// 查询角色权限菜单列表
-	menuResult, err := a.MenuModel.Query(ctx, schema.MenuQueryParam{
-		RecordIDs: roleResult.Data.ToMenuIDs(),
+	PermissionResult, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{
+		RecordIDs: roleResult.Data.ToPermissionIDs(),
 	})
 	if err != nil {
 		return nil, err
-	} else if len(menuResult.Data) == 0 {
+	} else if len(PermissionResult.Data) == 0 {
 		return nil, ErrNoPerm
 	}
 
 	// 拆分并查询菜单树
-	menuResult, err = a.MenuModel.Query(ctx, schema.MenuQueryParam{
-		RecordIDs: menuResult.Data.SplitAndGetAllRecordIDs(),
-	}, schema.MenuQueryOptions{
+	PermissionResult, err = a.PermissionModel.Query(ctx, schema.PermissionQueryParam{
+		RecordIDs: PermissionResult.Data.SplitAndGetAllRecordIDs(),
+	}, schema.PermissionQueryOptions{
 		IncludeActions: true,
 	})
 	if err != nil {
 		return nil, err
-	} else if len(menuResult.Data) == 0 {
+	} else if len(PermissionResult.Data) == 0 {
 		return nil, ErrNoPerm
 	}
 
-	menuActions := roleResult.Data.ToMenuIDActionsMap()
-	return menuResult.Data.ToTrees().ForEach(func(item *schema.MenuTree, _ int) {
+	PermissionActions := roleResult.Data.ToPermissionIDActionsMap()
+	return PermissionResult.Data.ToTrees().ForEach(func(item *schema.PermissionTree, _ int) {
 		// 遍历菜单动作权限
-		var actions []*schema.MenuAction
-		for _, code := range menuActions[item.RecordID] {
+		var actions []*schema.PermissionAction
+		for _, code := range PermissionActions[item.RecordID] {
 			for _, aitem := range item.Actions {
 				if aitem.Code == code {
 					actions = append(actions, aitem)

@@ -9,23 +9,23 @@ import (
 	"gin-admin/pkg/util"
 )
 
-// NewMenu 创建菜单管理实例
-func NewMenu(m *model.Common) *Menu {
-	return &Menu{
+// NewPermission 创建权力管理实例
+func NewPermission(m *model.Common) *Permission {
+	return &Permission{
 		TransModel: m.Trans,
-		MenuModel:  m.Menu,
+		PermissionModel:  m.Permission,
 	}
 }
 
-// Menu 菜单管理
-type Menu struct {
-	MenuModel  model.IMenu
+// Permission 权力管理
+type Permission struct {
+	PermissionModel  model.IPermission
 	TransModel model.ITrans
 }
 
 // CheckDataInit 检查数据是否初始化
-func (a *Menu) CheckDataInit(ctx context.Context) (bool, error) {
-	result, err := a.MenuModel.Query(ctx, schema.MenuQueryParam{}, schema.MenuQueryOptions{
+func (a *Permission) CheckDataInit(ctx context.Context) (bool, error) {
+	result, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{}, schema.PermissionQueryOptions{
 		PageParam: &schema.PaginationParam{PageSize: -1},
 	})
 	if err != nil {
@@ -35,8 +35,8 @@ func (a *Menu) CheckDataInit(ctx context.Context) (bool, error) {
 }
 
 // QueryPage 查询分页数据
-func (a *Menu) QueryPage(ctx context.Context, params schema.MenuQueryParam, pp *schema.PaginationParam) ([]*schema.Menu, *schema.PaginationResult, error) {
-	result, err := a.MenuModel.Query(ctx, params, schema.MenuQueryOptions{
+func (a *Permission) QueryPage(ctx context.Context, params schema.PermissionQueryParam, pp *schema.PaginationParam) ([]*schema.Permission, *schema.PaginationResult, error) {
+	result, err := a.PermissionModel.Query(ctx, params, schema.PermissionQueryOptions{
 		PageParam: pp,
 	})
 	if err != nil {
@@ -45,9 +45,9 @@ func (a *Menu) QueryPage(ctx context.Context, params schema.MenuQueryParam, pp *
 	return result.Data, result.PageResult, nil
 }
 
-// QueryTree 查询菜单树
-func (a *Menu) QueryTree(ctx context.Context, includeActions, includeResources bool) ([]*schema.MenuTree, error) {
-	result, err := a.MenuModel.Query(ctx, schema.MenuQueryParam{}, schema.MenuQueryOptions{
+// QueryTree 查询权力树
+func (a *Permission) QueryTree(ctx context.Context, includeActions, includeResources bool) ([]*schema.PermissionTree, error) {
+	result, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{}, schema.PermissionQueryOptions{
 		IncludeActions:   includeActions,
 		IncludeResources: includeResources,
 	})
@@ -58,9 +58,9 @@ func (a *Menu) QueryTree(ctx context.Context, includeActions, includeResources b
 }
 
 // Get 查询指定数据
-func (a *Menu) Get(ctx context.Context, recordID string) (*schema.Menu, error) {
-	item, err := a.MenuModel.Get(ctx, recordID,
-		schema.MenuQueryOptions{
+func (a *Permission) Get(ctx context.Context, recordID string) (*schema.Permission, error) {
+	item, err := a.PermissionModel.Get(ctx, recordID,
+		schema.PermissionQueryOptions{
 			IncludeResources: true,
 			IncludeActions:   true,
 		},
@@ -74,12 +74,12 @@ func (a *Menu) Get(ctx context.Context, recordID string) (*schema.Menu, error) {
 }
 
 // 获取父级路径
-func (a *Menu) getParentPath(ctx context.Context, parentID string) (string, error) {
+func (a *Permission) getParentPath(ctx context.Context, parentID string) (string, error) {
 	if parentID == "" {
 		return "", nil
 	}
 
-	pitem, err := a.MenuModel.Get(ctx, parentID)
+	pitem, err := a.PermissionModel.Get(ctx, parentID)
 	if err != nil {
 		return "", err
 	} else if pitem == nil {
@@ -95,7 +95,7 @@ func (a *Menu) getParentPath(ctx context.Context, parentID string) (string, erro
 }
 
 // Create 创建数据
-func (a *Menu) Create(ctx context.Context, item schema.Menu) (*schema.Menu, error) {
+func (a *Permission) Create(ctx context.Context, item schema.Permission) (*schema.Permission, error) {
 	parentPath, err := a.getParentPath(ctx, item.ParentID)
 	if err != nil {
 		return nil, err
@@ -104,7 +104,7 @@ func (a *Menu) Create(ctx context.Context, item schema.Menu) (*schema.Menu, erro
 	item.ParentPath = parentPath
 	item.RecordID = util.MustUUID()
 	item.Creator = GetUserID(ctx)
-	err = a.MenuModel.Create(ctx, item)
+	err = a.PermissionModel.Create(ctx, item)
 	if err != nil {
 		return nil, err
 	}
@@ -113,12 +113,12 @@ func (a *Menu) Create(ctx context.Context, item schema.Menu) (*schema.Menu, erro
 }
 
 // Update 更新数据
-func (a *Menu) Update(ctx context.Context, recordID string, item schema.Menu) (*schema.Menu, error) {
+func (a *Permission) Update(ctx context.Context, recordID string, item schema.Permission) (*schema.Permission, error) {
 	if recordID == item.ParentID {
 		return nil, errors.NewBadRequestError("不允许使用节点自身作为父级节点")
 	}
 
-	oldItem, err := a.MenuModel.Get(ctx, recordID)
+	oldItem, err := a.PermissionModel.Get(ctx, recordID)
 	if err != nil {
 		return nil, err
 	} else if oldItem == nil {
@@ -141,23 +141,23 @@ func (a *Menu) Update(ctx context.Context, recordID string, item schema.Menu) (*
 			}
 			opath += oldItem.RecordID
 
-			result, err := a.MenuModel.Query(ctx, schema.MenuQueryParam{
+			result, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{
 				PrefixParentPath: opath,
 			})
 			if err != nil {
 				return err
 			}
 
-			for _, menu := range result.Data {
-				npath := item.ParentPath + menu.ParentPath[len(opath):]
-				err = a.MenuModel.UpdateParentPath(ctx, menu.RecordID, npath)
+			for _, Permission := range result.Data {
+				npath := item.ParentPath + Permission.ParentPath[len(opath):]
+				err = a.PermissionModel.UpdateParentPath(ctx, Permission.RecordID, npath)
 				if err != nil {
 					return err
 				}
 			}
 		}
 
-		return a.MenuModel.Update(ctx, recordID, item)
+		return a.PermissionModel.Update(ctx, recordID, item)
 	})
 	if err != nil {
 		return nil, err
@@ -166,15 +166,15 @@ func (a *Menu) Update(ctx context.Context, recordID string, item schema.Menu) (*
 }
 
 // Delete 删除数据
-func (a *Menu) Delete(ctx context.Context, recordID string) error {
-	result, err := a.MenuModel.Query(ctx, schema.MenuQueryParam{
+func (a *Permission) Delete(ctx context.Context, recordID string) error {
+	result, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{
 		ParentID: &recordID,
-	}, schema.MenuQueryOptions{PageParam: &schema.PaginationParam{PageSize: -1}})
+	}, schema.PermissionQueryOptions{PageParam: &schema.PaginationParam{PageSize: -1}})
 	if err != nil {
 		return err
 	} else if result.PageResult.Total > 0 {
-		return errors.NewBadRequestError("含有子级菜单，不能删除")
+		return errors.NewBadRequestError("含有子级权力，不能删除")
 	}
 
-	return a.MenuModel.Delete(ctx, recordID)
+	return a.PermissionModel.Delete(ctx, recordID)
 }

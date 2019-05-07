@@ -14,7 +14,7 @@ import (
 func NewRole(m *model.Common, e *casbin.Enforcer) *Role {
 	return &Role{
 		RoleModel: m.Role,
-		MenuModel: m.Menu,
+		PermissionModel: m.Permission,
 		Enforcer:  e,
 	}
 }
@@ -22,7 +22,7 @@ func NewRole(m *model.Common, e *casbin.Enforcer) *Role {
 // Role 角色管理
 type Role struct {
 	RoleModel model.IRole
-	MenuModel model.IMenu
+	PermissionModel model.IPermission
 	Enforcer  *casbin.Enforcer
 }
 
@@ -56,7 +56,7 @@ func (a *Role) QuerySelect(ctx context.Context) ([]*schema.Role, error) {
 
 // Get 查询指定数据
 func (a *Role) Get(ctx context.Context, recordID string) (*schema.Role, error) {
-	item, err := a.RoleModel.Get(ctx, recordID, schema.RoleQueryOptions{IncludeMenus: true})
+	item, err := a.RoleModel.Get(ctx, recordID, schema.RoleQueryOptions{IncludePermissions: true})
 	if err != nil {
 		return nil, err
 	} else if item == nil {
@@ -152,7 +152,7 @@ func (a *Role) Delete(ctx context.Context, recordID string) error {
 // LoadAllPolicy 加载所有的角色策略
 func (a *Role) LoadAllPolicy(ctx context.Context) error {
 	result, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{},
-		schema.RoleQueryOptions{IncludeMenus: true})
+		schema.RoleQueryOptions{IncludePermissions: true})
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (a *Role) LoadAllPolicy(ctx context.Context) error {
 
 // LoadPolicyWithRecordID 加载角色权限策略
 func (a *Role) LoadPolicyWithRecordID(ctx context.Context, recordID string) error {
-	role, err := a.RoleModel.Get(ctx, recordID, schema.RoleQueryOptions{IncludeMenus: true})
+	role, err := a.RoleModel.Get(ctx, recordID, schema.RoleQueryOptions{IncludePermissions: true})
 	if err != nil {
 		return err
 	} else if role == nil {
@@ -181,21 +181,21 @@ func (a *Role) LoadPolicyWithRecordID(ctx context.Context, recordID string) erro
 
 // LoadPolicy 加载角色权限策略
 func (a *Role) LoadPolicy(ctx context.Context, item *schema.Role) error {
-	result, err := a.MenuModel.Query(ctx, schema.MenuQueryParam{
-		RecordIDs: item.Menus.ToMenuIDs(),
-	}, schema.MenuQueryOptions{
+	result, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{
+		RecordIDs: item.Permissions.ToPermissionIDs(),
+	}, schema.PermissionQueryOptions{
 		IncludeResources: true,
 	})
 	if err != nil {
 		return err
 	}
 
-	menuMap := result.Data.ToMap()
+	PermissionMap := result.Data.ToMap()
 	roleID := item.RecordID
 	a.Enforcer.DeletePermissionsForUser(roleID)
 
-	for _, item := range item.Menus {
-		mitem, ok := menuMap[item.MenuID]
+	for _, item := range item.Permissions {
+		mitem, ok := PermissionMap[item.PermissionID]
 		if !ok {
 			continue
 		}

@@ -9,28 +9,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMenu(t *testing.T) {
-	const router = "v1/menus"
+func TestPermission(t *testing.T) {
+	const router = "v1/Permissions"
 	var err error
 
 	w := httptest.NewRecorder()
 
-	// post /menus
-	addItem := &schema.Menu{
+	// post /Permissions
+	addItem := &schema.Permission{
 		Name:     util.MustUUID(),
 		Sequence: 9999999,
-		Router:   "/system/menu",
-		Actions: []*schema.MenuAction{
+		Router:   "/system/Permission",
+		Actions: []*schema.PermissionAction{
 			{Code: "query", Name: "query"},
 		},
-		Resources: []*schema.MenuResource{
-			{Code: "query", Name: "query", Method: "GET", Path: "/test/v1/menus"},
+		Resources: []*schema.PermissionResource{
+			{Code: "query", Name: "query", Method: "GET", Path: "/test/v1/Permissions"},
 		},
 	}
 	engine.ServeHTTP(w, newPostRequest(router, addItem))
 	assert.Equal(t, 200, w.Code)
 
-	var addNewItem schema.Menu
+	var addNewItem schema.Permission
 	err = parseReader(w.Body, &addNewItem)
 	assert.Nil(t, err)
 	assert.Equal(t, addItem.Name, addNewItem.Name)
@@ -40,11 +40,11 @@ func TestMenu(t *testing.T) {
 	assert.Equal(t, len(addItem.Resources), len(addNewItem.Resources))
 	assert.NotEmpty(t, addNewItem.RecordID)
 
-	// query /menus?q=page
+	// query /Permissions?q=page
 	engine.ServeHTTP(w, newGetRequest(router,
 		newPageParam(map[string]string{"q": "page"})))
 	assert.Equal(t, 200, w.Code)
-	var pageItems []*schema.Menu
+	var pageItems []*schema.Permission
 	err = parsePageReader(w.Body, &pageItems)
 	assert.Nil(t, err)
 	assert.Equal(t, len(pageItems), 1)
@@ -53,22 +53,22 @@ func TestMenu(t *testing.T) {
 		assert.Equal(t, addNewItem.Name, pageItems[0].Name)
 	}
 
-	// put /menus/:id
+	// put /Permissions/:id
 	engine.ServeHTTP(w, newGetRequest("%s/%s", nil, router, addNewItem.RecordID))
 	assert.Equal(t, 200, w.Code)
-	var putItem schema.Menu
+	var putItem schema.Permission
 	err = parseReader(w.Body, &putItem)
 	putItem.Name = util.MustUUID()
 	engine.ServeHTTP(w, newPutRequest("%s/%s", putItem, router, addNewItem.RecordID))
 	assert.Equal(t, 200, w.Code)
-	var putNewItem schema.Menu
+	var putNewItem schema.Permission
 	err = parseReader(w.Body, &putNewItem)
 	assert.Nil(t, err)
 	assert.Equal(t, putItem.Name, putNewItem.Name)
 	assert.Equal(t, len(putItem.Actions), len(putNewItem.Actions))
 	assert.Equal(t, len(putItem.Resources), len(putNewItem.Resources))
 
-	// delete /menus/:id
+	// delete /Permissions/:id
 	engine.ServeHTTP(w, newDeleteRequest("%s/%s", router, addNewItem.RecordID))
 	assert.Equal(t, 200, w.Code)
 	err = parseOK(w.Body)

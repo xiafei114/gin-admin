@@ -16,8 +16,8 @@ func InitData(ctx context.Context, obj *Object) error {
 		return err
 	}
 
-	if config.GetGlobalConfig().AllowInitMenu {
-		return initMenuData(ctx, obj)
+	if config.GetGlobalConfig().AllowInitPermission {
+		return initPermissionData(ctx, obj)
 	}
 
 	return nil
@@ -32,30 +32,30 @@ func loadCasbinPolicyData(ctx context.Context, obj *Object) error {
 	return obj.Bll.User.LoadAllPolicy(ctx)
 }
 
-// initMenuData 初始化菜单数据
-func initMenuData(ctx context.Context, obj *Object) error {
-	// 检查是否存在菜单数据，如果不存在则初始化
-	exists, err := obj.Bll.Menu.CheckDataInit(ctx)
+// initPermissionData 初始化权力数据
+func initPermissionData(ctx context.Context, obj *Object) error {
+	// 检查是否存在权力数据，如果不存在则初始化
+	exists, err := obj.Bll.Permission.CheckDataInit(ctx)
 	if err != nil {
 		return err
 	} else if exists {
 		return nil
 	}
 
-	// 初始化菜单
-	var data schema.MenuTrees
-	err = util.JSONUnmarshal([]byte(menuData), &data)
+	// 初始化权力
+	var data schema.PermissionTrees
+	err = util.JSONUnmarshal([]byte(PermissionData), &data)
 	if err != nil {
 		return err
 	}
 
-	return createMenus(ctx, obj, "", data)
+	return createPermissions(ctx, obj, "", data)
 }
 
-func createMenus(ctx context.Context, obj *Object, parentID string, list schema.MenuTrees) error {
+func createPermissions(ctx context.Context, obj *Object, parentID string, list schema.PermissionTrees) error {
 	return bll.ExecTrans(ctx, obj.Model.Trans, func(ctx context.Context) error {
 		for _, item := range list {
-			sitem := schema.Menu{
+			sitem := schema.Permission{
 				Name:      item.Name,
 				Sequence:  item.Sequence,
 				Icon:      item.Icon,
@@ -65,13 +65,13 @@ func createMenus(ctx context.Context, obj *Object, parentID string, list schema.
 				Actions:   item.Actions,
 				Resources: item.Resources,
 			}
-			nsitem, err := obj.Bll.Menu.Create(ctx, sitem)
+			nsitem, err := obj.Bll.Permission.Create(ctx, sitem)
 			if err != nil {
 				return err
 			}
 
 			if item.Children != nil && len(*item.Children) > 0 {
-				err := createMenus(ctx, obj, nsitem.RecordID, *item.Children)
+				err := createPermissions(ctx, obj, nsitem.RecordID, *item.Children)
 				if err != nil {
 					return err
 				}
@@ -82,8 +82,8 @@ func createMenus(ctx context.Context, obj *Object, parentID string, list schema.
 	})
 }
 
-// 初始化菜单数据
-const menuData = `
+// 初始化权力数据
+const PermissionData = `
 [
   {
     "name": "首页",
@@ -97,9 +97,9 @@ const menuData = `
     "sequence": 1100000,
     "children": [
       {
-        "name": "菜单管理",
+        "name": "权力管理",
         "icon": "solution",
-        "router": "/system/menu",
+        "router": "/system/Permission",
         "sequence": 1190000,
         "actions": [
           { "code": "add", "name": "新增" },
@@ -110,33 +110,33 @@ const menuData = `
         "resources": [
           {
             "code": "query",
-            "name": "查询菜单数据",
+            "name": "查询权力数据",
             "method": "GET",
-            "path": "/api/v1/menus"
+            "path": "/api/v1/Permissions"
           },
           {
             "code": "get",
-            "name": "精确查询菜单数据",
+            "name": "精确查询权力数据",
             "method": "GET",
-            "path": "/api/v1/menus/:id"
+            "path": "/api/v1/Permissions/:id"
           },
           {
             "code": "create",
-            "name": "创建菜单数据",
+            "name": "创建权力数据",
             "method": "POST",
-            "path": "/api/v1/menus"
+            "path": "/api/v1/Permissions"
           },
           {
             "code": "update",
-            "name": "更新菜单数据",
+            "name": "更新权力数据",
             "method": "PUT",
-            "path": "/api/v1/menus/:id"
+            "path": "/api/v1/Permissions/:id"
           },
           {
             "code": "delete",
-            "name": "删除菜单数据",
+            "name": "删除权力数据",
             "method": "DELETE",
-            "path": "/api/v1/menus/:id"
+            "path": "/api/v1/Permissions/:id"
           }
         ]
       },
@@ -183,10 +183,10 @@ const menuData = `
             "path": "/api/v1/roles/:id"
           },
           {
-            "code": "queryMenu",
-            "name": "查询菜单数据",
+            "code": "queryPermission",
+            "name": "查询权力数据",
             "method": "GET",
-            "path": "/api/v1/menus"
+            "path": "/api/v1/Permissions"
           }
         ]
       },

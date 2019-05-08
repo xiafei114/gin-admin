@@ -67,7 +67,7 @@
                 :pagination="false"
                 :loading="subDataLoading"
               >
-                <template v-for="(col, i) in ['code', 'name']" :slot="col" slot-scope="text, record">
+                <template v-for="(col, i) in ['code', 'label']" :slot="col" slot-scope="text, record">
                   <a-input
                     :key="col"
                     style="margin: -5px 0"
@@ -92,11 +92,10 @@
 </template>
 
 <script>
+import { getPermission } from '@/api/permission'
+import pick from 'lodash.pick'
 
-  import { getPermission } from '@/api/permission'
-  import pick from 'lodash.pick'
-
-  export default {
+export default {
   data () {
     return {
       visible: false,
@@ -119,9 +118,9 @@
         },
         {
           title: '名称',
-          key: 'name',
-          dataIndex: 'name',
-          scopedSlots: { customRender: 'name' }
+          key: 'label',
+          dataIndex: 'label',
+          scopedSlots: { customRender: 'label' }
         },
         {
           title: '操作',
@@ -137,6 +136,8 @@
   methods: {
     add () {
       this.visible = true
+    },
+    clear () {
       this.form.setFieldsValue(this.entity)
       this.subData = []
       this.entityId = ''
@@ -164,6 +165,7 @@
             })
             this.visible = false
             this.confirmLoading = false
+            this.clear()
             this.$emit('ok', values)
           })
             .finally(() => {
@@ -175,6 +177,7 @@
       })
     },
     handleCancel () {
+      this.clear()
       this.visible = false
     },
     loadEditInfo (data) {
@@ -216,27 +219,27 @@
       const data = [{
         key: '1',
         code: 'add',
-        name: '添加'
+        label: '添加'
       },
       {
         key: '2',
         code: 'edit',
-        name: '修改'
+        label: '修改'
       },
       {
         key: '3',
         code: 'delete',
-        name: '删除'
+        label: '删除'
       },
       {
         key: '4',
         code: 'list',
-        name: '查看'
+        label: '查看'
       },
       {
         key: '5',
         code: 'get',
-        name: '详情'
+        label: '详情'
       }]
 
       this.subData = data

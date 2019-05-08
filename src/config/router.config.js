@@ -330,6 +330,12 @@ export const asyncRouterMap = [
             name: 'rule',
             component: () => import('@/views/auth/permission/PermissionList'),
             meta: { title: '权力管理', icon: 'tool', keepAlive: true, permission: [ 'rule' ] }
+          },
+          {
+            path: '/auth/role',
+            name: 'role',
+            component: () => import('@/views/auth/role/RoleList'),
+            meta: { title: '角色管理', icon: 'tool', keepAlive: true, permission: [ 'rule' ] }
           }
         ]
       }

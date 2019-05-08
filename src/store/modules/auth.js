@@ -1,11 +1,14 @@
 import {
-  fetchRole, addRole, updateRole, deleteRole,
   fetchAccount, addAccount, updateAccount, deleteAccount
 } from '@/api/auth'
 
 import {
   addPermission, updatePermission
 } from '@/api/permission'
+
+import {
+  addRole, updateRole
+} from '@/api/role'
 
 const auth = {
   state: {
@@ -16,7 +19,7 @@ const auth = {
 
   actions: {
 
-    // 添加菜单
+    // 添加权力
     addMenu (state, data) {
       return new Promise((resolve, reject) => {
         addPermission(data).then(response => {
@@ -28,25 +31,13 @@ const auth = {
       })
     },
 
-    // 更新菜单
+    // 更新权力
     updateMenu (state, data) {
       const id = data.record_id
       delete data.record_id
       return new Promise((resolve, reject) => {
         updatePermission(id, data).then(_ => {
           resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    // 获取角色
-    fetchRole (state) {
-      return new Promise((resolve, reject) => {
-        fetchRole().then(response => {
-          const result = response.data
-          resolve(result)
         }).catch(error => {
           reject(error)
         })
@@ -70,17 +61,6 @@ const auth = {
       delete data.selectId
       return new Promise((resolve, reject) => {
         updateRole(id, data).then(_ => {
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    // 删除角色
-    deleteRole (state, params) {
-      return new Promise((resolve, reject) => {
-        deleteRole(params).then(_ => {
           resolve()
         }).catch(error => {
           reject(error)

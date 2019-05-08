@@ -3,9 +3,17 @@ import { axios } from '@/utils/request'
 const router = 'permission'
 
 // 菜单查询
-export function permissionList (parameter) {
+export function getPermissionPageList (parameter) {
   return axios({
     url: `/v1/${router}?q=page`,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getPermissionList (parameter) {
+  return axios({
+    url: `/v1/${router}?q=list`,
     method: 'get',
     params: parameter
   })

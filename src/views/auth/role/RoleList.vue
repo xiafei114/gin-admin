@@ -62,7 +62,7 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="$refs.createModal.add()">新建</a-button>
+      <a-button type="primary" icon="plus" @click="$refs.createModal.add(permissionList)">新建</a-button>
       <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
       <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
@@ -92,7 +92,7 @@
         <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
       </span>
       <span slot="actions" slot-scope="text, record">
-        <a-tag v-for="(action, index) in record.actions" :key="index">{{ action.label }}</a-tag>
+        <a-tag v-for="(action, index) in record.actions" :key="index">{{ action.name }}</a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
@@ -109,22 +109,22 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import entityForm from './PermissionForm'
-import { getPermissionPageList, deletePermission } from '@/api/permission'
+import entityForm from './RoleForm'
+import { getRoleList, deleteRole } from '@/api/role'
 
 const statusMap = {
   0: {
     status: 'processing',
-    text: '显示'
+    text: '正常'
   },
   1: {
     status: 'default',
-    text: '隐藏'
+    text: '禁用'
   }
 }
 
 export default {
-  name: 'PermissionList',
+  name: 'RoleList',
   components: {
     STable,
     entityForm
@@ -151,11 +151,6 @@ export default {
           dataIndex: 'name'
         },
         {
-          title: '可操作权限',
-          dataIndex: 'actions',
-          scopedSlots: { customRender: 'actions' }
-        },
-        {
           title: '状态',
           dataIndex: 'status',
           scopedSlots: { customRender: 'status' }
@@ -167,11 +162,13 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
+      permissionList: [],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
-        return getPermissionPageList(Object.assign(parameter, this.queryParam))
+        return getRoleList(Object.assign(parameter, this.queryParam))
           .then(res => {
+            this.permissionList = res.result.rules
             return res.result
           })
       },
@@ -219,9 +216,8 @@ export default {
         this.optionAlertShow = false
       }
     },
-
     handleEdit (record) {
-      this.$refs.createModal.edit(record)
+      this.$refs.createModal.edit(this.permissionList, record)
     },
     handleDelete (record) {
       this.$confirm({
@@ -231,7 +227,7 @@ export default {
         okType: 'danger',
         cancelText: '取消',
         onOk: () => {
-          deletePermission({ id: record.record_id }).then(res => {
+          deleteRole({ id: record.record_id }).then(res => {
             this.$message.info(`${record.name} 删除成功`)
             this.handleOk()
           })

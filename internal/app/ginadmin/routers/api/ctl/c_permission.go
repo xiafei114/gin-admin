@@ -29,6 +29,8 @@ func (a *Permission) Query(c *gin.Context) {
 	switch c.Query("q") {
 	case "page":
 		a.QueryPage(c)
+	case "list":
+		a.QueryList(c)
 	default:
 		ginplus.ResError(c, errors.NewBadRequestError("未知的查询类型"))
 	}
@@ -68,6 +70,23 @@ func (a *Permission) QueryPage(c *gin.Context) {
 		return
 	}
 	ginplus.ResPage(c, items, pr)
+}
+
+// QueryList 查询数据
+// @Summary 查询数据
+// @Param Authorization header string false "Bearer 用户令牌"
+// @Success 200 []schema.Permission "分页查询结果：{data:列表数据}"
+// @Failure 400 schema.HTTPError "{error:{code:0,message:未知的查询类型}}"
+// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
+// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
+// @Router GET /api/v1/permission?q=list
+func (a *Permission) QueryList(c *gin.Context) {
+	items, err := a.PermissionBll.QueryList(ginplus.NewContext(c))
+	if err != nil {
+		ginplus.ResError(c, err)
+		return
+	}
+	ginplus.ResData(c, items)
 }
 
 // Get 查询指定数据

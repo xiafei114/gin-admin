@@ -28,6 +28,7 @@ func (a SchemaRole) ToRole() *Role {
 		Name:     a.Name,
 		Sequence: a.Sequence,
 		Memo:     a.Memo,
+		Status:   &a.Status,
 		Creator:  a.Creator,
 	}
 	return item
@@ -50,11 +51,13 @@ func (a SchemaRole) ToRolePermissions() []*RolePermission {
 // Role 角色实体
 type Role struct {
 	Model
-	RecordID string `gorm:"column:record_id;size:36;index;"` // 记录内码
-	Name     string `gorm:"column:name;size:100;index;"`     // 角色名称
-	Sequence int    `gorm:"column:sequence;index;"`          // 排序值
-	Memo     string `gorm:"column:memo;size:200;"`           // 备注
-	Creator  string `gorm:"column:creator;size:36;"`         // 创建者
+	RecordID  string `gorm:"column:record_id;size:36;index;"`  // 记录内码
+	IndexCode string `gorm:"column:index_code;size:50;index;"` // 唯一编码
+	Name      string `gorm:"column:name;size:100;index;"`      // 角色名称
+	Sequence  int    `gorm:"column:sequence;index;"`           // 排序值
+	Memo      string `gorm:"column:memo;size:200;"`            // 备注
+	Status    *int   `gorm:"column:status;index;"`             // 状态(0:不隐藏 1:隐藏)
+	Creator   string `gorm:"column:creator;size:36;"`          // 创建者
 }
 
 func (a Role) String() string {
@@ -70,9 +73,11 @@ func (a Role) TableName() string {
 func (a Role) ToSchemaRole() *schema.Role {
 	item := &schema.Role{
 		RecordID:  a.RecordID,
+		IndexCode: a.IndexCode,
 		Name:      a.Name,
 		Sequence:  a.Sequence,
 		Memo:      a.Memo,
+		Status:    *a.Status,
 		Creator:   a.Creator,
 		CreatedAt: &a.CreatedAt,
 		UpdatedAt: &a.UpdatedAt,

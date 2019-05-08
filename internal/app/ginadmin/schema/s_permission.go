@@ -21,9 +21,10 @@ type Permission struct {
 
 // PermissionAction 权力动作对象
 type PermissionAction struct {
-	ID   string `json:"key" swaggo:"true,序号"`
-	Code string `json:"code" swaggo:"true,动作编号"`
-	Name string `json:"name" swaggo:"true,动作名称"`
+	ID    string `json:"key" swaggo:"true,序号"`
+	Code  string `json:"code" swaggo:"true,动作编号"`
+	Name  string `json:"label" swaggo:"true,动作名称"`
+	Value string `json:"value" swaggo:"true,动作选择时使用"`
 }
 
 // PermissionResource 权力资源对象

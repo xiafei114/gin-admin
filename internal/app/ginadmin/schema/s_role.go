@@ -5,9 +5,11 @@ import "time"
 // Role 角色对象
 type Role struct {
 	RecordID    string          `json:"record_id" swaggo:"false,记录ID"`
+	IndexCode   string          `json:"index_code" binding:"required" swaggo:"true,唯一标识码"`
 	Name        string          `json:"name" binding:"required" swaggo:"true,角色名称"`
 	Sequence    int             `json:"sequence" swaggo:"false,排序值"`
 	Memo        string          `json:"memo" swaggo:"false,备注"`
+	Status      int             `json:"status" swaggo:"false,隐藏权力(0:不隐藏 1:隐藏)"`
 	Creator     string          `json:"creator" swaggo:"false,创建者"`
 	CreatedAt   *time.Time      `json:"created_at" swaggo:"false,创建时间"`
 	UpdatedAt   *time.Time      `json:"updated_at" swaggo:"false,更新时间"`
@@ -37,8 +39,16 @@ type RoleQueryOptions struct {
 
 // RoleQueryResult 查询结果
 type RoleQueryResult struct {
-	Data       Roles
-	PageResult *PaginationResult
+	Data        Roles
+	PageResult  *PaginationResult
+	Permissions Permissions // 权力
+}
+
+// HTTPRoleResponse HTTP响应列表数据
+type HTTPRoleResponse struct {
+	HTTPPage
+	// Data  interface{} `json:"data"`
+	Rules interface{} `json:"rules"`
 }
 
 // Roles 角色对象列表

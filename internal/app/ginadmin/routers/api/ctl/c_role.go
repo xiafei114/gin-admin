@@ -5,6 +5,7 @@ import (
 	"gin-admin/internal/app/ginadmin/ginplus"
 	"gin-admin/internal/app/ginadmin/schema"
 	"gin-admin/pkg/errors"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,8 @@ import (
 // NewRole 创建角色管理控制器
 func NewRole(b *bll.Common) *Role {
 	return &Role{
-		RoleBll: b.Role,
+		RoleBll:       b.Role,
+		PermissionBll: b.Permission,
 	}
 }
 
@@ -20,7 +22,8 @@ func NewRole(b *bll.Common) *Role {
 // @Name Role
 // @Description 角色管理接口
 type Role struct {
-	RoleBll *bll.Role
+	RoleBll       *bll.Role
+	PermissionBll *bll.Permission
 }
 
 // Query 查询数据
@@ -56,7 +59,34 @@ func (a *Role) QueryPage(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResPage(c, items, pr)
+
+	permissions, err := a.PermissionBll.QueryList(ginplus.NewContext(c))
+	if err != nil {
+		ginplus.ResError(c, err)
+		return
+	}
+
+	// ginplus.ResPage(c, value, pr)
+
+	timeUnix := time.Now().Unix()
+	pageSize := ginplus.GetPageSize(c)
+	response := schema.HTTPResponse{
+		Message: "",
+		Result: &schema.HTTPRoleResponse{
+			HTTPPage: schema.HTTPPage{
+				Data:       items,
+				PageNo:     ginplus.GetPageIndex(c),
+				PageSize:   ginplus.GetPageSize(c),
+				TotalPage:  pr.Total / pageSize,
+				TotalCount: pr.Total,
+			},
+			Rules: permissions,
+		},
+		Status:    200,
+		Timestamp: timeUnix,
+	}
+
+	ginplus.ResSuccess(c, response)
 }
 
 // QuerySelect 查询选择数据

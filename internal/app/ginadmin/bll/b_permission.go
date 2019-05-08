@@ -46,6 +46,17 @@ func (a *Permission) QueryPage(ctx context.Context, params schema.PermissionQuer
 	return result.Data, result.PageResult, nil
 }
 
+// QueryList 查询全部数据
+func (a *Permission) QueryList(ctx context.Context) ([]*schema.Permission, error) {
+	result, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{}, schema.PermissionQueryOptions{
+		IncludeActions: true,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.Data, nil
+}
+
 // // QueryTree 查询权力树
 // func (a *Permission) QueryTree(ctx context.Context, includeActions, includeResources bool) ([]*schema.PermissionTree, error) {
 // 	result, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{}, schema.PermissionQueryOptions{

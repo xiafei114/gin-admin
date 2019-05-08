@@ -62,7 +62,7 @@ func (a SchemaPermission) ToPermissionResources() []*PermissionResource {
 type Permission struct {
 	Model
 	RecordID  string `gorm:"column:record_id;size:36;index;"`  // 记录内码
-	IndexCode string `gorm:"column:index_code;size:50;index;"` // 权力名称
+	IndexCode string `gorm:"column:index_code;size:50;index;"` // 唯一编码
 	Name      string `gorm:"column:name;size:50;index;"`       // 权力名称
 	Sequence  int    `gorm:"column:sequence;index;"`           // 排序值
 	Icon      string `gorm:"column:icon;size:255;"`            // 权力图标
@@ -135,9 +135,10 @@ func (a PermissionAction) TableName() string {
 // ToSchemaPermissionAction 转换为权力动作对象
 func (a PermissionAction) ToSchemaPermissionAction() *schema.PermissionAction {
 	return &schema.PermissionAction{
-		ID:   strconv.Itoa(int(a.ID)),
-		Code: a.Code,
-		Name: a.Name,
+		ID:    strconv.Itoa(int(a.ID)),
+		Code:  a.Code,
+		Name:  a.Name,
+		Value: strconv.Itoa(int(a.ID)),
 	}
 }
 

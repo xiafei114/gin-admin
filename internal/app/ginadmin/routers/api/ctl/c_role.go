@@ -30,6 +30,8 @@ func (a *Role) Query(c *gin.Context) {
 	switch c.Query("q") {
 	case "page":
 		a.QueryPage(c)
+	case "list":
+		a.QueryList(c)
 	case "select":
 		a.QuerySelect(c)
 	default:
@@ -86,6 +88,29 @@ func (a *Role) QueryPage(c *gin.Context) {
 	// }
 
 	// ginplus.ResSuccess(c, response)
+}
+
+// QueryList 查询数据
+// @Summary 查询数据
+// @Param Authorization header string false "Bearer 用户令牌"
+// @Param name query string false "角色名称(模糊查询)"
+// @Param status query int false "状态(1:启用 2:停用)"
+// @Success 200 []schema.Role "分页查询结果：{data:列表数据}"
+// @Failure 400 schema.HTTPError "{error:{code:0,message:未知的查询类型}}"
+// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
+// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
+// @Router GET /api/v1/roles?q=list
+func (a *Role) QueryList(c *gin.Context) {
+	var params schema.RoleQueryParam
+	params.LikeName = c.Query("name")
+
+	items, err := a.RoleBll.QueryList(ginplus.NewContext(c))
+	if err != nil {
+		ginplus.ResError(c, err)
+		return
+	}
+
+	ginplus.ResData(c, items)
 }
 
 // QuerySelect 查询选择数据

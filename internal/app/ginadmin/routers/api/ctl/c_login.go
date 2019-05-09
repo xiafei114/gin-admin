@@ -526,6 +526,32 @@ func (a *Login) MockGetUserInfo(c *gin.Context) {
 							"title": "详情",
 						},
 					},
+				}, map[string]interface{}{
+					"roleId":         "admin",
+					"permissionId":   "role",
+					"permissionName": "角色管理",
+					"actions": []map[string]interface{}{
+						map[string]interface{}{
+							"role":  "add",
+							"title": "添加",
+						},
+						map[string]interface{}{
+							"role":  "edit",
+							"title": "修改",
+						},
+						map[string]interface{}{
+							"role":  "delete",
+							"title": "删除",
+						},
+						map[string]interface{}{
+							"role":  "list",
+							"title": "查看",
+						},
+						map[string]interface{}{
+							"role":  "get",
+							"title": "详情",
+						},
+					},
 				},
 			},
 		},

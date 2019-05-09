@@ -7,23 +7,24 @@ import (
 	"gin-admin/internal/app/ginadmin/schema"
 	"gin-admin/pkg/errors"
 	"gin-admin/pkg/util"
+
 	"github.com/casbin/casbin"
 )
 
 // NewRole 创建菜单管理实例
 func NewRole(m *model.Common, e *casbin.Enforcer) *Role {
 	return &Role{
-		RoleModel: m.Role,
+		RoleModel:       m.Role,
 		PermissionModel: m.Permission,
-		Enforcer:  e,
+		Enforcer:        e,
 	}
 }
 
 // Role 角色管理
 type Role struct {
-	RoleModel model.IRole
+	RoleModel       model.IRole
 	PermissionModel model.IPermission
-	Enforcer  *casbin.Enforcer
+	Enforcer        *casbin.Enforcer
 }
 
 // QueryPage 查询分页数据
@@ -35,6 +36,15 @@ func (a *Role) QueryPage(ctx context.Context, params schema.RoleQueryParam, pp *
 		return nil, nil, err
 	}
 	return result.Data, result.PageResult, nil
+}
+
+// QueryList 查询分页数据
+func (a *Role) QueryList(ctx context.Context) ([]*schema.Role, error) {
+	result, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{}, schema.RoleQueryOptions{})
+	if err != nil {
+		return nil, err
+	}
+	return result.Data, nil
 }
 
 // QuerySelect 查询选择数据

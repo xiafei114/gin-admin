@@ -131,31 +131,48 @@ export default {
         checkedAll: e.target.checked
       })
     },
-    loadPermissions () {
-      getPermissionList().then(res => {
-        const result = res.result.data
-        this.permissions = result.map(permission => {
-          // const options = permission.actions
-          permission.checkedAll = false
-          permission.selected = []
-          permission.indeterminate = false
-          if (permission.actions === null) {
-            // permission.actionsOptions = options.map(option => {
-            //   return {
-            //     label: option.label,
-            //     value: option.value
-            //   }
-            // })
-            permission.actions = []
-          }
-          return permission
-        })
+    async loadPermissions () {
+      const { result } = await getPermissionList()
+      this.permissions = result.data.map(permission => {
+        // const options = permission.actions
+        permission.checkedAll = false
+        permission.selected = []
+        permission.indeterminate = false
+        if (permission.actions === null) {
+          // permission.actionsOptions = options.map(option => {
+          //   return {
+          //     label: option.label,
+          //     value: option.value
+          //   }
+          // })
+          permission.actions = []
+        }
+        return permission
       })
+
+      // const { result } await getPermissionList().then(res => {
+      //   const result = res.result.data
+      //   this.permissions = result.map(permission => {
+      //     // const options = permission.actions
+      //     permission.checkedAll = false
+      //     permission.selected = []
+      //     permission.indeterminate = false
+      //     if (permission.actions === null) {
+      //       // permission.actionsOptions = options.map(option => {
+      //       //   return {
+      //       //     label: option.label,
+      //       //     value: option.value
+      //       //   }
+      //       // })
+      //       permission.actions = []
+      //     }
+      //     return permission
+      //   })
+      // })
     },
     edit (record) {
       this.$nextTick(() => {
         this.visible = true
-        this.loadPermissions()
         this.loadEditInfo(record)
       })
     },
@@ -206,6 +223,7 @@ export default {
       this.visible = false
     },
     async loadEditInfo (data) {
+      await this.loadPermissions()
       const { form } = this
       const { result } = await getRole(Object.assign(data.record_id))
       const formData = pick(result.data, ['index_code', 'name', 'sequence', 'hidden', 'icon', 'record_id', 'permissions'])

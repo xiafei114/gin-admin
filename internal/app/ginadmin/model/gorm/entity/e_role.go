@@ -24,12 +24,13 @@ type SchemaRole schema.Role
 // ToRole 转换为角色实体
 func (a SchemaRole) ToRole() *Role {
 	item := &Role{
-		RecordID: a.RecordID,
-		Name:     a.Name,
-		Sequence: a.Sequence,
-		Memo:     a.Memo,
-		Status:   &a.Status,
-		Creator:  a.Creator,
+		RecordID:  a.RecordID,
+		IndexCode: a.IndexCode,
+		Name:      a.Name,
+		Sequence:  a.Sequence,
+		Memo:      a.Memo,
+		Status:    &a.Status,
+		Creator:   a.Creator,
 	}
 	return item
 }

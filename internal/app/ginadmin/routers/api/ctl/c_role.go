@@ -5,7 +5,6 @@ import (
 	"gin-admin/internal/app/ginadmin/ginplus"
 	"gin-admin/internal/app/ginadmin/schema"
 	"gin-admin/pkg/errors"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -60,33 +59,33 @@ func (a *Role) QueryPage(c *gin.Context) {
 		return
 	}
 
-	permissions, err := a.PermissionBll.QueryList(ginplus.NewContext(c))
-	if err != nil {
-		ginplus.ResError(c, err)
-		return
-	}
+	// permissions, err := a.PermissionBll.QueryList(ginplus.NewContext(c))
+	// if err != nil {
+	// 	ginplus.ResError(c, err)
+	// 	return
+	// }
 
-	// ginplus.ResPage(c, value, pr)
+	ginplus.ResPage(c, items, pr)
 
-	timeUnix := time.Now().Unix()
-	pageSize := ginplus.GetPageSize(c)
-	response := schema.HTTPResponse{
-		Message: "",
-		Result: &schema.HTTPRoleResponse{
-			HTTPPage: schema.HTTPPage{
-				Data:       items,
-				PageNo:     ginplus.GetPageIndex(c),
-				PageSize:   ginplus.GetPageSize(c),
-				TotalPage:  pr.Total / pageSize,
-				TotalCount: pr.Total,
-			},
-			Rules: permissions,
-		},
-		Status:    200,
-		Timestamp: timeUnix,
-	}
+	// timeUnix := time.Now().Unix()
+	// pageSize := ginplus.GetPageSize(c)
+	// response := schema.HTTPResponse{
+	// 	Message: "",
+	// 	Result: &schema.HTTPRoleResponse{
+	// 		HTTPPage: schema.HTTPPage{
+	// 			Data:       items,
+	// 			PageNo:     ginplus.GetPageIndex(c),
+	// 			PageSize:   ginplus.GetPageSize(c),
+	// 			TotalPage:  pr.Total / pageSize,
+	// 			TotalCount: pr.Total,
+	// 		},
+	// 		Rules: permissions,
+	// 	},
+	// 	Status:    200,
+	// 	Timestamp: timeUnix,
+	// }
 
-	ginplus.ResSuccess(c, response)
+	// ginplus.ResSuccess(c, response)
 }
 
 // QuerySelect 查询选择数据

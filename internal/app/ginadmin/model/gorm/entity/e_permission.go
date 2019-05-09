@@ -135,10 +135,9 @@ func (a PermissionAction) TableName() string {
 // ToSchemaPermissionAction 转换为权力动作对象
 func (a PermissionAction) ToSchemaPermissionAction() *schema.PermissionAction {
 	return &schema.PermissionAction{
-		ID:    strconv.Itoa(int(a.ID)),
-		Code:  a.Code,
-		Name:  a.Name,
-		Value: strconv.Itoa(int(a.ID)),
+		ID:   strconv.Itoa(int(a.ID)),
+		Code: a.Code,
+		Name: a.Name,
 	}
 }
 

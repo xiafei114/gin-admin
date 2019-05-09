@@ -322,7 +322,7 @@ export const asyncRouterMap = [
         path: '/auth',
         name: 'auth',
         component: PageView,
-        meta: { title: '权限管理', icon: 'slack', permission: [ 'rule', 'role', 'account' ] },
+        meta: { title: '权限管理', icon: 'slack', permission: [ 'rule', 'role', 'user' ] },
         redirect: '/auth/permission',
         children: [
           {
@@ -335,7 +335,13 @@ export const asyncRouterMap = [
             path: '/auth/role',
             name: 'role',
             component: () => import('@/views/auth/role/RoleList'),
-            meta: { title: '角色管理', icon: 'tool', keepAlive: true, permission: [ 'rule' ] }
+            meta: { title: '角色管理', icon: 'tool', keepAlive: true, permission: [ 'role' ] }
+          },
+          {
+            path: '/auth/user',
+            name: 'user',
+            component: () => import('@/views/auth/user/UserList'),
+            meta: { title: '用户管理', icon: 'tool', keepAlive: true, permission: [ 'user' ] }
           }
         ]
       }

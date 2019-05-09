@@ -172,6 +172,9 @@ export default {
         console.log('loadData.parameter', parameter)
         return getPermissionPageList(Object.assign(parameter, this.queryParam))
           .then(res => {
+            if (res.result.data === null) {
+              res.result.data = []
+            }
             return res.result
           })
       },

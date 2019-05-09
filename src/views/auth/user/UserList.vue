@@ -91,9 +91,6 @@
       <span slot="status" slot-scope="text">
         <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
       </span>
-      <span slot="actions" slot-scope="text, record">
-        <a-tag v-for="(action, index) in record.actions" :key="index">{{ action.name }}</a-tag>
-      </span>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">编辑</a>
@@ -109,22 +106,22 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import entityForm from './RoleForm'
-import { getRolePageList, deleteRole } from '@/api/role'
+import entityForm from './UserForm'
+import { getUserList, deleteUser } from '@/api/user'
 
 const statusMap = {
   0: {
     status: 'processing',
-    text: '正常'
+    text: '显示'
   },
   1: {
     status: 'default',
-    text: '禁用'
+    text: '隐藏'
   }
 }
 
 export default {
-  name: 'RoleList',
+  name: 'UserList',
   components: {
     STable,
     entityForm
@@ -143,12 +140,12 @@ export default {
           scopedSlots: { customRender: 'serial' }
         },
         {
-          title: '唯一标识号',
-          dataIndex: 'index_code'
+          title: '用户名',
+          dataIndex: 'user_name'
         },
         {
-          title: '名称',
-          dataIndex: 'name'
+          title: '真实姓名',
+          dataIndex: 'real_name'
         },
         {
           title: '状态',
@@ -165,7 +162,7 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
-        return getRolePageList(Object.assign(parameter, this.queryParam))
+        return getUserList(Object.assign(parameter, this.queryParam))
           .then(res => {
             if (res.result.data === null) {
               res.result.data = []
@@ -217,18 +214,19 @@ export default {
         this.optionAlertShow = false
       }
     },
+
     handleEdit (record) {
       this.$refs.createModal.edit(record)
     },
     handleDelete (record) {
       this.$confirm({
-        title: '确定删除此菜单吗?',
+        title: '确定删除此用户吗?',
         content: '',
         okText: '确定',
         okType: 'danger',
         cancelText: '取消',
         onOk: () => {
-          deleteRole({ id: record.record_id }).then(res => {
+          deleteUser({ id: record.record_id }).then(res => {
             this.$message.info(`${record.name} 删除成功`)
             this.handleOk()
           })

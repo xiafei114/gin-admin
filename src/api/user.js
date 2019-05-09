@@ -1,9 +1,9 @@
 import { axios } from '@/utils/request'
 
-const router = 'roles'
+const router = 'users'
 
 // 角色查询
-export function getRolePageList (parameter) {
+export function getUserList (parameter) {
   return axios({
     url: `/v1/${router}?q=page`,
     method: 'get',
@@ -11,16 +11,8 @@ export function getRolePageList (parameter) {
   })
 }
 
-export function getRoleList (parameter) {
-  return axios({
-    url: `/v1/${router}?q=list`,
-    method: 'get',
-    params: parameter
-  })
-}
-
 // 获得单一角色
-export function getRole (id) {
+export function getUser (id) {
   return axios({
     url: `/v1/${router}/${id}`,
     method: 'get'
@@ -28,7 +20,7 @@ export function getRole (id) {
 }
 
 // 添加角色
-export function addRole (data) {
+export function addUser (data) {
   return axios({
     url: `/v1/${router}`,
     method: 'post',
@@ -36,7 +28,7 @@ export function addRole (data) {
   })
 }
 // 修改角色
-export function updateRole (id, data) {
+export function updateUser (id, data) {
   return axios({
     url: `/v1/${router}/${id}`,
     method: 'put',
@@ -45,7 +37,7 @@ export function updateRole (id, data) {
 }
 
 // 删除角色
-export function deleteRole (params) {
+export function deleteUser (params) {
   return axios({
     url: `/v1/${router}/${params.id}`,
     method: 'delete'

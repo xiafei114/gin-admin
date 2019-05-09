@@ -1,14 +1,14 @@
 import {
-  fetchAccount, addAccount, updateAccount, deleteAccount
-} from '@/api/auth'
-
-import {
   addPermission, updatePermission
 } from '@/api/permission'
 
 import {
   addRole, updateRole
 } from '@/api/role'
+
+import {
+  addUser, updateUser
+} from '@/api/user'
 
 const auth = {
   state: {
@@ -68,22 +68,10 @@ const auth = {
       })
     },
 
-    // 获取管理员
-    fetchAccount (state) {
-      return new Promise((resolve, reject) => {
-        fetchAccount().then(response => {
-          const result = response.data
-          resolve(result)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
     // 添加管理员
-    addAccount (state, data) {
+    addUser (state, data) {
       return new Promise((resolve, reject) => {
-        addAccount(data).then(_ => {
+        addUser(data).then(_ => {
           resolve()
         }).catch(error => {
           reject(error)
@@ -92,28 +80,18 @@ const auth = {
     },
 
     // 更新管理员
-    updateAccount (state, data) {
-      const id = data.selectId
-      delete data.selectId
+    updateUser (state, data) {
+      const id = data.record_id
+      delete data.entityId
       return new Promise((resolve, reject) => {
-        updateAccount(id, data).then(_ => {
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    // 删除管理员
-    deleteAccount (state, params) {
-      return new Promise((resolve, reject) => {
-        deleteAccount(params).then(_ => {
+        updateUser(id, data).then(_ => {
           resolve()
         }).catch(error => {
           reject(error)
         })
       })
     }
+
   }
 }
 

@@ -57,8 +57,8 @@ const auth = {
 
     // 更新角色
     updateRole (state, data) {
-      const id = data.selectId
-      delete data.selectId
+      const id = data.record_id
+      delete data.entityId
       return new Promise((resolve, reject) => {
         updateRole(id, data).then(_ => {
           resolve()

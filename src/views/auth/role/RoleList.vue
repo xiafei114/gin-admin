@@ -162,13 +162,11 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      permissionList: [],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
         return getRoleList(Object.assign(parameter, this.queryParam))
           .then(res => {
-            this.permissionList = res.result.rules
             return res.result
           })
       },
@@ -217,7 +215,7 @@ export default {
       }
     },
     handleEdit (record) {
-      this.$refs.createModal.edit(this.permissionList, record)
+      this.$refs.createModal.edit(record)
     },
     handleDelete (record) {
       this.$confirm({

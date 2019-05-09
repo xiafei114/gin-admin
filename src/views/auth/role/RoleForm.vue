@@ -94,8 +94,7 @@ export default {
       entity: {
         name: '',
         sequence: 100000,
-        hidden: 0,
-        icon: ''
+        status: 0
       },
       rules: [],
       // 子数据
@@ -103,11 +102,9 @@ export default {
     }
   },
   methods: {
-    mounted () {
-
-    },
-    created () {
-
+    clear () {
+      this.form.setFieldsValue(this.entity)
+      this.entityId = ''
     },
     add () {
       // console.log(JSON.stringify(permissionList))
@@ -118,7 +115,7 @@ export default {
       this.$nextTick(() => {
         this.loadPermissions()
         this.visible = true
-        this.entityId = ''
+        this.clear()
       })
     },
     onChangeCheck (permission) {
@@ -142,22 +139,23 @@ export default {
           permission.checkedAll = false
           permission.selected = []
           permission.indeterminate = false
-          // if (options !== null) {
-          //   permission.actionsOptions = options.map(option => {
-          //     return {
-          //       label: option.label,
-          //       value: option.value
-          //     }
-          //   })
-          // }
+          if (permission.actions === null) {
+            // permission.actionsOptions = options.map(option => {
+            //   return {
+            //     label: option.label,
+            //     value: option.value
+            //   }
+            // })
+            permission.actions = []
+          }
           return permission
         })
       })
     },
-    edit (permissionList, record) {
-      this.visible = true
+    edit (record) {
       this.$nextTick(() => {
-        this.rules = permissionList
+        this.visible = true
+        this.loadPermissions()
         this.loadEditInfo(record)
       })
     },
@@ -166,7 +164,7 @@ export default {
       this.confirmLoading = true
       validateFields((errors, values) => {
         if (!errors) {
-          console.log('values', values)
+          // console.log('values', values)
           const action = this.entityId === '' ? 'addRole' : 'updateRole'
           values.record_id = this.entityId
 
@@ -206,20 +204,34 @@ export default {
     },
     handleCancel () {
       this.visible = false
-      this.subData = []
     },
     async loadEditInfo (data) {
       const { form } = this
       const { result } = await getRole(Object.assign(data.record_id))
-      console.log(JSON.stringify(result))
-      const formData = pick(result.data, ['name', 'sequence', 'hidden', 'icon', 'record_id', 'actions'])
-      this.entityId = formData.record_id
-      console.log('formData', formData)
+      const formData = pick(result.data, ['index_code', 'name', 'sequence', 'hidden', 'icon', 'record_id', 'permissions'])
+      this.entityId = data.record_id
+      // console.log('formData', formData)
       form.setFieldsValue(formData)
-      if (formData.actions === null) {
-        this.subData = []
-      } else {
-        this.subData = formData.actions
+
+      if (this.permissions) {
+        // 先处理要勾选的权限结构
+        const permissionsAction = {}
+        formData.permissions.forEach(permission => {
+          permissionsAction[permission.permission_id] = permission.actions
+        })
+
+        // console.log('permissionsAction', permissionsAction)
+        // console.log(JSON.stringify(this.permissions))
+        // 把权限表遍历一遍，设定要勾选的权限 action
+        this.permissions.forEach(permission => {
+          const selected = permissionsAction[permission.record_id]
+
+          // console.log('selected', selected)
+          permission.selected = selected || []
+          this.onChangeCheck(permission)
+        })
+
+        // console.log('this.permissions', this.permissions)
       }
     }
   }

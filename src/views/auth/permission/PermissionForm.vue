@@ -67,7 +67,7 @@
                 :pagination="false"
                 :loading="subDataLoading"
               >
-                <template v-for="(col, i) in ['code', 'label']" :slot="col" slot-scope="text, record">
+                <template v-for="(col, i) in ['value', 'label']" :slot="col" slot-scope="text, record">
                   <a-input
                     :key="col"
                     style="margin: -5px 0"
@@ -112,9 +112,9 @@ export default {
       subColumns: [
         {
           title: '动作',
-          key: 'code',
-          dataIndex: 'code',
-          scopedSlots: { customRender: 'code' }
+          key: 'value',
+          dataIndex: 'value',
+          scopedSlots: { customRender: 'value' }
         },
         {
           title: '名称',
@@ -218,27 +218,27 @@ export default {
     batchAddition () {
       const data = [{
         key: '1',
-        code: 'add',
+        value: 'add',
         label: '添加'
       },
       {
         key: '2',
-        code: 'edit',
+        value: 'edit',
         label: '修改'
       },
       {
         key: '3',
-        code: 'delete',
+        value: 'delete',
         label: '删除'
       },
       {
         key: '4',
-        code: 'list',
+        value: 'list',
         label: '查看'
       },
       {
         key: '5',
-        code: 'get',
+        value: 'get',
         label: '详情'
       }]
 

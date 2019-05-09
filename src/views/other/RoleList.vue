@@ -32,7 +32,7 @@
       size="default"
       :columns="columns"
       :data="loadData"
-    >
+    >拥有权限
       <div
         slot="expandedRowRender"
         slot-scope="record"

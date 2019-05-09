@@ -55,35 +55,24 @@
           </a-col>
         </a-row>
 
-        <p slot="expandedRowRender" slot-scope="row">
-          <a-row>
-            <a-col :key="index" class='rule-list' span="12" v-for="(item, index) in rules">
-              <a-row>
-                <a-col span="4">{{ item.title }}：</a-col>
-                <a-col span="20">
-                  <template v-for="(action, i) in item.action">
-                    <a-tag :key="i" v-if="row.rules.split(',').indexOf(action.id.toString()) !== -1">
-                      {{ action.title }}
-                    </a-tag>
-                  </template>
-                </a-col>
-              </a-row>
+        <a-form-item label="拥有权限">
+          <a-row :gutter="16" v-for="(permission, index) in permissions" :key="index">
+            <a-col :xl="4" :lg="24">
+              {{ permission.name }}：
+            </a-col>
+            <a-col :xl="20" :lg="24">
+              <a-checkbox
+                v-if="permission.actions != null && permission.actions.length > 0"
+                :indeterminate="permission.indeterminate"
+                :checked="permission.checkedAll"
+                @change="onChangeCheckAll($event, permission)">
+                全选
+              </a-checkbox>
+              <a-checkbox-group :options="permission.actions" v-model="permission.selected" @change="onChangeCheck(permission)" />
             </a-col>
           </a-row>
-        </p>
+        </a-form-item>
 
-        <a-row class="form-row" :gutter="16">
-          <a-col :lg="18" :md="12" :sm="24">
-            <a-form-item label="拥有权限">
-              <a-row :key="index" v-for="(item, index) in rules">
-                <a-col :span="4">{{ item.name }}</a-col>
-                <a-col :span="20">
-                  <a-checkbox-group :options="item.actions" v-model="subData"/>
-                </a-col>
-              </a-row>
-            </a-form-item>
-          </a-col>
-        </a-row>
       </a-form>
     </a-spin>
   </a-modal>
@@ -91,6 +80,7 @@
 
 <script>
 
+import { getPermissionList } from '@/api/permission'
 import { getRole } from '@/api/role'
 import pick from 'lodash.pick'
 
@@ -107,178 +97,62 @@ export default {
         hidden: 0,
         icon: ''
       },
-      rules: [
-        {
-          id: 95,
-          pid: 0,
-          role: 'rule',
-          title: '规则管理',
-          status: 1,
-          condition: '',
-          name: 'admin/rbac/rules',
-          action: [
-            {
-              role: 'add',
-              title: '添加',
-              name: 'admin/rbac/addRule',
-              pid: 95,
-              id: 96,
-              value: 96,
-              label: '添加',
-              status: 1
-            },
-            {
-              role: 'update',
-              title: '修改',
-              name: 'admin/rbac/updateRule',
-              pid: 95,
-              id: 97,
-              value: 97,
-              label: '修改',
-              status: 1
-            },
-            {
-              role: 'delete',
-              title: '删除',
-              name: 'admin/rbac/deleteRule',
-              pid: 95,
-              id: 98,
-              value: 98,
-              label: '删除',
-              status: 1
-            },
-            {
-              role: 'list',
-              title: '查看',
-              name: 'admin/rbac/rules',
-              pid: 95,
-              id: 129,
-              value: 129,
-              label: '查看',
-              status: 1
-            }
-          ],
-          permissionId: 'rule'
-        },
-        {
-          id: 99,
-          pid: 0,
-          role: 'role',
-          title: '角色管理',
-          status: 1,
-          condition: '',
-          name: 'admin/rbac/groups',
-          action: [
-            {
-              role: 'add',
-              title: '添加',
-              name: 'admin/rbac/addGroup',
-              pid: 99,
-              id: 100,
-              value: 100,
-              label: '添加',
-              status: 1
-            },
-            {
-              role: 'update',
-              title: '修改',
-              name: 'admin/rbac/updateGroup',
-              pid: 99,
-              id: 101,
-              value: 101,
-              label: '修改',
-              status: 1
-            },
-            {
-              role: 'delete',
-              title: '删除',
-              name: 'admin/rbac/deleteGroup',
-              pid: 99,
-              id: 102,
-              value: 102,
-              label: '删除',
-              status: 1
-            },
-            {
-              role: 'list',
-              title: '查看',
-              name: 'admin/rbac/groups',
-              pid: 99,
-              id: 130,
-              value: 130,
-              label: '查看',
-              status: 1
-            }
-          ],
-          permissionId: 'role'
-        },
-        {
-          id: 103,
-          pid: 0,
-          role: 'account',
-          title: '用户管理',
-          status: 1,
-          condition: '',
-          name: 'admin/rbac/users',
-          action: [
-            {
-              role: 'add',
-              title: '添加',
-              name: 'admin/rbac/addUser',
-              pid: 103,
-              id: 104,
-              value: 104,
-              label: '添加',
-              status: 1
-            },
-            {
-              role: 'update',
-              title: '修改',
-              name: 'admin/rbac/updateUser',
-              pid: 103,
-              id: 105,
-              value: 105,
-              label: '修改',
-              status: 1
-            },
-            {
-              role: 'delete',
-              title: '删除',
-              name: 'admin/rbac/deleteUser',
-              pid: 103,
-              id: 106,
-              value: 106,
-              label: '删除',
-              status: 1
-            },
-            {
-              role: 'list',
-              title: '查看',
-              name: 'admin/rbac/users',
-              pid: 103,
-              id: 131,
-              value: 131,
-              label: '查看',
-              status: 1
-            }
-          ],
-          permissionId: 'account'
-        }
-      ],
+      rules: [],
       // 子数据
-      subData: []
+      permissions: []
     }
   },
   methods: {
-    add (permissionList) {
-      console.log(permissionList)
-      // setTimeout(() => {
-      //   this.form.setFieldsValue(this.entity)
-      // }, 0)
-      this.rules = permissionList
-      this.visible = true
-      this.subData = []
-      this.entityId = ''
+    mounted () {
+
+    },
+    created () {
+
+    },
+    add () {
+      // console.log(JSON.stringify(permissionList))
+      // // setTimeout(() => {
+      // //   this.form.setFieldsValue(this.entity)
+      // // }, 0)
+      // this.loadPermissions(permissionList)
+      this.$nextTick(() => {
+        this.loadPermissions()
+        this.visible = true
+        this.entityId = ''
+      })
+    },
+    onChangeCheck (permission) {
+      permission.indeterminate = !!permission.selected.length && (permission.selected.length < permission.actions.length)
+      permission.checkedAll = permission.selected.length === permission.actions.length
+    },
+    onChangeCheckAll (e, permission) {
+      console.log('permission:', permission)
+
+      Object.assign(permission, {
+        selected: e.target.checked ? permission.actions.map(obj => obj.value) : [],
+        indeterminate: false,
+        checkedAll: e.target.checked
+      })
+    },
+    loadPermissions () {
+      getPermissionList().then(res => {
+        const result = res.result.data
+        this.permissions = result.map(permission => {
+          // const options = permission.actions
+          permission.checkedAll = false
+          permission.selected = []
+          permission.indeterminate = false
+          // if (options !== null) {
+          //   permission.actionsOptions = options.map(option => {
+          //     return {
+          //       label: option.label,
+          //       value: option.value
+          //     }
+          //   })
+          // }
+          return permission
+        })
+      })
     },
     edit (permissionList, record) {
       this.visible = true
@@ -295,7 +169,23 @@ export default {
           console.log('values', values)
           const action = this.entityId === '' ? 'addRole' : 'updateRole'
           values.record_id = this.entityId
-          values.actions = this.subData
+
+          // 拼装个新的，删除没用的
+          const formData = []
+          this.permissions.forEach(permission => {
+            if (permission.selected.length > 0) {
+              const data = pick(permission, ['record_id', 'selected', 'checkedAll'])
+              data.permission_id = data.record_id
+              data.actions = data.selected
+              delete data['selected']
+              delete data['record_id']
+              formData.push(data)
+            }
+          })
+
+          console.log(JSON.stringify(formData))
+
+          values.permissions = formData
           this.$store.dispatch(action, values).then(res => {
             console.log(res)
             this.$notification['success']({
@@ -321,6 +211,7 @@ export default {
     async loadEditInfo (data) {
       const { form } = this
       const { result } = await getRole(Object.assign(data.record_id))
+      console.log(JSON.stringify(result))
       const formData = pick(result.data, ['name', 'sequence', 'hidden', 'icon', 'record_id', 'actions'])
       this.entityId = formData.record_id
       console.log('formData', formData)

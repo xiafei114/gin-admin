@@ -1,6 +1,5 @@
 const api = {
-  // Login: '/v1/login',
-  Login: '/v1/mock/login',
+  Login: '/v1/login',
   Logout: '/v1/login/exit',
   // 根据验证码id获得图像
   LoginCaptcha: '/v1/login/captcha',

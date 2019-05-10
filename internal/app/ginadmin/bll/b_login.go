@@ -117,7 +117,8 @@ func (a *Login) Verify(ctx context.Context, userName, password string) (*schema.
 	}
 
 	item := result.Data[0]
-	if item.Password != util.SHA1HashString(password) {
+	if item.Password != password { // 传递过来的就是md5加密后的密码
+		// if item.Password != util.MD5HashString(password) {
 		return nil, ErrInvalidPassword
 	} else if item.Status != 1 {
 		return nil, ErrUserDisable

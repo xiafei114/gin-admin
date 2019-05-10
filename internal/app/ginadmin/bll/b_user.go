@@ -7,6 +7,7 @@ import (
 	"gin-admin/internal/app/ginadmin/schema"
 	"gin-admin/pkg/errors"
 	"gin-admin/pkg/util"
+
 	"github.com/casbin/casbin"
 )
 
@@ -95,7 +96,7 @@ func (a *User) Create(ctx context.Context, item schema.User) (*schema.User, erro
 		return nil, err
 	}
 
-	item.Password = util.SHA1HashString(item.Password)
+	item.Password = util.MD5HashString(item.Password)
 	item.RecordID = util.MustUUID()
 	item.Creator = GetUserID(ctx)
 	err = a.UserModel.Create(ctx, item)
@@ -130,7 +131,7 @@ func (a *User) Update(ctx context.Context, recordID string, item schema.User) (*
 	}
 
 	if item.Password != "" {
-		item.Password = util.SHA1HashString(item.Password)
+		item.Password = util.MD5HashString(item.Password)
 	}
 
 	err = a.UserModel.Update(ctx, recordID, item)

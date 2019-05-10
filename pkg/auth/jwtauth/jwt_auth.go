@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"gin-admin/pkg/auth"
+
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -82,7 +83,8 @@ type JWTAuth struct {
 // GenerateToken 生成令牌
 func (a *JWTAuth) GenerateToken(userID string) (auth.TokenInfo, error) {
 	now := time.Now()
-	expiresAt := now.Add(time.Duration(a.opts.expired) * time.Second).Unix()
+	duration := time.Duration(a.opts.expired) * time.Second
+	expiresAt := now.Add(duration).Unix()
 
 	token := jwt.NewWithClaims(a.opts.signingMethod, &jwt.StandardClaims{
 		IssuedAt:  now.Unix(),
@@ -100,6 +102,7 @@ func (a *JWTAuth) GenerateToken(userID string) (auth.TokenInfo, error) {
 		ExpiresAt:   expiresAt,
 		TokenType:   a.opts.tokenType,
 		AccessToken: tokenString,
+		Duration:    int64(duration),
 	}
 	return tokenInfo, nil
 }

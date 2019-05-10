@@ -85,7 +85,7 @@ signing_method = "HS512"
 # 签名key
 signing_key = "GINADMIN"
 # 过期时间（单位秒）
-expired = 7200
+expired = 604800
 # 存储(支持：file/redis)
 store = "file"
 # 文件路径

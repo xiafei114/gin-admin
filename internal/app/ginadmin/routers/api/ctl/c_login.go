@@ -9,7 +9,6 @@ import (
 	"gin-admin/internal/app/ginadmin/schema"
 	"gin-admin/pkg/errors"
 	"gin-admin/pkg/logger"
-	"gin-admin/pkg/util"
 
 	"github.com/LyricTian/captcha"
 	"github.com/gin-gonic/gin"
@@ -119,86 +118,28 @@ func (a *Login) Login(c *gin.Context) {
 	}
 
 	logger.StartSpan(ginplus.NewContext(c), "用户登录", a.getFuncName("Login")).Infof("登入系统")
-	ginplus.ResSuccess(c, tokenInfo)
+
+	var result = schema.UserToken{
+		RecordID:      user.RecordID,
+		UserName:      user.UserName,
+		RealName:      user.RealName,
+		Avatar:        "",
+		Phone:         user.Phone,
+		Email:         user.Email,
+		Status:        user.Status,
+		LastLoginIP:   "",
+		LastLoginTime: "",
+		Creator:       user.Creator,
+		CreatedAt:     user.CreatedAt,
+		Lang:          "zh-CN",
+		Token:         tokenInfo.AccessToken,
+		TokenType:     tokenInfo.TokenType,
+		TokenExpires:  tokenInfo.ExpiresAt,
+		TokenDuration: tokenInfo.Duration,
+	}
+
+	ginplus.ResData(c, result)
 }
-
-// MockLogin 用户登录
-// @Summary 用户登录
-// @Param body body schema.LoginParam true
-// @Success 200 schema.LoginTokenInfo "{access_token:访问令牌,token_type:令牌类型,expires_in:过期时长(单位秒)}"
-// @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
-// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router POST /api/v1/mock/login
-func (a *Login) MockLogin(c *gin.Context) {
-
-	var item schema.LoginParam
-	if err := ginplus.ParseJSON(c, &item); err != nil {
-		ginplus.ResError(c, err)
-		return
-	}
-
-	if !captcha.VerifyString(item.CaptchaID, item.CaptchaCode) {
-		ginplus.ResError(c, errors.NewBadRequestError("无效的验证码"))
-		return
-	}
-
-	user, err := a.LoginBll.Verify(ginplus.NewContext(c), item.UserName, item.Password)
-	if err != nil {
-		switch err {
-		case bll.ErrInvalidUserName, bll.ErrInvalidPassword:
-			ginplus.ResError(c, errors.NewBadRequestError("用户名或密码错误"))
-			return
-		case bll.ErrUserDisable:
-			ginplus.ResError(c, errors.NewBadRequestError("用户被禁用，请联系管理员"))
-			return
-		default:
-			ginplus.ResError(c, errors.NewInternalServerError())
-			return
-		}
-	}
-
-	// 将用户ID放入上下文
-	ginplus.SetUserID(c, user.RecordID)
-
-	tokenInfo, err := a.LoginBll.GenerateToken(ginplus.NewContext(c))
-	if err != nil {
-		ginplus.ResError(c, err)
-		return
-	}
-
-	logger.StartSpan(ginplus.NewContext(c), "用户登录", a.getFuncName("Login")).Infof("登入系统")
-
-	var result interface{}
-	err2 := util.JSONUnmarshal([]byte(fmt.Sprintf(userJSON, tokenInfo.AccessToken)), &result)
-	if err2 != nil {
-		fmt.Println(err2)
-	}
-
-	json := make(map[string]interface{})
-	json["message"] = ""
-	json["result"] = result
-	json["status"] = 200
-	ginplus.ResSuccess(c, json)
-}
-
-const userJSON = `
-	{
-    "id": "fdafdsfdsafdsaffdsafds",
-    "name": "admin",
-    "username": "admin",
-    "password": "",
-    "avatar": "https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png",
-    "status": 1,
-    "telephone": "",
-    "lastLoginIp": "27.154.74.117",
-    "lastLoginTime": 1534837621348,
-    "creatorId": "admin",
-    "createTime": 1497160610259,
-    "deleted": 0,
-    "roleId": "admin",
-    "lang": "zh-CN",
-    "token": "%s"
-  }`
 
 // Logout 用户登出
 // @Summary 用户登出

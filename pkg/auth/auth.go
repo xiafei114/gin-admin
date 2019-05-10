@@ -17,6 +17,8 @@ type TokenInfo interface {
 	GetExpiresAt() int64
 	// JSON编码
 	EncodeToJSON() ([]byte, error)
+	// 获得持续时间
+	GetDuration() int64
 }
 
 // Auther 认证接口

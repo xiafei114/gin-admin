@@ -9,6 +9,7 @@ type tokenInfo struct {
 	AccessToken string `json:"access_token"` // 访问令牌
 	TokenType   string `json:"token_type"`   // 令牌类型
 	ExpiresAt   int64  `json:"expires_at"`   // 令牌到期时间
+	Duration    int64  `json:"duration"`     // 持续时间
 }
 
 func (t *tokenInfo) GetAccessToken() string {
@@ -25,4 +26,8 @@ func (t *tokenInfo) GetExpiresAt() int64 {
 
 func (t *tokenInfo) EncodeToJSON() ([]byte, error) {
 	return json.Marshal(t)
+}
+
+func (t *tokenInfo) GetDuration() int64 {
+	return t.Duration
 }

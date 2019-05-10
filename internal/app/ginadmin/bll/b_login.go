@@ -84,6 +84,7 @@ func (a *Login) GenerateToken(ctx context.Context) (*schema.LoginTokenInfo, erro
 		AccessToken: tokenInfo.GetAccessToken(),
 		TokenType:   tokenInfo.GetTokenType(),
 		ExpiresAt:   tokenInfo.GetExpiresAt(),
+		Duration:    tokenInfo.GetDuration(),
 	}
 	return item, nil
 }

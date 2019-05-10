@@ -19,6 +19,26 @@ type User struct {
 	Roles     UserRoles  `json:"roles" binding:"required,gt=0" swaggo:"true,角色授权"`
 }
 
+// UserToken 用户token信息
+type UserToken struct {
+	RecordID      string     `json:"id" swaggo:"false,记录ID"`
+	UserName      string     `json:"username" binding:"required" swaggo:"true,用户名"`
+	RealName      string     `json:"name" binding:"required" swaggo:"true,真实姓名"`
+	Avatar        string     `json:"avatar" swaggo:"false,密码"`
+	Phone         string     `json:"telephone" swaggo:"false,手机号"`
+	Email         string     `json:"email" swaggo:"false,邮箱"`
+	Status        int        `json:"status" swaggo:"true,用户状态(1:启用 2:停用)"`
+	LastLoginIP   string     `json:"lastLoginIp" swaggo:"false,最后登录ip地址"`
+	LastLoginTime string     `json:"lastLoginTime" swaggo:"false,最后登录时间"`
+	Creator       string     `json:"creatorId" swaggo:"false,创建者"`
+	CreatedAt     *time.Time `json:"created_at" swaggo:"false,创建时间"`
+	Lang          string     `json:"lang" swaggo:"false,语言"`
+	Token         string     `json:"token" swaggo:"false,token"`
+	TokenType     string     `json:"token_type" swaggo:"false,token类型"`
+	TokenExpires  int64      `json:"token_expires_at" swaggo:"false,token有效期"`
+	TokenDuration int64      `json:"token_duration" swaggo:"false,token持续时间"`
+}
+
 // UserRole 用户角色
 type UserRole struct {
 	RoleID string `json:"role_id" swaggo:"true,角色ID"`

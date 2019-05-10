@@ -28,8 +28,8 @@ type UserLoginRole struct {
 
 // UserLoginPermission 获得登录用户信息
 type UserLoginPermission struct {
-	PermissionID    string      `json:"permissionID" swaggo:"true,id"`
-	PermissionName  string      `json:"permissionName" swaggo:"true,名称"`
+	PermissionID    string            `json:"permissionID" swaggo:"true,id"`
+	PermissionName  string            `json:"permissionName" swaggo:"true,名称"`
 	ActionEntitySet PermissionActions `json:"actionEntitySets" swaggo:"false,动作列表"`
 }
 
@@ -55,4 +55,5 @@ type LoginTokenInfo struct {
 	AccessToken string `json:"access_token" swaggo:"true,访问令牌"`
 	TokenType   string `json:"token_type" swaggo:"true,令牌类型"`
 	ExpiresAt   int64  `json:"expires_at" swaggo:"true,令牌到期时间"`
+	Duration    int64  `json:"duration" swaggo:"true,持续时间"`
 }

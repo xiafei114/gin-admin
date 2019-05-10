@@ -110,13 +110,13 @@ import entityForm from './UserForm'
 import { getUserList, deleteUser } from '@/api/user'
 
 const statusMap = {
-  0: {
-    status: 'processing',
-    text: '显示'
-  },
   1: {
+    status: 'processing',
+    text: '启用'
+  },
+  2: {
     status: 'default',
-    text: '隐藏'
+    text: '禁用'
   }
 }
 

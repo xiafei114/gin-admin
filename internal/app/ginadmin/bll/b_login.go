@@ -168,60 +168,371 @@ func (a *Login) GetUserInfo(ctx context.Context) (*schema.UserLoginInfo, error) 
 }
 
 // GetCurrentUserInfo 获取当前用户登录信息
-func (a *Login) GetCurrentUserInfo(ctx context.Context) (*schema.UserLoginedInfo, error) {
-
-	// js := make(map[string]interface{})
-	// arrList := make([]interface{}, 0)
-
-	// arr1 := make([]interface{}, 0)
-	// arr1 = append(arr1, "data1")
-	// arr1 = append(arr1, 14)
-
-	// arr2 := make([]interface{}, 0)
-	// arr2 = append(arr2, "data2")
-	// arr2 = append(arr2, "red")
-
-	// arrList = append(arrList, arr1)
-	// arrList = append(arrList, arr2)
-
-	// js["params"] = arrList
+func (a *Login) GetCurrentUserInfo(ctx context.Context) (interface{}, error) {
 
 	userID := GetUserID(ctx)
 	if isRoot := CheckIsRootUser(ctx, userID); isRoot {
-		// root := GetRootUser()
-		loginInfo := &schema.UserLoginedInfo{
-			// UserName: root.UserName,
-			// RealName: root.RealName,
-		}
-		return loginInfo, nil
+		return rootPermissions, nil
 	}
 
-	user, err := a.UserModel.Get(ctx, userID, schema.UserQueryOptions{
-		IncludeRoles: true,
+	//默认
+	permissions := []map[string]interface{}{map[string]interface{}{
+		"roleId":         "default",
+		"permissionId":   "dashboard",
+		"permissionName": "仪表盘",
+		"actions":        []map[string]interface{}{},
+	}}
+
+	permissions = append(permissions, map[string]interface{}{
+		"roleId":         "admin",
+		"permissionId":   "user",
+		"permissionName": "权限管理",
+		"actions": []map[string]interface{}{
+			map[string]interface{}{
+				"role":  "add",
+				"title": "添加",
+			},
+			map[string]interface{}{
+				"role":  "edit",
+				"title": "修改",
+			},
+			map[string]interface{}{
+				"role":  "delete",
+				"title": "删除",
+			},
+			map[string]interface{}{
+				"role":  "list",
+				"title": "查看",
+			},
+			map[string]interface{}{
+				"role":  "get",
+				"title": "详情",
+			},
+		},
 	})
-	if err != nil {
-		return nil, err
-	} else if user == nil {
-		return nil, ErrInvalidUser
-	} else if user.Status != 1 {
-		return nil, ErrUserDisable
+
+	result := map[string]interface{}{
+		"name":     "管理员",
+		"username": "admin",
+		"role": map[string]interface{}{
+			"permissions": permissions,
+		},
 	}
 
-	loginInfo := &schema.UserLoginedInfo{
-		// UserName: user.UserName,
-		// RealName: user.RealName,
-	}
+	return result, nil
 
-	if roleIDs := user.Roles.ToRoleIDs(); len(roleIDs) > 0 {
-		// roles, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{
-		// 	RecordIDs: roleIDs,
-		// })
-		if err != nil {
-			return nil, err
-		}
-		// loginInfo.RoleNames = roles.Data.ToNames()
-	}
-	return loginInfo, nil
+	// user, err := a.UserModel.Get(ctx, userID, schema.UserQueryOptions{
+	// 	IncludeRoles: true,
+	// })
+	// if err != nil {
+	// 	return nil, err
+	// } else if user == nil {
+	// 	return nil, ErrInvalidUser
+	// } else if user.Status != 1 {
+	// 	return nil, ErrUserDisable
+	// }
+
+	// loginInfo := &schema.UserLoginedInfo{
+	// 	// UserName: user.UserName,
+	// 	// RealName: user.RealName,
+	// }
+
+	// if roleIDs := user.Roles.ToRoleIDs(); len(roleIDs) > 0 {
+	// 	// roles, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{
+	// 	// 	RecordIDs: roleIDs,
+	// 	// })
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	// loginInfo.RoleNames = roles.Data.ToNames()
+	// }
+	// return loginInfo, nil
+
+}
+
+// rootPermissions root 权限
+var rootPermissions = map[string]interface{}{
+	"id":       "4291d7da9005377ec9aec4a71ea837f",
+	"name":     "管理员",
+	"username": "admin",
+	// "roleId":   "admin",
+	"role": map[string]interface{}{
+		"id":         "admin",
+		"name":       "管理员",
+		"describe":   "拥有所有权限",
+		"status":     1,
+		"creatorId":  "system",
+		"createTime": 1497160610259,
+		"deleted":    0,
+		"permissions": []map[string]interface{}{
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "dashboard",
+				"permissionName": "仪表盘",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "exception",
+				"permissionName": "异常页面权限",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "result",
+				"permissionName": "结果权限",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "profile",
+				"permissionName": "详细页权限",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "table",
+				"permissionName": "表格权限",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "import",
+						"title": "导入",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "form",
+				"permissionName": "表单权限",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "user",
+				"permissionName": "权限管理",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "support",
+				"permissionName": "权限管理",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+			map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "rule",
+				"permissionName": "规则管理",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			}, map[string]interface{}{
+				"roleId":         "admin",
+				"permissionId":   "role",
+				"permissionName": "角色管理",
+				"actions": []map[string]interface{}{
+					map[string]interface{}{
+						"role":  "add",
+						"title": "添加",
+					},
+					map[string]interface{}{
+						"role":  "edit",
+						"title": "修改",
+					},
+					map[string]interface{}{
+						"role":  "delete",
+						"title": "删除",
+					},
+					map[string]interface{}{
+						"role":  "list",
+						"title": "查看",
+					},
+					map[string]interface{}{
+						"role":  "get",
+						"title": "详情",
+					},
+				},
+			},
+		},
+	},
 }
 
 // // QueryUserPermissionTree 查询当前用户的权限菜单树

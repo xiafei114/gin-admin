@@ -180,51 +180,11 @@ func (a *Login) RefreshToken(c *gin.Context) {
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router GET /api/v1/current/user
 func (a *Login) GetUserInfo(c *gin.Context) {
-	info, err := a.LoginBll.GetUserInfo(ginplus.NewContext(c))
-	if err != nil {
-		ginplus.ResError(c, err)
-		return
-	}
-	ginplus.ResSuccess(c, info)
-}
-
-// GetCurrentUser 获取当前用户信息
-// @Summary 获取当前用户信息
-// @Param Authorization header string false "Bearer 用户令牌"
-// @Success 200 schema.UserLoginInfo
-// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
-// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/current/user2
-func (a *Login) GetCurrentUser(c *gin.Context) {
 	info, err := a.LoginBll.GetCurrentUserInfo(ginplus.NewContext(c))
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
-
-	ginplus.ResSuccess(c, info)
-}
-
-// MockGetUserInfo 获取当前用户信息
-// @Summary 获取当前用户信息
-// @Param Authorization header string false "Bearer 用户令牌"
-// @Success 200 schema.UserLoginInfo
-// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
-// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/mock/current/user
-func (a *Login) MockGetUserInfo(c *gin.Context) {
-
-	info, err := a.LoginBll.GetCurrentUserInfo(ginplus.NewContext(c))
-	if err != nil {
-		ginplus.ResError(c, err)
-		return
-	}
-
-	// var result interface{}
-	// err := util.JSONUnmarshal([]byte(userInfo), &result)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
 
 	json := make(map[string]interface{})
 	json["message"] = ""

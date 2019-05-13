@@ -183,37 +183,85 @@ func (a *Login) GetCurrentUserInfo(ctx context.Context) (interface{}, error) {
 		"actions":        []map[string]interface{}{},
 	}}
 
-	permissions = append(permissions, map[string]interface{}{
-		"roleId":         "admin",
-		"permissionId":   "user",
-		"permissionName": "权限管理",
-		"actions": []map[string]interface{}{
-			map[string]interface{}{
-				"role":  "add",
-				"title": "添加",
-			},
-			map[string]interface{}{
-				"role":  "edit",
-				"title": "修改",
-			},
-			map[string]interface{}{
-				"role":  "delete",
-				"title": "删除",
-			},
-			map[string]interface{}{
-				"role":  "list",
-				"title": "查看",
-			},
-			map[string]interface{}{
-				"role":  "get",
-				"title": "详情",
-			},
-		},
+	user, err := a.UserModel.Get(ctx, userID, schema.UserQueryOptions{
+		IncludeRoles: true,
 	})
+	if err != nil {
+		return nil, err
+	} else if user == nil {
+		return nil, ErrInvalidUser
+	} else if user.Status != 1 {
+		return nil, ErrUserDisable
+	}
+
+	if roleIDs := user.Roles.ToRoleIDs(); len(roleIDs) > 0 {
+		roles, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{
+			RecordIDs: roleIDs,
+		})
+		if err != nil {
+			result := map[string]interface{}{
+				"name":     "管理员",
+				"username": "admin",
+				"role": map[string]interface{}{
+					"permissions": permissions,
+				},
+			}
+
+			return result, nil
+		}
+
+		for _, item := range roles.Data {
+			permission := map[string]interface{}{}
+			permission["roleId"] = item.RecordID
+			permission["permissionId"] = item.IndexCode
+			permission["permissionName"] = item.Name
+
+			actions := []map[string]interface{}{}
+
+			// for _, itemAct := range item.Actions {
+			// 	action := map[string]interface{}{}
+
+			// 	actions = append(actions, action)
+			// }
+
+			permission["actions"] = actions
+			permissions = append(permissions, permission)
+		}
+
+		// loginInfo.RoleNames = roles.Data.ToNames()
+	}
+
+	// permissions = append(permissions, map[string]interface{}{
+	// 	"roleId":         "admin",
+	// 	"permissionId":   "user",
+	// 	"permissionName": "权限管理",
+	// 	"actions": []map[string]interface{}{
+	// 		map[string]interface{}{
+	// 			"role":  "add",
+	// 			"title": "添加",
+	// 		},
+	// 		map[string]interface{}{
+	// 			"role":  "edit",
+	// 			"title": "修改",
+	// 		},
+	// 		map[string]interface{}{
+	// 			"role":  "delete",
+	// 			"title": "删除",
+	// 		},
+	// 		map[string]interface{}{
+	// 			"role":  "list",
+	// 			"title": "查看",
+	// 		},
+	// 		map[string]interface{}{
+	// 			"role":  "get",
+	// 			"title": "详情",
+	// 		},
+	// 	},
+	// })
 
 	result := map[string]interface{}{
-		"name":     "管理员",
-		"username": "admin",
+		"name":     user.RealName,
+		"username": user.UserName,
 		"role": map[string]interface{}{
 			"permissions": permissions,
 		},

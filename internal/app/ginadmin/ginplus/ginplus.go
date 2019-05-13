@@ -53,8 +53,12 @@ func GetToken(c *gin.Context) string {
 	var token string
 	auth := c.GetHeader("Authorization")
 	prefix := "Bearer "
-	if auth != "" && strings.HasPrefix(auth, prefix) {
-		token = auth[len(prefix):]
+	if auth != "" {
+		if strings.HasPrefix(auth, prefix) {
+			token = auth[len(prefix):]
+		} else {
+			token = auth
+		}
 	}
 	return token
 }

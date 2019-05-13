@@ -55,8 +55,6 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.POST("/login", loginCtl.Login)
 		v1.POST("/login/exit", loginCtl.Logout)
 
-		v1.GET("/mock/current/user", loginCtl.MockGetUserInfo)
-
 		// 注册/api/v1/refresh_token
 		v1.POST("/refresh_token", loginCtl.RefreshToken)
 

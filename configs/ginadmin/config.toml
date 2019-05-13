@@ -17,7 +17,7 @@ store = "gorm"
 allow_init_menu = true
 
 # 是否启用casbin鉴权
-enable_casbin = true
+enable_casbin = false
 
 # 日志配置
 [log]

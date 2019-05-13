@@ -251,7 +251,7 @@ func (a *Login) GetCurrentUserInfo(ctx context.Context) (interface{}, error) {
 				actions = append(actions, action)
 			}
 
-			permission["actions"] = actions
+			permission["actionList"] = actions
 			permissions = append(permissions, permission)
 		}
 

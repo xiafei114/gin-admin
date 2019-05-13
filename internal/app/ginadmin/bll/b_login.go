@@ -195,13 +195,33 @@ func (a *Login) GetCurrentUserInfo(ctx context.Context) (interface{}, error) {
 	}
 
 	if roleIDs := user.Roles.ToRoleIDs(); len(roleIDs) > 0 {
+
+		permissionResult, err := a.PermissionModel.Query(ctx, schema.PermissionQueryParam{}, schema.PermissionQueryOptions{
+			IncludeActions: true,
+		})
+
+		// fmt.Printf("%s \n", permissionResult)
+
+		if err != nil {
+			result := map[string]interface{}{
+				"name":     user.RealName,
+				"username": user.UserName,
+				"role": map[string]interface{}{
+					"permissions": permissions,
+				},
+			}
+			return result, nil
+		}
+
 		roles, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{
 			RecordIDs: roleIDs,
+		}, schema.RoleQueryOptions{
+			IncludePermissions: true,
 		})
 		if err != nil {
 			result := map[string]interface{}{
-				"name":     "管理员",
-				"username": "admin",
+				"name":     user.RealName,
+				"username": user.UserName,
 				"role": map[string]interface{}{
 					"permissions": permissions,
 				},
@@ -210,7 +230,13 @@ func (a *Login) GetCurrentUserInfo(ctx context.Context) (interface{}, error) {
 			return result, nil
 		}
 
-		for _, item := range roles.Data {
+		aPermissions, err := arrangePermissions(permissionResult, roles.Data)
+
+		// permissionActMap := roles.Data.ToPermissionIDActionsMap()
+
+		// fmt.Printf(" 多少个 %s \n", len(permissionActMap))
+
+		for _, item := range aPermissions {
 			permission := map[string]interface{}{}
 			permission["roleId"] = item.RecordID
 			permission["permissionId"] = item.IndexCode
@@ -218,46 +244,18 @@ func (a *Login) GetCurrentUserInfo(ctx context.Context) (interface{}, error) {
 
 			actions := []map[string]interface{}{}
 
-			// for _, itemAct := range item.Actions {
-			// 	action := map[string]interface{}{}
-
-			// 	actions = append(actions, action)
-			// }
+			for _, itemAction := range item.Actions {
+				action := map[string]interface{}{}
+				action["role"] = itemAction.Code
+				action["title"] = itemAction.Name
+				actions = append(actions, action)
+			}
 
 			permission["actions"] = actions
 			permissions = append(permissions, permission)
 		}
 
-		// loginInfo.RoleNames = roles.Data.ToNames()
 	}
-
-	// permissions = append(permissions, map[string]interface{}{
-	// 	"roleId":         "admin",
-	// 	"permissionId":   "user",
-	// 	"permissionName": "权限管理",
-	// 	"actions": []map[string]interface{}{
-	// 		map[string]interface{}{
-	// 			"role":  "add",
-	// 			"title": "添加",
-	// 		},
-	// 		map[string]interface{}{
-	// 			"role":  "edit",
-	// 			"title": "修改",
-	// 		},
-	// 		map[string]interface{}{
-	// 			"role":  "delete",
-	// 			"title": "删除",
-	// 		},
-	// 		map[string]interface{}{
-	// 			"role":  "list",
-	// 			"title": "查看",
-	// 		},
-	// 		map[string]interface{}{
-	// 			"role":  "get",
-	// 			"title": "详情",
-	// 		},
-	// 	},
-	// })
 
 	result := map[string]interface{}{
 		"name":     user.RealName,
@@ -269,33 +267,71 @@ func (a *Login) GetCurrentUserInfo(ctx context.Context) (interface{}, error) {
 
 	return result, nil
 
-	// user, err := a.UserModel.Get(ctx, userID, schema.UserQueryOptions{
-	// 	IncludeRoles: true,
-	// })
-	// if err != nil {
-	// 	return nil, err
-	// } else if user == nil {
-	// 	return nil, ErrInvalidUser
-	// } else if user.Status != 1 {
-	// 	return nil, ErrUserDisable
-	// }
+}
 
-	// loginInfo := &schema.UserLoginedInfo{
-	// 	// UserName: user.UserName,
-	// 	// RealName: user.RealName,
-	// }
+func arrangePermissions(permissionResult *schema.PermissionQueryResult, roles schema.Roles) (map[string]*schema.Permission, error) {
+	permissions := permissionResult.Data.ToMap()
 
-	// if roleIDs := user.Roles.ToRoleIDs(); len(roleIDs) > 0 {
-	// 	// roles, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{
-	// 	// 	RecordIDs: roleIDs,
-	// 	// })
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	// loginInfo.RoleNames = roles.Data.ToNames()
-	// }
-	// return loginInfo, nil
+	var m = make(map[string]*schema.Permission)
+	var acts = map[string]map[string]string{}
+	for _, item := range roles {
+		for _, perm := range item.Permissions {
+			_, ok := m[perm.PermissionID]
 
+			if !ok { //如果不存在
+
+				permV, _ := permissions[perm.PermissionID]
+
+				var actions = make(map[string]string)
+				for _, v := range perm.Actions {
+					actions[v] = v
+				}
+
+				var value = &schema.Permission{
+					RecordID:  permV.RecordID,
+					IndexCode: permV.IndexCode,
+					Name:      permV.Name,
+				}
+				acts[perm.PermissionID] = actions
+				m[perm.PermissionID] = value
+			} else {
+				actions := acts[perm.PermissionID]
+
+				for _, v := range perm.Actions {
+					actions[v] = v
+				}
+
+				acts[perm.PermissionID] = actions
+			}
+		}
+	}
+
+	for _, item := range m {
+		actions, _ := acts[item.RecordID]
+		permV, _ := permissions[item.RecordID]
+		var newActions = make([]*schema.PermissionAction, 0)
+		for _, act := range actions {
+			permissionAction, err := getPermissionAction(permV.Actions, act)
+
+			if err != nil || permissionAction == nil {
+				continue
+			}
+			newActions = append(newActions, permissionAction)
+		}
+		item.Actions = newActions
+	}
+
+	return m, nil
+}
+
+// getPermissionAction 获得指定action
+func getPermissionAction(actions schema.PermissionActions, act string) (*schema.PermissionAction, error) {
+	for _, item := range actions {
+		if item.Code == act {
+			return item, nil
+		}
+	}
+	return nil, nil
 }
 
 // rootPermissions root 权限

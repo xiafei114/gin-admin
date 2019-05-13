@@ -14,7 +14,6 @@ type Role struct {
 	CreatedAt   *time.Time      `json:"created_at" swaggo:"false,创建时间"`
 	UpdatedAt   *time.Time      `json:"updated_at" swaggo:"false,更新时间"`
 	Permissions RolePermissions `json:"permissions" binding:"required,gt=0" swaggo:"false,权力权限"`
-	Actions     []string        `json:"actions" swaggo:"false,动作权限列表"`
 }
 
 // RolePermission 角色权力对象
@@ -40,9 +39,8 @@ type RoleQueryOptions struct {
 
 // RoleQueryResult 查询结果
 type RoleQueryResult struct {
-	Data        Roles
-	PageResult  *PaginationResult
-	Permissions Permissions // 权力
+	Data       Roles
+	PageResult *PaginationResult
 }
 
 // Roles 角色对象列表

@@ -64,7 +64,7 @@
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="$refs.createModal.add()">新建</a-button>
       <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
-      <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
+      <a-dropdown v-if="$auth('user.edit') && selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="handleBatchDelete()"><a-icon type="delete" />删除</a-menu-item>
           <!-- lock | unlock -->
@@ -95,7 +95,7 @@
         <template>
           <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete(record)">删除</a>
+          <a v-if="$auth('user.delete')" @click="handleDelete(record)">删除</a>
         </template>
       </span>
     </s-table>

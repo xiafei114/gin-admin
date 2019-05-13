@@ -25,7 +25,7 @@ function plugin (Vue) {
           return permissionList.find((val) => {
             return val.permissionId === permission
           }).actionList.findIndex((val) => {
-            return val === action
+            return val.role === action
           }) > -1
         }
       }

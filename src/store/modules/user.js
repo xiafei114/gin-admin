@@ -54,6 +54,7 @@ const user = {
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
+          console.log(response)
           const result = response.result
 
           if (result.role && result.role.permissions.length > 0) {
@@ -77,6 +78,7 @@ const user = {
 
           resolve(response)
         }).catch(error => {
+          console.log(error)
           reject(error)
         })
       })

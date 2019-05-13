@@ -95,7 +95,6 @@ export default {
     add () {
       this.$nextTick(() => {
         this.loadRole()
-        this.visible = true
       })
     },
     clear () {
@@ -103,7 +102,6 @@ export default {
       this.entityId = ''
     },
     edit (record) {
-      this.visible = true
       this.$nextTick(() => {
         this.loadEditInfo(record)
       })
@@ -151,6 +149,7 @@ export default {
     },
     async loadEditInfo (data) {
       await this.loadRole()
+      this.visible = false
       const { form } = this
       getUser(Object.assign(data.record_id))
         .then(res => {
@@ -162,11 +161,13 @@ export default {
           formData.roles.forEach(role => roles.push(role.role_id))
           formData.roles = roles
           form.setFieldsValue(formData)
+          this.visible = true
         })
     },
     async loadRole () {
       const { result } = await getRoleList()
       this.roles = result.data
+      this.visible = true
     }
   }
 }

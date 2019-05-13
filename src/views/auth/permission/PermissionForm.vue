@@ -103,6 +103,7 @@ export default {
       form: this.$form.createForm(this),
       entityId: '',
       entity: {
+        index_code: '',
         name: '',
         sequence: 100000,
         hidden: 0,

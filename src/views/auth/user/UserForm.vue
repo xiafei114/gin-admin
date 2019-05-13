@@ -83,6 +83,7 @@ export default {
       confirmLoading: false,
       form: this.$form.createForm(this),
       entityId: '',
+      roles: [],
       entity: {
         user_name: '',
         real_name: '',

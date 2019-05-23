@@ -73,6 +73,22 @@ func (a *Media) Create(ctx context.Context, item schemaProject.Media) (*schemaPr
 	return a.Get(ctx, item.RecordID)
 }
 
+// Create 创建数据
+func (a *Media) Upload(ctx context.Context, item schemaProject.Media) (*schemaProject.Media, error) {
+	err := a.checkCode(ctx, item.InfoNo)
+	if err != nil {
+		return nil, err
+	}
+
+	item.RecordID = util.MustUUID()
+	// item.Creator = bll.GetUserID(ctx)
+	err = a.MediaModel.Create(ctx, item)
+	if err != nil {
+		return nil, err
+	}
+	return a.Get(ctx, item.RecordID)
+}
+
 // Update 更新数据
 func (a *Media) Update(ctx context.Context, recordID string, item schemaProject.Media) (*schemaProject.Media, error) {
 	oldItem, err := a.MediaModel.Get(ctx, recordID)

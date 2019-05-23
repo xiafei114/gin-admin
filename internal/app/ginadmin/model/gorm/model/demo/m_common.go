@@ -13,21 +13,21 @@ import (
 	"gin-admin/pkg/logger"
 )
 
-// NewMedia 创建Media存储实例
-func NewMedia(db *gormplus.DB) *Media {
-	return &Media{db}
+// NewCommon 创建Common存储实例
+func NewCommon(db *gormplus.DB) *Common {
+	return &Common{db}
 }
 
-// Media Media存储
-type Media struct {
+// Common Common存储
+type Common struct {
 	db *gormplus.DB
 }
 
-func (a *Media) getFuncName(name string) string {
-	return fmt.Sprintf("gorm.model.Media.%s", name)
+func (a *Common) getFuncName(name string) string {
+	return fmt.Sprintf("gorm.model.Common.%s", name)
 }
 
-func (a *Media) getQueryOption(opts ...schema.CommonQueryOptions) schema.CommonQueryOptions {
+func (a *Common) getQueryOption(opts ...schema.CommonQueryOptions) schema.CommonQueryOptions {
 	var opt schema.CommonQueryOptions
 	if len(opts) > 0 {
 		opt = opts[0]
@@ -36,11 +36,11 @@ func (a *Media) getQueryOption(opts ...schema.CommonQueryOptions) schema.CommonQ
 }
 
 // Query 查询数据
-func (a *Media) Query(ctx context.Context, params schema.CommonQueryParam, opts ...schema.CommonQueryOptions) (*schema.CommonQueryResult, error) {
+func (a *Common) Query(ctx context.Context, params schema.CommonQueryParam, opts ...schema.CommonQueryOptions) (*schema.CommonQueryResult, error) {
 	span := logger.StartSpan(ctx, "查询数据", a.getFuncName("Query"))
 	defer span.Finish()
 
-	db := entity.GetMediaDB(ctx, a.db).DB
+	db := entity.GetCommonFileDB(ctx, a.db).DB
 	if v := params.Code; v != "" {
 		db = db.Where("code=?", v)
 	}
@@ -56,7 +56,7 @@ func (a *Media) Query(ctx context.Context, params schema.CommonQueryParam, opts 
 	db = db.Order("id DESC")
 
 	opt := a.getQueryOption(opts...)
-	var list entity.Medias
+	var list entity.CommonFiles
 	pr, err := model.WrapPageQuery(db, opt.PageParam, &list)
 	if err != nil {
 		span.Errorf(err.Error())
@@ -64,19 +64,19 @@ func (a *Media) Query(ctx context.Context, params schema.CommonQueryParam, opts 
 	}
 	qr := &schema.CommonQueryResult{
 		PageResult: pr,
-		Data:       list.ToSchemaMedias(),
+		Data:       list.ToSchemaCommonFiles(),
 	}
 
 	return qr, nil
 }
 
 // Get 查询指定数据
-func (a *Media) Get(ctx context.Context, recordID string, opts ...schema.CommonQueryOptions) (*schemaProject.Media, error) {
+func (a *Common) Get(ctx context.Context, recordID string, opts ...schema.CommonQueryOptions) (*schemaProject.CommonFile, error) {
 	span := logger.StartSpan(ctx, "查询指定数据", a.getFuncName("Get"))
 	defer span.Finish()
 
-	db := entity.GetMediaDB(ctx, a.db).Where("record_id=?", recordID)
-	var item entity.Media
+	db := entity.GetCommonFileDB(ctx, a.db).Where("record_id=?", recordID)
+	var item entity.CommonFile
 	ok, err := a.db.FindOne(db, &item)
 	if err != nil {
 		span.Errorf(err.Error())
@@ -85,30 +85,16 @@ func (a *Media) Get(ctx context.Context, recordID string, opts ...schema.CommonQ
 		return nil, nil
 	}
 
-	return item.ToSchemaMedia(), nil
+	return item.ToSchemaCommonFile(), nil
 }
 
 // Create 创建数据
-func (a *Media) Create(ctx context.Context, item schemaProject.Media) error {
+func (a *Common) Create(ctx context.Context, item schemaProject.CommonFile) error {
 	span := logger.StartSpan(ctx, "创建数据", a.getFuncName("Create"))
 	defer span.Finish()
 
-	Media := entity.SchemaMedia(item).ToMedia()
-	result := entity.GetMediaDB(ctx, a.db).Create(Media)
-	if err := result.Error; err != nil {
-		span.Errorf(err.Error())
-		return errors.New("创建数据发生错误")
-	}
-	return nil
-}
-
-// Upload 上传文件
-func (a *Media) Upload(ctx context.Context, item schemaProject.Media) error {
-	span := logger.StartSpan(ctx, "创建数据", a.getFuncName("Create"))
-	defer span.Finish()
-
-	Media := entity.SchemaMedia(item).ToMedia()
-	result := entity.GetMediaDB(ctx, a.db).Create(Media)
+	Common := entity.SchemaCommonFile(item).ToCommonFile()
+	result := entity.GetCommonFileDB(ctx, a.db).Create(Common)
 	if err := result.Error; err != nil {
 		span.Errorf(err.Error())
 		return errors.New("创建数据发生错误")
@@ -117,12 +103,12 @@ func (a *Media) Upload(ctx context.Context, item schemaProject.Media) error {
 }
 
 // Update 更新数据
-func (a *Media) Update(ctx context.Context, recordID string, item schemaProject.Media) error {
+func (a *Common) Update(ctx context.Context, recordID string, item schemaProject.CommonFile) error {
 	span := logger.StartSpan(ctx, "更新数据", a.getFuncName("Update"))
 	defer span.Finish()
 
-	Media := entity.SchemaMedia(item).ToMedia()
-	result := entity.GetMediaDB(ctx, a.db).Where("record_id=?", recordID).Omit("record_id", "creator").Updates(Media)
+	Common := entity.SchemaCommonFile(item).ToCommonFile()
+	result := entity.GetCommonFileDB(ctx, a.db).Where("record_id=?", recordID).Omit("record_id", "creator").Updates(Common)
 	if err := result.Error; err != nil {
 		span.Errorf(err.Error())
 		return errors.New("更新数据发生错误")
@@ -131,11 +117,11 @@ func (a *Media) Update(ctx context.Context, recordID string, item schemaProject.
 }
 
 // Delete 删除数据
-func (a *Media) Delete(ctx context.Context, recordID string) error {
+func (a *Common) Delete(ctx context.Context, recordID string) error {
 	span := logger.StartSpan(ctx, "删除数据", a.getFuncName("Delete"))
 	defer span.Finish()
 
-	result := entity.GetMediaDB(ctx, a.db).Where("record_id=?", recordID).Delete(entity.Media{})
+	result := entity.GetCommonFileDB(ctx, a.db).Where("record_id=?", recordID).Delete(entity.CommonFile{})
 	if err := result.Error; err != nil {
 		span.Errorf(err.Error())
 		return errors.New("删除数据发生错误")
@@ -144,11 +130,11 @@ func (a *Media) Delete(ctx context.Context, recordID string) error {
 }
 
 // UpdateStatus 更新状态
-func (a *Media) UpdateStatus(ctx context.Context, recordID string, status int) error {
+func (a *Common) UpdateStatus(ctx context.Context, recordID string, status int) error {
 	span := logger.StartSpan(ctx, "更新状态", a.getFuncName("UpdateStatus"))
 	defer span.Finish()
 
-	result := entity.GetMediaDB(ctx, a.db).Where("record_id=?", recordID).Update("status", status)
+	result := entity.GetCommonFileDB(ctx, a.db).Where("record_id=?", recordID).Update("status", status)
 	if err := result.Error; err != nil {
 		span.Errorf(err.Error())
 		return errors.New("更新状态发生错误")

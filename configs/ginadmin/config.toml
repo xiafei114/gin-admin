@@ -24,10 +24,10 @@ enable_casbin = false
 runtime_root_path = "runtime/"
 # 图片保存位置
 image_save_path = "upload/images/"
-# 图片最大 MB
-image_max_size = 5
+# 图片最大 B
+image_max_size = 5242880
 # 允许图片类型
-image_allow_exts = ".jpg,.jpeg,.png"
+image_allow_exts = [".jpg", ".jpeg", ".png"]
 
 export_save_path = "export/"
 qrcode_save_path = "qrcode/"

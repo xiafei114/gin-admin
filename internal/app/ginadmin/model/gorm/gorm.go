@@ -41,5 +41,6 @@ func NewModel(db *gormplus.DB) *model.Common {
 		Role:       gmodel.NewRole(db),
 		User:       gmodel.NewUser(db),
 		Media:      modelProject.NewMedia(db),
+		Common:     modelProject.NewCommon(db),
 	}
 }

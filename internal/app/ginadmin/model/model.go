@@ -9,4 +9,5 @@ type Common struct {
 	User       IUser
 	Product    IProduct
 	Media      IMedia
+	Common     ICommon
 }

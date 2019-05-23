@@ -22,8 +22,8 @@
             "../../configs/ginadmin/model.conf",
             "-swagger",
             "../../internal/app/ginadmin/swagger",
-            // "-www",
-            // "D:/WebstormProjects/bio_sample/dist"
+            "-www",
+            "D:/workspace_go/src/gin-admin/cmd/ginadmin/runtime"
         ],
         "showLog": true
     }]

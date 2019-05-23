@@ -79,6 +79,7 @@ type Common struct {
 	User       *User
 	Product    *demoBll.Product
 	Media      *demoBll.Media
+	Common     *demoBll.Common
 	// ProductCategory *demoBll.ProductCategory
 }
 
@@ -92,5 +93,6 @@ func NewCommon(m *model.Common, a auth.Auther, e *casbin.Enforcer) *Common {
 		User:       NewUser(m, e),
 		Product:    demo.NewProduct(m),
 		Media:      demo.NewMedia(m),
+		Common:     demo.NewCommon(m),
 	}
 }

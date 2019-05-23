@@ -68,13 +68,13 @@ type Config struct {
 
 // File 文件配置参数
 type File struct {
-	RuntimeRootPath string `toml:"runtime_root_path"`
-	ImageSavePath   string `toml:"image_save_path"`
-	ImageMaxSize    int    `toml:"image_max_size"`
-	ImageAllowExts  string `toml:"image_allow_exts"`
-	ExportSavePath  string `toml:"export_save_path"`
-	QrCodeSavePath  string `toml:"qrcode_save_path"`
-	FontSavePath    string `toml:"font_save_path"`
+	RuntimeRootPath string   `toml:"runtime_root_path"`
+	ImageSavePath   string   `toml:"image_save_path"`
+	ImageMaxSize    int      `toml:"image_max_size"`
+	ImageAllowExts  []string `toml:"image_allow_exts"`
+	ExportSavePath  string   `toml:"export_save_path"`
+	QrCodeSavePath  string   `toml:"qrcode_save_path"`
+	FontSavePath    string   `toml:"font_save_path"`
 }
 
 // Log 日志配置参数

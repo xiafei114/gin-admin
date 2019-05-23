@@ -17,5 +17,6 @@
 /data
 jwt_auth.db
 /internal/app/ginadmin/test/data
+runtime
 
 debug

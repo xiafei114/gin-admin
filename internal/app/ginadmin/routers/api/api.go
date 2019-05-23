@@ -27,11 +27,19 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 	// casbin权限校验中间件
 	g.Use(middleware.CasbinMiddleware(enforcer,
 		middleware.AllowMethodAndPathPrefixSkipper(
+			//
 			middleware.JoinRouter("GET", "/api/v1/login"),
+			// 登录post
 			middleware.JoinRouter("POST", "/api/v1/login"),
+			// 刷新token
 			middleware.JoinRouter("POST", "/api/v1/refresh_token"),
+			// 修改密码
 			middleware.JoinRouter("PUT", "/api/v1/current/password"),
+			// 当前用户
 			middleware.JoinRouter("GET", "/api/v1/current/user"),
+
+			// 文件上传
+			middleware.JoinRouter("POST", "/api/v1/commoms/upload"),
 			// middleware.JoinRouter("GET", "/api/v1/current/permissiontree"),
 		),
 	))
@@ -48,6 +56,7 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 	productCtl := ctl.NewProduct(b)
 
 	mediaCtl := ctl.NewMedia(b)
+	commonCtl := ctl.NewCommon(b)
 
 	v1 := g.Group("/v1")
 	{
@@ -64,6 +73,9 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.PUT("/current/password", loginCtl.UpdatePassword)
 		v1.GET("/current/user", loginCtl.GetUserInfo)
 		// v1.GET("/current/Permissiontree", loginCtl.QueryUserPermissionTree)
+
+		// 公用方法
+		v1.GET("/commoms/upload", commonCtl.Upload) // 上传文件
 
 		// 注册/api/v1/demos
 		v1.GET("/demos", demoCCtl.Query)
@@ -110,6 +122,7 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.GET("/medias", mediaCtl.Query)
 		v1.GET("/medias/:id", mediaCtl.Get)
 		v1.POST("/medias", mediaCtl.Create)
+		v1.POST("/medias/upload", mediaCtl.Upload)
 		v1.PUT("/medias/:id", mediaCtl.Update)
 		v1.DELETE("/medias/:id", mediaCtl.Delete)
 		v1.PATCH("/medias/:id/enable", mediaCtl.Enable)

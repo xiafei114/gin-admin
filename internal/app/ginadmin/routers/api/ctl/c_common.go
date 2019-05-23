@@ -8,28 +8,26 @@ import (
 	schemaProject "gin-admin/internal/app/ginadmin/schema/demo"
 	"gin-admin/pkg/errors"
 	"gin-admin/pkg/util"
-	"gin-admin/pkg/util/upload"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-// NewMedia 创建Media控制器
-func NewMedia(b *bll.Common) *Media {
-	return &Media{
-		MediaBll: b.Media,
+// NewCommon 创建Common控制器
+func NewCommon(b *bll.Common) *Common {
+	return &Common{
+		CommonBll: b.Common,
 	}
 }
 
-// Media Media
-// @Name Media
-// @Description Media
-type Media struct {
-	MediaBll *demoBll.Media
+// Common Common
+// @Name Common
+// @Description Common
+type Common struct {
+	CommonBll *demoBll.Common
 }
 
 // Query 查询数据
-func (a *Media) Query(c *gin.Context) {
+func (a *Common) Query(c *gin.Context) {
 	switch c.Query("q") {
 	case "page":
 		a.QueryPage(c)
@@ -46,18 +44,18 @@ func (a *Media) Query(c *gin.Context) {
 // @Param code query string false "编号"
 // @Param name query string false "名称"
 // @Param status query int false "状态(1:启用 2:停用)"
-// @Success 200 []schemaProject.Media "查询结果：{list:列表数据,pagination:{current:页索引,pageSize:页大小,total:总数量}}"
+// @Success 200 []schemaProject.CommonFile "查询结果：{list:列表数据,pagination:{current:页索引,pageSize:页大小,total:总数量}}"
 // @Failure 400 schema.HTTPError "{error:{code:0,message:未知的查询类型}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/medias?q=page
-func (a *Media) QueryPage(c *gin.Context) {
+// @Router GET /api/v1/commons?q=page
+func (a *Common) QueryPage(c *gin.Context) {
 	var params schema.CommonQueryParam
 	params.LikeCode = c.Query("code")
 	params.LikeName = c.Query("name")
 	params.Status = util.S(c.Query("status")).Int()
 
-	items, pr, err := a.MediaBll.QueryPage(ginplus.NewContext(c), params, ginplus.GetPaginationParam(c))
+	items, pr, err := a.CommonBll.QueryPage(ginplus.NewContext(c), params, ginplus.GetPaginationParam(c))
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -70,13 +68,13 @@ func (a *Media) QueryPage(c *gin.Context) {
 // @Summary 查询指定数据
 // @Param Authorization header string false "Bearer 用户令牌"
 // @Param id path string true "记录ID"
-// @Success 200 schemaProject.Media
+// @Success 200 schemaProject.CommonFile
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 404 schema.HTTPError "{error:{code:0,message:资源不存在}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router GET /api/v1/medias/{id}
-func (a *Media) Get(c *gin.Context) {
-	item, err := a.MediaBll.Get(ginplus.NewContext(c), c.Param("id"))
+// @Router GET /api/v1/commons/{id}
+func (a *Common) Get(c *gin.Context) {
+	item, err := a.CommonBll.Get(ginplus.NewContext(c), c.Param("id"))
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -84,79 +82,47 @@ func (a *Media) Get(c *gin.Context) {
 	ginplus.ResSuccess(c, item)
 }
 
-// Upload 上传文件
-// @Summary 创建数据
-// @Produce  json
-// @Param Authorization header string false "Bearer 用户令牌"
-// @Param fileData form file true "File"
-// @Success 200 schemaProject.Media
-// @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
-// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
-// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router POST /api/v1/medias/upload
-func (a *Media) Upload(c *gin.Context) {
-	// var item schemaProject.Media
-
-	file, header, err := c.Request.FormFile("fileData")
-	if err != nil {
-		ginplus.ResError(c, err, http.StatusInternalServerError)
-		return
-	}
-
-	if header == nil {
-		ginplus.ResError(c, err, http.StatusBadRequest)
-		return
-	}
-
-	if !upload.CheckImageSize(file) {
-		ginplus.ResError(c, err, http.StatusBadRequest)
-		return
-	}
-
-	imageName := upload.GetImageName(header.Filename)
-	fullPath := upload.GetImageFullPath()
-	savePath := upload.GetImagePath()
-	src := fullPath + imageName
-
-	err = upload.CheckImage(fullPath)
-	if err != nil {
-		ginplus.ResError(c, err, http.StatusInternalServerError)
-		return
-	}
-
-	if err := c.SaveUploadedFile(header, src); err != nil {
-		ginplus.ResError(c, err, http.StatusInternalServerError)
-		return
-	}
-
-	// nitem, err := a.MediaBll.Upload(ginplus.NewContext(c), item, file, header)
-	// if err != nil {
-	// 	ginplus.ResError(c, err)
-	// 	return
-	// }
-	ginplus.ResSuccess(c, map[string]string{
-		"image_url":      upload.GetImageFullUrl(imageName),
-		"image_save_url": savePath + imageName,
-	})
-}
-
 // Create 创建数据
 // @Summary 创建数据
 // @Param Authorization header string false "Bearer 用户令牌"
-// @Param body body schemaProject.Media true
-// @Success 200 schemaProject.Media
+// @Param body body schemaProject.CommonFile true
+// @Success 200 schemaProject.CommonFile
 // @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router POST /api/v1/medias
-func (a *Media) Create(c *gin.Context) {
-	var item schemaProject.Media
+// @Router POST /api/v1/commons/upload
+func (a *Common) Upload(c *gin.Context) {
+	var item schemaProject.CommonFile
 	if err := ginplus.ParseJSON(c, &item); err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
 
-	nitem, err := a.MediaBll.Create(ginplus.NewContext(c), item)
+	nitem, err := a.CommonBll.Create(ginplus.NewContext(c), item)
+	if err != nil {
+		ginplus.ResError(c, err)
+		return
+	}
+	ginplus.ResSuccess(c, nitem)
+}
+
+// Create 创建数据
+// @Summary 创建数据
+// @Param Authorization header string false "Bearer 用户令牌"
+// @Param body body schemaProject.CommonFile true
+// @Success 200 schemaProject.CommonFile
+// @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
+// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
+// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
+// @Router POST /api/v1/commons
+func (a *Common) Create(c *gin.Context) {
+	var item schemaProject.CommonFile
+	if err := ginplus.ParseJSON(c, &item); err != nil {
+		ginplus.ResError(c, err)
+		return
+	}
+
+	nitem, err := a.CommonBll.Create(ginplus.NewContext(c), item)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -168,20 +134,20 @@ func (a *Media) Create(c *gin.Context) {
 // @Summary 更新数据
 // @Param Authorization header string false "Bearer 用户令牌"
 // @Param id path string true "记录ID"
-// @Param body body schemaProject.Media true
-// @Success 200 schemaProject.Media
+// @Param body body schemaProject.CommonFile true
+// @Success 200 schemaProject.CommonFile
 // @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router PUT /api/v1/medias/{id}
-func (a *Media) Update(c *gin.Context) {
-	var item schemaProject.Media
+// @Router PUT /api/v1/commons/{id}
+func (a *Common) Update(c *gin.Context) {
+	var item schemaProject.CommonFile
 	if err := ginplus.ParseJSON(c, &item); err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
 
-	nitem, err := a.MediaBll.Update(ginplus.NewContext(c), c.Param("id"), item)
+	nitem, err := a.CommonBll.Update(ginplus.NewContext(c), c.Param("id"), item)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -196,9 +162,9 @@ func (a *Media) Update(c *gin.Context) {
 // @Success 200 schema.HTTPStatus "{status:OK}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router DELETE /api/v1/medias/{id}
-func (a *Media) Delete(c *gin.Context) {
-	err := a.MediaBll.Delete(ginplus.NewContext(c), c.Param("id"))
+// @Router DELETE /api/v1/commons/{id}
+func (a *Common) Delete(c *gin.Context) {
+	err := a.CommonBll.Delete(ginplus.NewContext(c), c.Param("id"))
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -213,9 +179,9 @@ func (a *Media) Delete(c *gin.Context) {
 // @Success 200 schema.HTTPStatus "{status:OK}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router PATCH /api/v1/medias/{id}/enable
-func (a *Media) Enable(c *gin.Context) {
-	err := a.MediaBll.UpdateStatus(ginplus.NewContext(c), c.Param("id"), 1)
+// @Router PATCH /api/v1/commons/{id}/enable
+func (a *Common) Enable(c *gin.Context) {
+	err := a.CommonBll.UpdateStatus(ginplus.NewContext(c), c.Param("id"), 1)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -230,9 +196,9 @@ func (a *Media) Enable(c *gin.Context) {
 // @Success 200 schema.HTTPStatus "{status:OK}"
 // @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router PATCH /api/v1/medias/{id}/disable
-func (a *Media) Disable(c *gin.Context) {
-	err := a.MediaBll.UpdateStatus(ginplus.NewContext(c), c.Param("id"), 2)
+// @Router PATCH /api/v1/commons/{id}/disable
+func (a *Common) Disable(c *gin.Context) {
+	err := a.CommonBll.UpdateStatus(ginplus.NewContext(c), c.Param("id"), 2)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return

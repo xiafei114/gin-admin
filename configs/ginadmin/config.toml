@@ -19,6 +19,20 @@ allow_init_menu = true
 # 是否启用casbin鉴权
 enable_casbin = false
 
+# 文件存储
+[file]
+runtime_root_path = "runtime/"
+# 图片保存位置
+image_save_path = "upload/images/"
+# 图片最大 MB
+image_max_size = 5
+# 允许图片类型
+image_allow_exts = ".jpg,.jpeg,.png"
+
+export_save_path = "export/"
+qrcode_save_path = "qrcode/"
+font_save_path = "fonts/"
+
 # 日志配置
 [log]
 # 日志级别(1:fatal 2:error,3:warn,4:info,5:debug)

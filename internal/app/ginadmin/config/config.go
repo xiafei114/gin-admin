@@ -42,27 +42,39 @@ func ParseConfig(fpath string) (*Config, error) {
 
 // Config 配置参数
 type Config struct {
-	RunMode         string      `toml:"run_mode"`
-	CasbinModelConf string      `toml:"casbin_model_conf"`
-	WWW             string      `toml:"www"`
-	Swagger         string      `toml:"swagger"`
-	Store           string      `toml:"store"`
-	AllowInitPermission   bool        `toml:"allow_init_Permission"`
-	EnableCasbin    bool        `toml:"enable_casbin"`
-	Log             Log         `toml:"log"`
-	LogGormHook     LogGormHook `toml:"log_gorm_hook"`
-	Root            Root        `toml:"root"`
-	JWTAuth         JWTAuth     `toml:"jwt_auth"`
-	HTTP            HTTP        `toml:"http"`
-	Monitor         Monitor     `toml:"monitor"`
-	Captcha         Captcha     `toml:"captcha"`
-	RateLimiter     RateLimiter `toml:"rate_limiter"`
-	CORS            CORS        `toml:"cors"`
-	Redis           Redis       `toml:"redis"`
-	Gorm            Gorm        `toml:"gorm"`
-	MySQL           MySQL       `toml:"mysql"`
-	Postgres        Postgres    `toml:"postgres"`
-	Sqlite3         Sqlite3     `toml:"sqlite3"`
+	RunMode             string      `toml:"run_mode"`
+	CasbinModelConf     string      `toml:"casbin_model_conf"`
+	WWW                 string      `toml:"www"`
+	Swagger             string      `toml:"swagger"`
+	Store               string      `toml:"store"`
+	AllowInitPermission bool        `toml:"allow_init_Permission"`
+	EnableCasbin        bool        `toml:"enable_casbin"`
+	File                File        `toml:"file"`
+	Log                 Log         `toml:"log"`
+	LogGormHook         LogGormHook `toml:"log_gorm_hook"`
+	Root                Root        `toml:"root"`
+	JWTAuth             JWTAuth     `toml:"jwt_auth"`
+	HTTP                HTTP        `toml:"http"`
+	Monitor             Monitor     `toml:"monitor"`
+	Captcha             Captcha     `toml:"captcha"`
+	RateLimiter         RateLimiter `toml:"rate_limiter"`
+	CORS                CORS        `toml:"cors"`
+	Redis               Redis       `toml:"redis"`
+	Gorm                Gorm        `toml:"gorm"`
+	MySQL               MySQL       `toml:"mysql"`
+	Postgres            Postgres    `toml:"postgres"`
+	Sqlite3             Sqlite3     `toml:"sqlite3"`
+}
+
+// File 文件配置参数
+type File struct {
+	RuntimeRootPath string `toml:"runtime_root_path"`
+	ImageSavePath   string `toml:"image_save_path"`
+	ImageMaxSize    int    `toml:"image_max_size"`
+	ImageAllowExts  string `toml:"image_allow_exts"`
+	ExportSavePath  string `toml:"export_save_path"`
+	QrCodeSavePath  string `toml:"qrcode_save_path"`
+	FontSavePath    string `toml:"font_save_path"`
 }
 
 // Log 日志配置参数

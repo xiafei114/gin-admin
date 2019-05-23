@@ -53,3 +53,22 @@ type PaginationResult struct {
 // Init 初始化
 func Init() {
 }
+
+// CommonQueryParam 查询条件
+type CommonQueryParam struct {
+	Code     string // 编号
+	Status   int    // 状态(1:启用 2:停用)
+	LikeCode string // 编号(模糊查询)
+	LikeName string // 名称(模糊查询)
+}
+
+// CommonQueryOptions Product对象查询可选参数项
+type CommonQueryOptions struct {
+	PageParam *PaginationParam // 分页参数
+}
+
+// CommonQueryResult Product对象查询结果
+type CommonQueryResult struct {
+	Data       interface{}
+	PageResult *PaginationResult
+}

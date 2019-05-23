@@ -72,23 +72,25 @@ func CheckIsRootUser(ctx context.Context, recordID string) bool {
 
 // Common 提供统一的业务逻辑处理
 type Common struct {
-	Demo    *Demo
-	Login   *Login
-	Permission    *Permission
-	Role    *Role
-	User    *User
-	Product *demoBll.Product
+	Demo       *Demo
+	Login      *Login
+	Permission *Permission
+	Role       *Role
+	User       *User
+	Product    *demoBll.Product
+	Media      *demoBll.Media
 	// ProductCategory *demoBll.ProductCategory
 }
 
 // NewCommon 创建统一的业务逻辑处理
 func NewCommon(m *model.Common, a auth.Auther, e *casbin.Enforcer) *Common {
 	return &Common{
-		Demo:    NewDemo(m),
-		Login:   NewLogin(m, a),
-		Permission:    NewPermission(m),
-		Role:    NewRole(m, e),
-		User:    NewUser(m, e),
-		Product: demo.NewProduct(m),
+		Demo:       NewDemo(m),
+		Login:      NewLogin(m, a),
+		Permission: NewPermission(m),
+		Role:       NewRole(m, e),
+		User:       NewUser(m, e),
+		Product:    demo.NewProduct(m),
+		Media:      demo.NewMedia(m),
 	}
 }

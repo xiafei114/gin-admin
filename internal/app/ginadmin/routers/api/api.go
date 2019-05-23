@@ -47,6 +47,8 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 
 	productCtl := ctl.NewProduct(b)
 
+	mediaCtl := ctl.NewMedia(b)
+
 	v1 := g.Group("/v1")
 	{
 		// 注册/api/v1/login
@@ -103,5 +105,14 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.DELETE("/products/:id", productCtl.Delete)
 		v1.PATCH("/products/:id/enable", productCtl.Enable)
 		v1.PATCH("/products/:id/disable", productCtl.Disable)
+
+		// 注册/api/v1/medias
+		v1.GET("/medias", mediaCtl.Query)
+		v1.GET("/medias/:id", mediaCtl.Get)
+		v1.POST("/medias", mediaCtl.Create)
+		v1.PUT("/medias/:id", mediaCtl.Update)
+		v1.DELETE("/medias/:id", mediaCtl.Delete)
+		v1.PATCH("/medias/:id/enable", mediaCtl.Enable)
+		v1.PATCH("/medias/:id/disable", mediaCtl.Disable)
 	}
 }

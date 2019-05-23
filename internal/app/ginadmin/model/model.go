@@ -8,4 +8,5 @@ type Common struct {
 	Role       IRole
 	User       IUser
 	Product    IProduct
+	Media      IMedia
 }

@@ -23,7 +23,7 @@
             "-swagger",
             "../../internal/app/ginadmin/swagger",
             // "-www",
-            // "D:/WebstormProjects/gin-admin-react/dist"
+            // "D:/WebstormProjects/bio_sample/dist"
         ],
         "showLog": true
     }]

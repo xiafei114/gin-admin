@@ -26,16 +26,18 @@ func AutoMigrate(db *gormplus.DB) error {
 		new(entity.Demo),
 		new(demoEntity.Product),
 		new(demoEntity.ProductCategory),
+		new(demoEntity.CommonFile),
+		new(demoEntity.Media),
 	).Error
 }
 
 // NewModel 创建gorm存储，实现统一的存储接口
 func NewModel(db *gormplus.DB) *model.Common {
 	return &model.Common{
-		Trans: gmodel.NewTrans(db),
-		Demo:  gmodel.NewDemo(db),
-		Permission:  gmodel.NewPermission(db),
-		Role:  gmodel.NewRole(db),
-		User:  gmodel.NewUser(db),
+		Trans:      gmodel.NewTrans(db),
+		Demo:       gmodel.NewDemo(db),
+		Permission: gmodel.NewPermission(db),
+		Role:       gmodel.NewRole(db),
+		User:       gmodel.NewUser(db),
 	}
 }

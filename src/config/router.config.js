@@ -344,6 +344,21 @@ export const asyncRouterMap = [
             meta: { title: '用户管理', icon: 'tool', keepAlive: true, permission: [ 'user' ] }
           }
         ]
+      },
+      {
+        path: '/project',
+        name: 'project',
+        component: PageView,
+        meta: { title: '项目管理', icon: 'slack', permission: [ 'project' ] },
+        redirect: '/project/media',
+        children: [
+          {
+            path: '/project/media',
+            name: 'media',
+            component: () => import('@/views/project/media/MediaFormList'),
+            meta: { title: '媒体管理', icon: 'tool', keepAlive: true, permission: [ 'project' ] }
+          }
+        ]
       }
     ]
   },

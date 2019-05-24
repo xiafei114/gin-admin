@@ -1,6 +1,7 @@
 package ctl
 
 import (
+	"fmt"
 	"gin-admin/internal/app/ginadmin/bll"
 	demoBll "gin-admin/internal/app/ginadmin/bll/demo"
 	"gin-admin/internal/app/ginadmin/ginplus"
@@ -9,7 +10,10 @@ import (
 	"gin-admin/pkg/errors"
 	"gin-admin/pkg/util"
 	"gin-admin/pkg/util/upload"
+	"log"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -76,7 +80,8 @@ func (a *Media) QueryPage(c *gin.Context) {
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router GET /api/v1/medias/{id}
 func (a *Media) Get(c *gin.Context) {
-	item, err := a.MediaBll.Get(ginplus.NewContext(c), c.Param("id"))
+	hostName := GetHostName(c.Request.Referer())
+	item, err := a.MediaBll.Get(ginplus.NewContext(c), c.Param("id"), hostName)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
@@ -95,7 +100,8 @@ func (a *Media) Get(c *gin.Context) {
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router POST /api/v1/medias/upload
 func (a *Media) Upload(c *gin.Context) {
-	// var item schemaProject.Media
+
+	hostName := GetHostName(c.Request.Referer())
 
 	file, header, err := c.Request.FormFile("fileData")
 	if err != nil {
@@ -108,60 +114,59 @@ func (a *Media) Upload(c *gin.Context) {
 		return
 	}
 
-	if !upload.CheckImageSize(file) {
+	if !upload.CheckFileSize(file) {
 		ginplus.ResError(c, err, http.StatusBadRequest)
 		return
 	}
 
-	imageName := upload.GetImageName(header.Filename)
-	fullPath := upload.GetImageFullPath()
-	savePath := upload.GetImagePath()
-	src := fullPath + imageName
-
+	fileName, ext := upload.GetFileName(header.Filename)
+	fullPath, relativePath := upload.GetFilePath("media/")
+	saveFilePath := fullPath + fileName + ext
+	relativeFilePath := relativePath + fileName + ext
 	err = upload.CheckImage(fullPath)
 	if err != nil {
 		ginplus.ResError(c, err, http.StatusInternalServerError)
 		return
 	}
 
-	if err := c.SaveUploadedFile(header, src); err != nil {
+	if err := c.SaveUploadedFile(header, saveFilePath); err != nil {
 		ginplus.ResError(c, err, http.StatusInternalServerError)
 		return
 	}
 
-	// nitem, err := a.MediaBll.Upload(ginplus.NewContext(c), item, file, header)
-	// if err != nil {
-	// 	ginplus.ResError(c, err)
-	// 	return
-	// }
-	ginplus.ResSuccess(c, map[string]string{
-		"image_url":      upload.GetImageFullUrl(imageName),
-		"image_save_url": savePath + imageName,
-	})
-}
+	var item schemaProject.CommonFile
+	item.RecordID = fileName
+	item.FileName = header.Filename
+	item.FilePath = relativeFilePath
 
-// Create 创建数据
-// @Summary 创建数据
-// @Param Authorization header string false "Bearer 用户令牌"
-// @Param body body schemaProject.Media true
-// @Success 200 schemaProject.Media
-// @Failure 400 schema.HTTPError "{error:{code:0,message:无效的请求参数}}"
-// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
-// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
-// @Router POST /api/v1/medias
-func (a *Media) Create(c *gin.Context) {
-	var item schemaProject.Media
-	if err := ginplus.ParseJSON(c, &item); err != nil {
-		ginplus.ResError(c, err)
-		return
-	}
-
-	nitem, err := a.MediaBll.Create(ginplus.NewContext(c), item)
+	nitem, err := a.MediaBll.Upload(ginplus.NewContext(c), item, hostName)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
+	// ginplus.ResSuccess(c, map[string]string{
+	// 	"image_url": upload.GetFileFullUrl(hostName, relativeFilePath),
+	// 	"hostName":  hostName,
+	// })
 	ginplus.ResSuccess(c, nitem)
+}
+
+func trim(url string) string {
+	url = strings.Replace(url, " ", "", -1)
+	return url
+}
+
+// GetHostName 获得HostName
+func GetHostName(s string) string {
+	s = trim(s)
+	u, err := url.Parse(s)
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	host := fmt.Sprintf("%s://%s", u.Scheme, u.Host)
+
+	return host
 }
 
 // Update 更新数据
@@ -175,13 +180,14 @@ func (a *Media) Create(c *gin.Context) {
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router PUT /api/v1/medias/{id}
 func (a *Media) Update(c *gin.Context) {
+	hostName := GetHostName(c.Request.Referer())
 	var item schemaProject.Media
 	if err := ginplus.ParseJSON(c, &item); err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
 
-	nitem, err := a.MediaBll.Update(ginplus.NewContext(c), c.Param("id"), item)
+	nitem, err := a.MediaBll.Update(ginplus.NewContext(c), c.Param("id"), item, hostName)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return

@@ -12,11 +12,9 @@ type IMedia interface {
 	// 查询数据
 	Query(ctx context.Context, params schema.CommonQueryParam, opts ...schema.CommonQueryOptions) (*schema.CommonQueryResult, error)
 	// 查询指定数据
-	Get(ctx context.Context, recordID string, opts ...schema.CommonQueryOptions) (*schemaProject.Media, error)
-	// 创建数据
-	Create(ctx context.Context, item schemaProject.Media) error
+	Get(ctx context.Context, recordID string, hostName string, opts ...schema.CommonQueryOptions) (*schemaProject.Media, error)
 	// 上传文件
-	Upload(ctx context.Context, item schemaProject.Media) error
+	Upload(ctx context.Context, smedia schemaProject.Media, item schemaProject.CommonFile) error
 	// 更新数据
 	Update(ctx context.Context, recordID string, item schemaProject.Media) error
 	// 删除数据

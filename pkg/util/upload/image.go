@@ -8,37 +8,41 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"gin-admin/internal/app/ginadmin/config"
 	"gin-admin/pkg/util"
 	"gin-admin/pkg/util/file"
 )
 
-// GetImageFullUrl get the full access path
-func GetImageFullUrl(name string) string {
-	// return config.File.PrefixUrl + "/" + GetImagePath() + name
-	return "/" + GetImagePath() + name
+// GetFileFullUrl 文件下载url
+func GetFileFullUrl(hostName string, filePath string) string {
+	return fmt.Sprintf("%s/%s", hostName, filePath)
 }
 
-// GetImageName get image name
-func GetImageName(name string) string {
+// GetFileName get file name
+func GetFileName(name string) (string, string) {
 	ext := path.Ext(name)
 	fileName := strings.TrimSuffix(name, ext)
-	fileName = util.EncodeMD5(fileName)
+	// fileName = util.EncodeMD5(fileName)
+	fileName = util.MustUUID()
 
-	return fileName + ext
+	return fileName, ext
 }
 
-// GetImagePath get save path
-func GetImagePath() string {
+// GetFilePath 返回全路径和相对地址
+func GetFilePath(alias string) (string, string) {
 	cfg := config.GetGlobalConfig()
-	return cfg.File.ImageSavePath
+	timestamp := time.Now().Unix()
+	tm := time.Unix(timestamp, 0)
+	relativePath := fmt.Sprintf("%s%s%s/", cfg.File.ImageSavePath, alias, tm.Format("2006-01-02"))
+	return fmt.Sprintf("%s%s", cfg.File.RuntimeRootPath, relativePath), relativePath
 }
 
-// GetImageFullPath get full save path
-func GetImageFullPath() string {
+// GetFileFullPath 获得全路径
+func GetFileFullPath(relative string) string {
 	cfg := config.GetGlobalConfig()
-	return cfg.File.RuntimeRootPath + GetImagePath()
+	return fmt.Sprintf("%s%s", cfg.File.RuntimeRootPath, relative)
 }
 
 // CheckImageExt check image file ext
@@ -54,8 +58,8 @@ func CheckImageExt(fileName string) bool {
 	return false
 }
 
-// CheckImageSize check image size
-func CheckImageSize(f multipart.File) bool {
+// CheckFileSize check file size
+func CheckFileSize(f multipart.File) bool {
 	size, err := file.GetSize(f)
 	if err != nil {
 		log.Println(err)

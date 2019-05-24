@@ -7,4 +7,5 @@ type CommonFile struct {
 	FileName    string `json:"file_name" binding:"required" swaggo:"true,文件名称"`
 	FilePath    string `json:"file_path"  swaggo:"false,文件位置"` // 文件位置
 	FileType    int    `json:"file_type"  swaggo:"false,文件类型"` // 文件类型
+	FileURL     string `json:"file_url"  swaggo:"false,文件url"` // 文件位置
 }

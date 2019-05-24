@@ -121,7 +121,6 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		// 注册/api/v1/medias
 		v1.GET("/medias", mediaCtl.Query)
 		v1.GET("/medias/:id", mediaCtl.Get)
-		v1.POST("/medias", mediaCtl.Create)
 		v1.POST("/medias/upload", mediaCtl.Upload)
 		v1.PUT("/medias/:id", mediaCtl.Update)
 		v1.DELETE("/medias/:id", mediaCtl.Delete)

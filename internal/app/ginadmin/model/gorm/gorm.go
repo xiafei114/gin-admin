@@ -5,7 +5,6 @@ import (
 	"gin-admin/internal/app/ginadmin/model/gorm/entity"
 	demoEntity "gin-admin/internal/app/ginadmin/model/gorm/entity/demo"
 	gmodel "gin-admin/internal/app/ginadmin/model/gorm/model"
-	modelProject "gin-admin/internal/app/ginadmin/model/gorm/model/demo"
 	"gin-admin/pkg/gormplus"
 )
 
@@ -40,7 +39,7 @@ func NewModel(db *gormplus.DB) *model.Common {
 		Permission: gmodel.NewPermission(db),
 		Role:       gmodel.NewRole(db),
 		User:       gmodel.NewUser(db),
-		Media:      modelProject.NewMedia(db),
-		Common:     modelProject.NewCommon(db),
+		Media:      gmodel.NewMedia(db),
+		Common:     gmodel.NewCommon(db),
 	}
 }

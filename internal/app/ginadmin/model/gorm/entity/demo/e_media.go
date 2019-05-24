@@ -19,9 +19,15 @@ type SchemaMedia schema.Media
 
 // ToMedia 转换为Media实体
 func (a SchemaMedia) ToMedia() *Media {
+
+	var recordID string
+	if a.CommonFile != nil {
+		recordID = a.CommonFile.RecordID
+	}
+
 	item := &Media{
 		RecordID:     a.RecordID,
-		CommonFileID: a.CommonFileID,
+		CommonFileID: recordID,
 		InfoNo:       a.InfoNo,
 		InfoDesc:     a.InfoDesc,
 	}
@@ -49,10 +55,14 @@ func (a Media) TableName() string {
 // ToSchemaMedia 转换为Media对象
 func (a Media) ToSchemaMedia() *schema.Media {
 	item := &schema.Media{
-		RecordID:     a.RecordID,
-		CommonFileID: a.CommonFileID,
-		InfoNo:       a.InfoNo,
-		InfoDesc:     a.InfoDesc,
+		RecordID: a.RecordID,
+		// CommonFile: &schema.CommonFile{
+		// 	RecordID: b.RecordID,
+		// 	FileName: b.FileName,
+		// 	FilePath: b.FilePath,
+		// },
+		InfoNo:   a.InfoNo,
+		InfoDesc: a.InfoDesc,
 	}
 	return item
 }

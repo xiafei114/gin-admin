@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	entity "gin-admin/internal/app/ginadmin/model/gorm/entity/demo"
-	model "gin-admin/internal/app/ginadmin/model/gorm/model"
 	schema "gin-admin/internal/app/ginadmin/schema"
 	schemaProject "gin-admin/internal/app/ginadmin/schema/demo"
 	"gin-admin/pkg/errors"
@@ -24,7 +23,7 @@ type Common struct {
 }
 
 func (a *Common) getFuncName(name string) string {
-	return fmt.Sprintf("gorm.model.Common.%s", name)
+	return fmt.Sprintf("gorm.Common.%s", name)
 }
 
 func (a *Common) getQueryOption(opts ...schema.CommonQueryOptions) schema.CommonQueryOptions {
@@ -57,7 +56,7 @@ func (a *Common) Query(ctx context.Context, params schema.CommonQueryParam, opts
 
 	opt := a.getQueryOption(opts...)
 	var list entity.CommonFiles
-	pr, err := model.WrapPageQuery(db, opt.PageParam, &list)
+	pr, err := WrapPageQuery(db, opt.PageParam, &list)
 	if err != nil {
 		span.Errorf(err.Error())
 		return nil, errors.New("查询数据发生错误")

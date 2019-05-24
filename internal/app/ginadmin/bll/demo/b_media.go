@@ -32,8 +32,8 @@ func (a *Media) QueryPage(ctx context.Context, params schema.CommonQueryParam, p
 }
 
 // Get 查询指定数据
-func (a *Media) Get(ctx context.Context, recordID string) (*schemaProject.Media, error) {
-	item, err := a.MediaModel.Get(ctx, recordID)
+func (a *Media) Get(ctx context.Context, recordID string, hostName string) (*schemaProject.Media, error) {
+	item, err := a.MediaModel.Get(ctx, recordID, hostName)
 	if err != nil {
 		return nil, err
 	} else if item == nil {
@@ -57,41 +57,21 @@ func (a *Media) checkCode(ctx context.Context, code string) error {
 	return nil
 }
 
-// Create 创建数据
-func (a *Media) Create(ctx context.Context, item schemaProject.Media) (*schemaProject.Media, error) {
-	err := a.checkCode(ctx, item.InfoNo)
-	if err != nil {
-		return nil, err
-	}
-
-	item.RecordID = util.MustUUID()
+// Upload 创建数据
+func (a *Media) Upload(ctx context.Context, item schemaProject.CommonFile, hostName string) (*schemaProject.Media, error) {
+	var media schemaProject.Media
+	media.RecordID = util.MustUUID()
 	// item.Creator = bll.GetUserID(ctx)
-	err = a.MediaModel.Create(ctx, item)
+	err := a.MediaModel.Upload(ctx, media, item)
 	if err != nil {
 		return nil, err
 	}
-	return a.Get(ctx, item.RecordID)
-}
-
-// Create 创建数据
-func (a *Media) Upload(ctx context.Context, item schemaProject.Media) (*schemaProject.Media, error) {
-	err := a.checkCode(ctx, item.InfoNo)
-	if err != nil {
-		return nil, err
-	}
-
-	item.RecordID = util.MustUUID()
-	// item.Creator = bll.GetUserID(ctx)
-	err = a.MediaModel.Create(ctx, item)
-	if err != nil {
-		return nil, err
-	}
-	return a.Get(ctx, item.RecordID)
+	return a.Get(ctx, media.RecordID, hostName)
 }
 
 // Update 更新数据
-func (a *Media) Update(ctx context.Context, recordID string, item schemaProject.Media) (*schemaProject.Media, error) {
-	oldItem, err := a.MediaModel.Get(ctx, recordID)
+func (a *Media) Update(ctx context.Context, recordID string, item schemaProject.Media, hostName string) (*schemaProject.Media, error) {
+	oldItem, err := a.MediaModel.Get(ctx, recordID, hostName)
 	if err != nil {
 		return nil, err
 	} else if oldItem == nil {
@@ -107,7 +87,7 @@ func (a *Media) Update(ctx context.Context, recordID string, item schemaProject.
 	if err != nil {
 		return nil, err
 	}
-	return a.Get(ctx, recordID)
+	return a.Get(ctx, recordID, hostName)
 }
 
 // Delete 删除数据

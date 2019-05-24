@@ -23,8 +23,8 @@ type Media struct {
 }
 
 // QueryPage 查询分页数据
-func (a *Media) QueryPage(ctx context.Context, params schema.CommonQueryParam, pp *schema.PaginationParam) (interface{}, *schema.PaginationResult, error) {
-	result, err := a.MediaModel.Query(ctx, params, schema.CommonQueryOptions{PageParam: pp})
+func (a *Media) QueryPage(ctx context.Context, params schema.CommonQueryParam, pp *schema.PaginationParam, hostName string) (interface{}, *schema.PaginationResult, error) {
+	result, err := a.MediaModel.Query(ctx, params, hostName, schema.CommonQueryOptions{PageParam: pp})
 	if err != nil {
 		return nil, nil, err
 	}
@@ -46,7 +46,7 @@ func (a *Media) Get(ctx context.Context, recordID string, hostName string) (*sch
 func (a *Media) checkCode(ctx context.Context, code string) error {
 	result, err := a.MediaModel.Query(ctx, schema.CommonQueryParam{
 		Code: code,
-	}, schema.CommonQueryOptions{
+	}, "", schema.CommonQueryOptions{
 		PageParam: &schema.PaginationParam{PageSize: -1},
 	})
 	if err != nil {

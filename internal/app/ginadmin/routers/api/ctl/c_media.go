@@ -56,12 +56,14 @@ func (a *Media) Query(c *gin.Context) {
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router GET /api/v1/medias?q=page
 func (a *Media) QueryPage(c *gin.Context) {
+	hostName := GetHostName(c.Request.Referer())
+
 	var params schema.CommonQueryParam
 	params.LikeCode = c.Query("code")
 	params.LikeName = c.Query("name")
 	params.Status = util.S(c.Query("status")).Int()
 
-	items, pr, err := a.MediaBll.QueryPage(ginplus.NewContext(c), params, ginplus.GetPaginationParam(c))
+	items, pr, err := a.MediaBll.QueryPage(ginplus.NewContext(c), params, ginplus.GetPaginationParam(c), hostName)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return

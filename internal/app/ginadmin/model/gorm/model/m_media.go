@@ -35,7 +35,7 @@ func (a *Media) getQueryOption(opts ...schema.CommonQueryOptions) schema.CommonQ
 }
 
 // Query 查询数据
-func (a *Media) Query(ctx context.Context, params schema.CommonQueryParam, opts ...schema.CommonQueryOptions) (*schema.CommonQueryResult, error) {
+func (a *Media) Query(ctx context.Context, params schema.CommonQueryParam, hostName string, opts ...schema.CommonQueryOptions) (*schema.CommonQueryResult, error) {
 	span := logger.StartSpan(ctx, "查询数据", a.getFuncName("Query"))
 	defer span.Finish()
 
@@ -61,9 +61,36 @@ func (a *Media) Query(ctx context.Context, params schema.CommonQueryParam, opts 
 		span.Errorf(err.Error())
 		return nil, errors.New("查询数据发生错误")
 	}
+
+	newList := make([]*schemaProject.Media, len(list))
+	for i, item := range list {
+		db = entity.GetCommonFileDB(ctx, a.db).Where("record_id=?", item.CommonFileID)
+		var commonFile entity.CommonFile
+		ok, err := a.db.FindOne(db, &commonFile)
+		if err != nil {
+			span.Errorf(err.Error())
+			return nil, errors.New("查询指定数据发生错误")
+		} else if !ok {
+			return nil, nil
+		}
+
+		sitem := &schemaProject.Media{
+			RecordID: item.RecordID,
+			CommonFile: &schemaProject.CommonFile{
+				RecordID:    commonFile.RecordID,
+				FileName:    commonFile.FileName,
+				FileURL:     fmt.Sprintf("%s/%s", hostName, commonFile.FilePath),
+				ContentType: commonFile.ContentType,
+			},
+			InfoNo:   item.InfoNo,
+			InfoDesc: item.InfoDesc,
+		}
+		newList[i] = sitem
+	}
+
 	qr := &schema.CommonQueryResult{
 		PageResult: pr,
-		Data:       list.ToSchemaMedias(),
+		Data:       newList,
 	}
 
 	return qr, nil

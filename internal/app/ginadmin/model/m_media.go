@@ -10,7 +10,7 @@ import (
 // IMedia Media存储接口
 type IMedia interface {
 	// 查询数据
-	Query(ctx context.Context, params schema.CommonQueryParam, opts ...schema.CommonQueryOptions) (*schema.CommonQueryResult, error)
+	Query(ctx context.Context, params schema.CommonQueryParam, hostName string, opts ...schema.CommonQueryOptions) (*schema.CommonQueryResult, error)
 	// 查询指定数据
 	Get(ctx context.Context, recordID string, hostName string, opts ...schema.CommonQueryOptions) (*schemaProject.Media, error)
 	// 上传文件

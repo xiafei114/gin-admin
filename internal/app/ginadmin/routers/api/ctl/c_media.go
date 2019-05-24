@@ -56,7 +56,7 @@ func (a *Media) Query(c *gin.Context) {
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router GET /api/v1/medias?q=page
 func (a *Media) QueryPage(c *gin.Context) {
-	hostName := GetHostName(c.Request.Referer())
+	hostName := GetHostName(c, c.Request.Referer())
 
 	var params schema.CommonQueryParam
 	params.LikeCode = c.Query("code")
@@ -82,7 +82,7 @@ func (a *Media) QueryPage(c *gin.Context) {
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router GET /api/v1/medias/{id}
 func (a *Media) Get(c *gin.Context) {
-	hostName := GetHostName(c.Request.Referer())
+	hostName := GetHostName(c, c.Request.Referer())
 	item, err := a.MediaBll.Get(ginplus.NewContext(c), c.Param("id"), hostName)
 	if err != nil {
 		ginplus.ResError(c, err)
@@ -103,7 +103,7 @@ func (a *Media) Get(c *gin.Context) {
 // @Router POST /api/v1/medias/upload
 func (a *Media) Upload(c *gin.Context) {
 
-	hostName := GetHostName(c.Request.Referer())
+	hostName := GetHostName(c, c.Request.Referer())
 
 	file, header, err := c.Request.FormFile("fileData")
 	if err != nil {
@@ -158,14 +158,14 @@ func trim(url string) string {
 }
 
 // GetHostName 获得HostName
-func GetHostName(s string) string {
+func GetHostName(c *gin.Context, s string) string {
 	s = trim(s)
 	u, err := url.Parse(s)
 	if err != nil {
 		log.Panicln(err)
 	}
 
-	host := fmt.Sprintf("%s://%s", u.Scheme, u.Host)
+	host := fmt.Sprintf("%s://%s", u.Scheme, c.Request.Host)
 
 	return host
 }
@@ -181,7 +181,7 @@ func GetHostName(s string) string {
 // @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
 // @Router PUT /api/v1/medias/{id}
 func (a *Media) Update(c *gin.Context) {
-	hostName := GetHostName(c.Request.Referer())
+	hostName := GetHostName(c, c.Request.Referer())
 	var item schemaProject.Media
 	if err := ginplus.ParseJSON(c, &item); err != nil {
 		ginplus.ResError(c, err)

@@ -97,9 +97,10 @@ func (a *Media) Get(ctx context.Context, recordID string, hostName string, opts 
 	sitem := &schemaProject.Media{
 		RecordID: item.RecordID,
 		CommonFile: &schemaProject.CommonFile{
-			RecordID: commonFile.RecordID,
-			FileName: commonFile.FileName,
-			FileURL:  fmt.Sprintf("%s/%s", hostName, commonFile.FilePath),
+			RecordID:    commonFile.RecordID,
+			FileName:    commonFile.FileName,
+			FileURL:     fmt.Sprintf("%s/%s", hostName, commonFile.FilePath),
+			ContentType: commonFile.ContentType,
 		},
 		InfoNo:   item.InfoNo,
 		InfoDesc: item.InfoDesc,

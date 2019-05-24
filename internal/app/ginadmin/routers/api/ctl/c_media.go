@@ -119,6 +119,7 @@ func (a *Media) Upload(c *gin.Context) {
 		return
 	}
 
+	contentType := header.Header.Get("Content-Type")
 	fileName, ext := upload.GetFileName(header.Filename)
 	fullPath, relativePath := upload.GetFilePath("media/")
 	saveFilePath := fullPath + fileName + ext
@@ -138,17 +139,15 @@ func (a *Media) Upload(c *gin.Context) {
 	item.RecordID = fileName
 	item.FileName = header.Filename
 	item.FilePath = relativeFilePath
+	item.ContentType = contentType
 
 	nitem, err := a.MediaBll.Upload(ginplus.NewContext(c), item, hostName)
 	if err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
-	// ginplus.ResSuccess(c, map[string]string{
-	// 	"image_url": upload.GetFileFullUrl(hostName, relativeFilePath),
-	// 	"hostName":  hostName,
-	// })
-	ginplus.ResSuccess(c, nitem)
+
+	ginplus.ResData(c, nitem)
 }
 
 func trim(url string) string {

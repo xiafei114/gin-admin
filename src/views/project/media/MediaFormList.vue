@@ -8,7 +8,14 @@
         >
           <a-list-item slot="renderItem" slot-scope="item">
             <template v-if="item === null">
-              <a-upload name="fileData" :multiple="false" :showUploadList="false" action="http://localhost:8088/api/v1/medias/upload" :headers="headers" @change="handleChange">
+              <a-upload
+                name="fileData"
+                :multiple="false"
+                :showUploadList="false"
+                action="http://localhost:8088/api/v1/medias/upload"
+                :headers="headers"
+                @change="handleChange"
+              >
                 <a-button>
                   <a-icon type="upload" /> Click to Upload
                 </a-button>
@@ -16,7 +23,7 @@
             </template>
             <template v-else>
               <a-card :hoverable="true">
-                <img slot="cover" src="../../../assets/images/mifeng.png" :alt="item.title" />
+                <img slot="cover" :src="item.common_file.file_url" :alt="item.title" />
                 <template class="ant-card-actions" slot="actions">
                   <a>删除</a>
                 </template>
@@ -30,18 +37,21 @@
 </template>
 
 <script>
+import {
+  ACCESS_TOKEN
+} from '@/store/mutation-types'
+import Vue from 'vue'
 import { mixinDevice } from '@/utils/mixin.js'
 import { STable } from '@/components'
+import { getMediaPageList } from '@/api/media'
 
-const dataSource = []
-dataSource.push(null)
-for (let i = 0; i < 11; i++) {
-  dataSource.push({
-    title: 'Alipay',
-    cover: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
-    content: '在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。'
-  })
-}
+// for (let i = 0; i < 11; i++) {
+//   dataSource.push({
+//     title: 'Alipay',
+//     cover: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
+//     content: '在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。'
+//   })
+// }
 
 export default {
   components: {
@@ -57,13 +67,16 @@ export default {
         { icon: 'info-circle-o', href: '#', title: '产品简介' },
         { icon: 'file-text', href: '#', title: '产品文档' }
       ],
-      dataSource,
+      dataSource: [],
       headers: {
-        Authorization: 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTkyNjc3MDIsImlhdCI6MTU1ODY2MjkwMiwibmJmIjoxNTU4NjYyOTAyLCJzdWIiOiI4Y2U0ZmQ2Ny1kMzJlLTRiZGItYjNkNS03ZmM1NjQxZTM0YjcifQ.-N4byXHzyn1bKRsX96IlNbiLiTvEPzuuctM6MIrm5DcLjwTGPBYtZaod7DpvI6EI4PiRExXh3sSWZv5uBu-utw'
+        Authorization: Vue.ls.get(ACCESS_TOKEN)
       }
     }
   },
   created () {
+  },
+  mounted () {
+    this.loadData()
   },
   methods: {
     handleChange (info) {
@@ -74,6 +87,17 @@ export default {
         this.$message.success(`${info.file.name} file uploaded successfully`)
       } else if (info.file.status === 'error') {
         this.$message.error(`${info.file.name} file upload failed.`)
+      }
+    },
+    async loadData () {
+      const { result } = await getMediaPageList()
+      if (result.data === null) {
+        this.dataSource = []
+        this.dataSource.push(null)
+      } else {
+        this.dataSource = []
+        this.dataSource.push(null)
+        this.dataSource = this.dataSource.concat(result.data)
       }
     }
   },

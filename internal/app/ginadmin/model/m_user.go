@@ -22,4 +22,6 @@ type IUser interface {
 	UpdateStatus(ctx context.Context, recordID string, status int) error
 	// 更新密码
 	UpdatePassword(ctx context.Context, recordID, password string) error
+	// 导出
+	Export(ctx context.Context, params schema.UserQueryParam, opts schema.UserQueryOptions) (string, error)
 }

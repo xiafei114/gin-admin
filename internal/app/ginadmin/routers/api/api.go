@@ -108,6 +108,7 @@ func RegisterRouter(app *gin.Engine, b *bll.Common, a auth.Auther, enforcer *cas
 		v1.DELETE("/users/:id", userCtl.Delete)
 		v1.PATCH("/users/:id/enable", userCtl.Enable)
 		v1.PATCH("/users/:id/disable", userCtl.Disable)
+		v1.POST("/users/export", userCtl.ExportTag)
 
 		// 注册/api/v1/product
 		v1.GET("/product", productCtl.Query)

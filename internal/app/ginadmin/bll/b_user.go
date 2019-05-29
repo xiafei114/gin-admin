@@ -218,3 +218,34 @@ func (a *User) LoadPolicy(ctx context.Context, item *schema.User) error {
 	}
 	return nil
 }
+
+// Export 导出
+func (a *User) Export(ctx context.Context) (string, error) {
+	// result, err := a.UserModel.Query(ctx, schema.UserQueryParam{}, schema.UserQueryOptions{
+	// 	IncludeRoles: true,
+	// })
+	// if err != nil {
+	// 	return "", err
+	// } else if len(result.Data) == 0 {
+	// 	return "", nil
+	// }
+	// return "", nil
+
+	// // 填充角色数据
+	// roleResult, err := a.RoleModel.Query(ctx, schema.RoleQueryParam{
+	// 	RecordIDs: result.Data.ToRoleIDs(),
+	// })
+	// if err != nil {
+	// 	return "", err
+	// }
+
+	fileName, err := a.UserModel.Export(ctx, schema.UserQueryParam{}, schema.UserQueryOptions{
+		IncludeRoles: true,
+	})
+
+	if err != nil {
+		return "", nil
+	}
+
+	return fileName, nil
+}

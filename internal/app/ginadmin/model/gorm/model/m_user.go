@@ -3,12 +3,18 @@ package model
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"time"
 
 	"gin-admin/internal/app/ginadmin/model/gorm/entity"
 	"gin-admin/internal/app/ginadmin/schema"
 	"gin-admin/pkg/errors"
 	"gin-admin/pkg/gormplus"
 	"gin-admin/pkg/logger"
+
+	"gin-admin/pkg/util/export"
+
+	"github.com/tealeg/xlsx"
 )
 
 // NewUser 创建用户存储实例
@@ -295,4 +301,57 @@ func (a *User) queryRoles(ctx context.Context, userIDs ...string) (entity.UserRo
 		return nil, errors.New("查询用户角色数据发生错误")
 	}
 	return list, nil
+}
+
+func (a *User) Export(ctx context.Context, params schema.UserQueryParam, opts schema.UserQueryOptions) (string, error) {
+	result, err := a.Query(ctx, params, opts)
+	if err != nil {
+		return "", err
+	} else if len(result.Data) == 0 {
+		return "", nil
+	}
+
+	file := xlsx.NewFile()
+	sheet, err := file.AddSheet("标签信息")
+	if err != nil {
+		return "", err
+	}
+
+	titles := []string{"ID", "用户名", "真实名"}
+	row := sheet.AddRow()
+
+	var cell *xlsx.Cell
+	for _, title := range titles {
+		cell = row.AddCell()
+		cell.Value = title
+	}
+
+	for _, v := range result.Data {
+		values := []string{
+			v.RecordID,
+			v.UserName,
+			v.RealName,
+			// strconv.Itoa(v.CreatedAt),
+			// v.ModifiedBy,
+			// strconv.Itoa(v.ModifiedOn),
+		}
+
+		row = sheet.AddRow()
+		for _, value := range values {
+			cell = row.AddCell()
+			cell.Value = value
+		}
+	}
+
+	time := strconv.Itoa(int(time.Now().Unix()))
+	filename := "users-" + time + export.EXT
+
+	fullPath := export.GetExcelFullPath() + filename
+	err = file.Save(fullPath)
+	if err != nil {
+		return "", err
+	}
+
+	return filename, nil
+
 }

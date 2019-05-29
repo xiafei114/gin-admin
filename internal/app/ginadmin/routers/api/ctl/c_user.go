@@ -188,3 +188,29 @@ func (a *User) Disable(c *gin.Context) {
 	}
 	ginplus.ResOK(c)
 }
+
+// @Summary ExportTag article tag
+// @Produce  json
+// @Param Authorization header string false "Bearer 用户令牌"
+// @Success 200 schema.HTTPStatus "{status:OK}"
+// @Failure 401 schema.HTTPError "{error:{code:0,message:未授权}}"
+// @Failure 500 schema.HTTPError "{error:{code:0,message:服务器错误}}"
+// @Router post /api/v1/users/export
+func (a *User) ExportTag(c *gin.Context) {
+	// name := c.PostForm("name")
+
+	filename, err := a.UserBll.Export(ginplus.NewContext(c))
+	if err != nil {
+		ginplus.ResError(c, err)
+		return
+	}
+
+	// appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
+	// 	"export_url":      export.GetExcelFullUrl(filename),
+	// 	"export_save_url": export.GetExcelPath() + filename,
+	// })
+
+	ginplus.ResData(c, map[string]string{
+		"export_url": filename,
+	})
+}
